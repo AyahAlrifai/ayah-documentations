@@ -1,0 +1,74 @@
+@import "../base/animations";
+
+.btn {
+
+    &,
+    &:visited,
+    &:link {
+        text-transform: uppercase;
+        text-decoration: none;
+        padding: 1rem 2.5rem;
+        display: inline-block;
+        transition: all .2s;
+        border-radius: 1.6rem;
+
+        border: none;
+        cursor: pointer;
+    }
+
+    &:hover {
+        transform: translateY(-0.3rem);
+        box-shadow: 0rem 1.6rem 1.25rem $gray_shadow_color;
+    }
+
+    &:active {
+        transform: translateY(-0.06rem);
+        box-shadow: 0rem 0.3rem 1.6rem $gray_shadow_color;
+
+    }
+
+    &.whiteBtn {
+        background-color: $white_color;
+        color: #777;
+        font-size: 1rem;
+    }
+
+    &.primaryBtn {
+        background-color: $primary_color;
+        color: $white_color;
+        font-size: 1rem;
+    }
+
+    &.btn-animation {
+        animation-name: moveInLeft;
+        animation-duration: 2s;
+    }
+}
+
+.btn-text {
+
+    font-weight: 1000;
+    &:link,
+    &:visited {
+        font-size: $default-font-size;
+        color: primary_color;
+        display: inline-block;
+        text-decoration: none;
+        border-bottom: 1px solid $primary_color;
+        padding: 3px;
+        transition: all .2s;
+
+    }
+
+    &:hover {
+        background-color: primary_color;
+        color: $white_color;
+        box-shadow: 0 1rem 2rem rgba($black_color, .15);
+        transform: translateY(-2px);
+    }
+
+    &:active {
+        box-shadow: 0 .5rem 1rem rgba($black_color, .15);
+        transform: translateY(0);
+    }
+}
