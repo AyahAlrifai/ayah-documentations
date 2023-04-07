@@ -29,13 +29,25 @@
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
 
-.hero--primary {
-  --ifm-hero-background-color: #777777;
+[data-theme='dark'] .hero--primary {
+  --ifm-hero-background-color: #959ba3;
   --ifm-hero-text-color: #fff;
 }
 
-.footer--dark {
-  --ifm-footer-background-color: #777777;
+[data-theme='dark'] .footer--dark {
+  --ifm-footer-background-color: #959ba3;
+  --ifm-footer-color: #f1f4f9;
+  --ifm-footer-link-color: #eaedf1;
+  --ifm-footer-title-color: rgb(253 253 254);
+}
+
+[data-theme='light'] .hero--primary {
+  --ifm-hero-background-color: #606770;
+  --ifm-hero-text-color: #fff;
+}
+
+[data-theme='light'] .footer--dark {
+  --ifm-footer-background-color: #606770;
   --ifm-footer-color: #f1f4f9;
   --ifm-footer-link-color: #eaedf1;
   --ifm-footer-title-color: rgb(253 253 254);

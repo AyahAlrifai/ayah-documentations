@@ -281,7 +281,7 @@ body {
   border-bottom: 3px solid #ff0000;
 }
 .form__input::-webkit-input-placeholder {
-  color: #777777;
+  color: #606770;
 }
 .form__label {
   font-size: 0.8rem;
