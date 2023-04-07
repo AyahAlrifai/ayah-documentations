@@ -1,7 +1,6 @@
 ---
-sidebar_position: 6
+sidebar_position: 12
 ---
-
 # Components
 
 Often, multiple API operations have some common parameters or return the same response structure. To avoid code duplication, you can place the common definitions in the global components section and reference them using $ref. In the example below, duplicate definitions of a User object are replaced with a single component and references to that component.
@@ -145,6 +144,7 @@ parameters:
         maximum: 100
         default: 20
 ```
+[more abot parameter](../parameters/)
 
 ---
 
@@ -167,7 +167,135 @@ parameters:
           schema:
             $ref: '#/components/schemas/Error'
 ```
+---
 
+## requestBodies
+
+```
+
+```
+  requestBodies:
+    contractTemplate:
+      description: A JSON object containing contract template data
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              contractName: 
+                type: string
+                example: 123123123
+              contractDesc: 
+                type: string
+                example: aaa
+              startDate: 
+                type: string
+                example: 2/1/2023
+              endDate: 
+                type: string
+                example: 12/31/2029
+              categoryList:
+                type: array
+                items:
+                  type: string
+                example:
+                  - D109
+              termedFlag: 
+                type: string
+                enum: [M, D, N]
+                example: D
+              termInMonth: 
+                type: integer
+                example: null
+                minimum: 1
+                maximum: 999
+              termEndDate: 
+                type: string
+                example: 2/28/2023
+              trialLengthInDays: 
+                type: integer
+                example: 30
+                minimum: 1
+                maximum: 999
+              contractPostfix: 
+                type: string
+                example: aaa
+              contractPrefix: 
+                type: string
+                example: aaa
+              renewalType:
+                type: string
+                enum: [A, M]
+                example: A
+              renewalTermInMonth: 
+                type: integer
+                example: 1
+                minimum: 1
+                maximum: 999
+              renewalReqCustAcc: 
+                type: boolean
+                example: false
+              renewalReqIntApp: 
+                type: boolean
+                example: false
+              cancelationAllowed: 
+                type: boolean
+                example: false
+              cancelationProductCode: 
+                type: string
+                example: null
+              cancelationFlatRate: 
+                type: string
+                example: null
+              cancelationPctFull: 
+                type: string
+                example: null
+              cancelationPctLeft: 
+                type: string
+                example: null
+              eSignatureReq: 
+                type: boolean
+                example: false
+              discountPct: 
+                type: integer
+                example: 5
+                minimum: 1
+                maximum: 999
+              planList:
+                type: array
+                items:
+                  type: string
+                example:
+                  - D109-000000000008885
+              templateDocList: 
+                type: array
+                items:
+                  type: string
+                example: []
+              pdfTemplateId: 
+                type: string
+                example: contractTemplateSettings
+              reminderDays: 
+                type: integer
+                example: 10
+                minimum: 1
+                maximum: 999
+            required:  
+              - accountNumber
+              - conTemplateId
+              - contractName
+              - contractDesc
+              - trialLengthInDays
+              - termInMonth
+              - termedFlag
+              - renewalType
+              - renewalTermInMonth
+              - reminderDays
+              - planList
+              - categoryList
+              - endDate
+              - startDate
 ---
 
 ## security Schemes
@@ -214,18 +342,17 @@ components:
 
 ---
 
-## Externally Defined Components
+## links
+
 ```
-components:
-  schemas:
-    Pet:
-      $ref: '../models/pet.yaml'
-      # Can now use use '#/components/schemas/Pet' instead
-    User:
-      $ref: 'https://api.example.com/v2/openapi.yaml#/components/schemas/User'
-      # Can now use '#/components/schemas/User' instead
-  responses:
-    GenericError:
-      $ref: '../template-api.yaml#/components/responses/GenericError'
-      # Can now use '#/components/responses/GenericError' instead
+  code
 ```
+
+---
+
+## callbacks
+
+```
+  code
+```
+
