@@ -26,4 +26,10 @@ Domains are a collection of reusable components. The components that can be stor
 - [documentation](https://app.swaggerhub.com/domains/AREFAI_1/domain/1.0.0)
 - [publish](https://app.swaggerhub.com/domains-docs/AREFAI_1/domain/1.0.0)
 
-## [how to use domain](../swaggerCodeSyntax/externallyDefinedComponents/#from-domain)
+
+:::info
+
+check this link to learn how to use domain components in API [how to use domain](../swaggerCodeSyntax/externallyDefinedComponents/#from-domain)
+
+:::
+

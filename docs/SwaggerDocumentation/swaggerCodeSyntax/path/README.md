@@ -48,8 +48,13 @@ paths:
 
 ## Parameters
 
-Operations can have parameters passed via URL path (/users/{userId}), query string (/users?role=admin), headers (X-CustomHeader: Value) or cookies (Cookie: debug=0). You can define the parameter data types, format, whether they are required or optional, and other details  [read more about parameters](../parameters)
+Operations can have parameters passed via URL path (/users/{userId}), query string (/users?role=admin), headers (X-CustomHeader: Value) or cookies (Cookie: debug=0). You can define the parameter data types, format, whether they are required or optional, and other details.
 
+:::info
+
+ learn more about parameters [link](../parameters)
+
+:::
 ---
 
 ## RequestBody

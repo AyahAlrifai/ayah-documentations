@@ -144,7 +144,12 @@ parameters:
         maximum: 100
         default: 20
 ```
-[more abot parameter](../parameters/)
+
+:::info
+
+  read more about parameters [link](../parameters/)
+  
+:::
 
 ---
 
