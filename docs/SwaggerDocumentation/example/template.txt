@@ -1,0 +1,78 @@
+openapi: 3.0.0
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/AREFAI_1/CustomTemplate/1.0.0
+  - url: https://developstg.blulogix.com/CIS-SERVER/rest/api/v1
+    description: Staging server
+  - url: https://192.168.1.71:8443/CIS-SERVER/rest/api/v1
+    description: Integretion server
+
+info:
+  description: description
+  version: 1.0.0
+  title: "template"
+  contact:
+    email: info@blulogix.com
+
+  - name: add your tags here
+
+security:
+  - implicit1:
+    - read
+    - write
+
+paths:
+  /path:
+    post:
+      tags:
+        - add your tags here
+      summary: you should add summary
+      operationId: operationId_unique_value
+      description: |
+        add description here
+      requestBody:
+        description: add description about body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: 'https://api.swaggerhub.com/apis/AREFAI_1/SharedComponent/1.0.0#/components/schemas/contract'
+      responses:
+        '200':
+          description: description
+          content:
+            application/json:
+              schema:
+                oneOf:
+                 - $ref: 'https://api.swaggerhub.com/apis/AREFAI_1/SharedComponent/1.0.0#/components/schemas/addedContract'
+                 - $ref: 'https://api.swaggerhub.com/apis/AREFAI_1/SharedComponent/1.0.0#/components/schemas/existingContract'
+        '400':
+          description: bad Request
+          content:
+            text/html:
+              schema:
+                $ref: 'https://api.swaggerhub.com/apis/AREFAI_1/SharedComponent/1.0.0#/components/schemas/badRequest'
+        '401':
+          description: BluLogix 404 Error Page
+        '404':
+          description: BluLogix 404 Error Page
+
+components:
+  securitySchemes:
+    implicit1:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: http://192.168.1.74:8080/auth/realms/API-Realm/protocol/openid-connect/auth
+          scopes:
+            write: allows modifying resources
+            read: allows reading resources
+    implicit2:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://stgblua3admin.blulogix.com/auth/realms/cis-p-R266-0000002/protocol/openid-connect/auth
+          scopes:
+            write: allows modifying resources
+            read: allows reading resources
