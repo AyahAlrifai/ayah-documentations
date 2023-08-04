@@ -1,0 +1,130 @@
+openapi: 3.0.0
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/AREFAI_1/ContractManagment/1.0.0
+  - url: https://developstg.blulogix.com/CIS-SERVER/rest/api/v1
+    description: Staging server
+  - url: https://192.168.1.71:8443/CIS-SERVER/rest/api/v1
+    description: Integretion server
+
+info:
+  description: Manage Contract by add, delete and update contract and contract template
+  version: "1.0.0"
+  title: Manage contract API
+  contact:
+    email: arefai@blulogix.com
+
+tags:
+  - name: Contract
+  - name: Contract template
+
+security:
+  - implicit1:
+    - read
+    - write
+  - implicit2:
+    - read
+    - write
+
+paths:
+  /contract/createContract:
+    post:
+      tags:
+        - Contract
+      summary: creat new contract
+      operationId: createContract
+      description: |
+        create new contrat for spesific Customer
+      requestBody:
+        $ref: '#/components/requestBodies/contract'
+      responses:
+        '200':
+          $ref: '#/components/responses/addedContract'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          description: BluLogix 404 Error Page
+        '404':
+          description: BluLogix 404 Error Page
+  
+  /contract/createContractTemplate:
+    post:
+      tags:
+        - Contract template
+      summary: creat new contract template
+      operationId: createContractTemplate
+      description: |
+        create new contrat Template
+      requestBody:
+        $ref: '#/components/requestBodies/contractTemplate'
+      responses:
+        '200':
+          $ref: '#/components/responses/addedContractTemplate'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          description: BluLogix 404 Error Page
+        '404':
+          description: BluLogix 404 Error Page
+  
+  /contract/updateContract:
+    post:
+      tags:
+        - Contract
+      operationId: getContract
+      responses:
+        '200':
+          description: bad input parameter
+  
+  /contract/updateContractTemplate:
+    post:
+      tags:
+        - Contract template
+      responses:
+        '200':
+          description: bad input parameter
+
+components:
+  requestBodies:
+    contractTemplate:
+      $ref: 'https://api.swaggerhub.com/domains/AREFAI_1/domain/1.0.0#/components/requestBodies/contractTemplate'
+    contract:
+      $ref: 'https://api.swaggerhub.com/domains/AREFAI_1/domain/1.0.0#/components/requestBodies/contract'
+  parameters:
+    referer: 
+      $ref: 'https://api.swaggerhub.com/domains/AREFAI_1/domain/1.0.0#/components/parameters/referer'
+    accessControlOrigin:
+      $ref: 'https://api.swaggerhub.com/domains/AREFAI_1/domain/1.0.0#/components/parameters/accessControlOrigin'
+    accessControlCredentials:
+      $ref: 'https://api.swaggerhub.com/domains/AREFAI_1/domain/1.0.0#/components/parameters/accessControlCredentials'
+    accessControlAllowHeader:
+      $ref: 'https://api.swaggerhub.com/domains/AREFAI_1/domain/1.0.0#/components/parameters/accessControlAllowHeader'
+    accessControlAllowMethod:
+      $ref: 'https://api.swaggerhub.com/domains/AREFAI_1/domain/1.0.0#/components/parameters/accessControlAllowMethod'
+    origin:
+      $ref: 'https://api.swaggerhub.com/domains/AREFAI_1/domain/1.0.0#/components/parameters/origin'
+  responses:
+    badRequest:
+      $ref: 'https://api.swaggerhub.com/domains/AREFAI_1/domain/1.0.0#/components/responses/badRequest'
+    addedContract:
+     $ref: 'https://api.swaggerhub.com/domains/AREFAI_1/domain/1.0.0#/components/responses/addedContract'
+    addedContractTemplate:
+      $ref: 'https://api.swaggerhub.com/domains/AREFAI_1/domain/1.0.0#/components/responses/addedContractTemplate'
+  securitySchemes:
+    implicit1:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: http://192.168.1.74:8080/auth/realms/API-Realm/protocol/openid-connect/auth
+          scopes:
+            write: allows modifying resources
+            read: allows reading resources
+    implicit2:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://stgblua3admin.blulogix.com/auth/realms/cis-p-R266-0000002/protocol/openid-connect/auth
+          scopes:
+            write: allows modifying resources
+            read: allows reading resources
