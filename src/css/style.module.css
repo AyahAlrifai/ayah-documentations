@@ -54,7 +54,7 @@ body {
   text-transform: uppercase;
   font-weight: 700;
   display: inline-block;
-  background-image: linear-gradient(to right, rgb(240, 173, 173), #ea0b13);
+  background-image: linear-gradient(to right, #051391, #939dfb);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -147,16 +147,16 @@ body {
   width: calc((100% - 2 * 6rem) / 3);
 }
 .row .col-2-of-3 {
-  width: calc(2 * ((100% - 2 * 6rem) / 3) + 6rem);
+  width: calc(2 * (100% - 2 * 6rem) / 3 + 6rem);
 }
 .row .col-1-of-4 {
   width: calc((100% - 3 * 6rem) / 4);
 }
 .row .col-2-of-4 {
-  width: calc(2 * ((100% - 3 * 6rem) / 4) + 6rem);
+  width: calc(2 * (100% - 3 * 6rem) / 4 + 6rem);
 }
 .row .col-3-of-4 {
-  width: calc(3 * ((100% - 3 * 6rem) / 4) + 2 * 6rem);
+  width: calc(3 * (100% - 3 * 6rem) / 4 + 2 * 6rem);
 }
 
 @keyframes moveInTop {
@@ -218,11 +218,11 @@ body {
 }
 .btn.whiteBtn {
   background-color: #ffffff;
-  color: #1e1d1d;
+  color: #777;
   font-size: 1rem;
 }
 .btn.primaryBtn {
-  background-color: #e51b23;
+  background-color: #251be5;
   color: #ffffff;
   font-size: 1rem;
 }
@@ -239,7 +239,7 @@ body {
   color: primary_color;
   display: inline-block;
   text-decoration: none;
-  border-bottom: 1px solid #e51b23;
+  border-bottom: 1px solid #251be5;
   padding: 3px;
   transition: all 0.2s;
 }
@@ -273,15 +273,15 @@ body {
 }
 .form__input:focus {
   outline: none;
-  box-shadow: 0 0.5rem 1rem rgba(229, 27, 35, 0.1);
-  border-bottom: 3px solid #e51b23;
+  box-shadow: 0 0.5rem 1rem rgba(37, 27, 229, 0.1);
+  border-bottom: 3px solid #251be5;
   font-weight: 1000;
 }
 .form__input:focus:invalid {
   border-bottom: 3px solid #ff0000;
 }
 .form__input::-webkit-input-placeholder {
-  color: #606770;
+  color: #777777;
 }
 .form__label {
   font-size: 0.8rem;
@@ -312,7 +312,7 @@ body {
 .form__radio-button {
   height: 2rem;
   width: 2rem;
-  border: 5px solid #e51b23;
+  border: 5px solid #251be5;
   border-radius: 50%;
   display: inline-block;
   position: absolute;
@@ -329,7 +329,7 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: #e51b23;
+  background-color: #251be5;
   opacity: 0;
   transition: opacity 0.2s;
 }
