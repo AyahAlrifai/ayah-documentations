@@ -53,7 +53,7 @@ const config = {
         items: [
           {
             type: 'doc',
-            docId: 'MarkdownCheatSheet/basic-syntax',
+            docId: 'multiExecPro',
             position: 'left',
             label: 'Documentation',
           }
