@@ -1,0 +1,25 @@
+[debug] [2024-03-12T05:33:40.188Z] ----------------------------------------------------------------------
+[debug] [2024-03-12T05:33:40.194Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\LENOVO\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init
+[debug] [2024-03-12T05:33:40.196Z] CLI Version:   13.4.1
+[debug] [2024-03-12T05:33:40.197Z] Platform:      win32
+[debug] [2024-03-12T05:33:40.197Z] Node Version:  v18.12.0
+[debug] [2024-03-12T05:33:40.200Z] Time:          Tue Mar 12 2024 08:33:40 GMT+0300 (Eastern European Summer Time)
+[debug] [2024-03-12T05:33:40.200Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-03-12T05:33:40.304Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-03-12T05:33:40.304Z] > authorizing via signed-in user (alrefayayah@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\LENOVO\Desktop\digitinary\ayah-documentations
+
+Before we get started, keep in mind:
+
+  * You are initializing within an existing Firebase project directory
+

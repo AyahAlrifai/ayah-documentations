@@ -54,7 +54,7 @@ body {
   text-transform: uppercase;
   font-weight: 700;
   display: inline-block;
-  background-image: linear-gradient(to right, #051391, #939dfb);
+  background-image: linear-gradient(to right, #6d9eff, #0859fc);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -222,7 +222,7 @@ body {
   font-size: 1rem;
 }
 .btn.primaryBtn {
-  background-color: #251be5;
+  background-color: #0859fc;
   color: #ffffff;
   font-size: 1rem;
 }
@@ -239,7 +239,7 @@ body {
   color: primary_color;
   display: inline-block;
   text-decoration: none;
-  border-bottom: 1px solid #251be5;
+  border-bottom: 1px solid #0859fc;
   padding: 3px;
   transition: all 0.2s;
 }
@@ -273,8 +273,8 @@ body {
 }
 .form__input:focus {
   outline: none;
-  box-shadow: 0 0.5rem 1rem rgba(37, 27, 229, 0.1);
-  border-bottom: 3px solid #251be5;
+  box-shadow: 0 0.5rem 1rem rgba(8, 89, 252, 0.1);
+  border-bottom: 3px solid #0859fc;
   font-weight: 1000;
 }
 .form__input:focus:invalid {
@@ -312,7 +312,7 @@ body {
 .form__radio-button {
   height: 2rem;
   width: 2rem;
-  border: 5px solid #251be5;
+  border: 5px solid #0859fc;
   border-radius: 50%;
   display: inline-block;
   position: absolute;
@@ -329,7 +329,7 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: #251be5;
+  background-color: #0859fc;
   opacity: 0;
   transition: opacity 0.2s;
 }
