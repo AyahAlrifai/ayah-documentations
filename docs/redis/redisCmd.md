@@ -278,9 +278,10 @@ OK
 
 ## LIST CMD
 
-`LPUSH` and `RPUSH` are commands in Redis used to insert one or multiple values at the beginning and end of a list, respectively.
 
-Here's how they work:
+`LPUSH`, `RPUSH`, `LPOP`, and `RPOP` are fundamental commands in Redis used to manipulate lists. They are often used together to implement queue-like behavior or manage ordered data structures.
+
+Here's a brief explanation of each command:
 
 ### LPUSH
 
