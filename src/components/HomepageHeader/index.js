@@ -16,7 +16,7 @@ export default function HomepageHeader(prop) {
         <div className={styles.buttons}>
           <Link
             className={styles.btn + " " + styles.whiteBtn}
-            to="/docs/MULTIEXEC">
+            to="/docs/multiExecPro">
             start tutorial
           </Link>
         </div>

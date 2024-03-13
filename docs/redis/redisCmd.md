@@ -276,7 +276,7 @@ OK
 (nil)
 ```
 
-## LPUSH && RPUSH
+## LIST CMD
 
 `LPUSH` and `RPUSH` are commands in Redis used to insert one or multiple values at the beginning and end of a list, respectively.
 
@@ -304,6 +304,26 @@ RPUSH key value [value ...]
 
 - `key`: The name of the list key.
 - `value`: The value(s) to insert at the end of the list.
+
+### LPOP
+
+The `LPOP` command removes and returns the first element (leftmost element) of a list.
+
+```redis
+LPOP key
+```
+
+- `key`: The name of the list key.
+
+### RPOP
+
+The `RPOP` command removes and returns the last element (rightmost element) of a list.
+
+```redis
+RPOP key
+```
+
+- `key`: The name of the list key.
 
 ### EXAMPLE
 
