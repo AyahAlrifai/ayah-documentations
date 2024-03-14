@@ -91,6 +91,8 @@ PUBLISH channel1 "Hello, Redis!"
 
 <ReactPlayer playing controls url='img/4.pm4' />
 
+![example](img/3.png)
+
 1. sub1
 ```redis
 127.0.0.1:6379> SUBSCRIBE CHANNEL_1_0 CHANNEL_1_1
