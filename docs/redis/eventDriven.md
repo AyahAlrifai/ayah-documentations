@@ -2,6 +2,7 @@
 sidebar_position: 3
 ---
 import ReactPlayer from 'react-player';
+import MyVideoUrl from './video/example.mp4';
 
 # Event Driven
 
@@ -89,68 +90,66 @@ PUBLISH channel1 "Hello, Redis!"
 ```
 ### EXAMPLE
 
-<ReactPlayer playing controls url='img/4.pm4' />
-
-![example](img/3.png)
+<ReactPlayer controls height="100%" url={MyVideoUrl} width="100%" />
 
 1. sub1
-```redis
-127.0.0.1:6379> SUBSCRIBE CHANNEL_1_0 CHANNEL_1_1
-1) "subscribe"
-2) "CHANNEL_1_0"
-3) (integer) 1
-1) "subscribe"
-2) "CHANNEL_1_1"
-3) (integer) 2
-1) "message"
-2) "CHANNEL_1_0"
-3) "HELLO CHANNEL 1 0"
-1) "message"
-2) "CHANNEL_1_1"
-3) "HELLO CHANNEL 1 1"
-Reading messages... (
-```
+   ```redis
+   127.0.0.1:6379> SUBSCRIBE CHANNEL_1_0 CHANNEL_1_1
+   1) "subscribe"
+   2) "CHANNEL_1_0"
+   3) (integer) 1
+   1) "subscribe"
+   2) "CHANNEL_1_1"
+   3) (integer) 2
+   1) "message"
+   2) "CHANNEL_1_0"
+   3) "HELLO CHANNEL 1 0"
+   1) "message"
+   2) "CHANNEL_1_1"
+   3) "HELLO CHANNEL 1 1"
+   Reading messages... (
+   ```
 
 2. sub2
-```redis
-127.0.0.1:6379> SUBSCRIBE CHANNEL_1_0
-1) "subscribe"
-2) "CHANNEL_1_0"
-3) (integer) 1
-1) "message"
-2) "CHANNEL_1_0"
-3) "HELLO CHANNEL 1 0"
-Reading messages... (press Ctrl-C to quit or any key to type command)       
-```
+   ```redis
+   127.0.0.1:6379> SUBSCRIBE CHANNEL_1_0
+   1) "subscribe"
+   2) "CHANNEL_1_0"
+   3) (integer) 1
+   1) "message"
+   2) "CHANNEL_1_0"
+   3) "HELLO CHANNEL 1 0"
+   Reading messages... (press Ctrl-C to quit or any key to type command)       
+   ```
 
 3. sub3
-```redis
-127.0.0.1:6379> PSUBSCRIBE CHANNEL_1_*
-1) "psubscribe"
-2) "CHANNEL_1_*"
-3) (integer) 1
-1) "pmessage"
-2) "CHANNEL_1_*"
-3) "CHANNEL_1_0"
-4) "HELLO CHANNEL 1 0"
-1) "pmessage"
-2) "CHANNEL_1_*"
-3) "CHANNEL_1_1"
-4) "HELLO CHANNEL 1 1"
-1) "pmessage"
-2) "CHANNEL_1_*"
-3) "CHANNEL_1_3"
-4) "HELLO CHANNEL 1 3"
-Reading messages... (press Ctrl-C to quit or any key to type command)       
-```
+   ```redis
+   127.0.0.1:6379> PSUBSCRIBE CHANNEL_1_*
+   1) "psubscribe"
+   2) "CHANNEL_1_*"
+   3) (integer) 1
+   1) "pmessage"
+   2) "CHANNEL_1_*"
+   3) "CHANNEL_1_0"
+   4) "HELLO CHANNEL 1 0"
+   1) "pmessage"
+   2) "CHANNEL_1_*"
+   3) "CHANNEL_1_1"
+   4) "HELLO CHANNEL 1 1"
+   1) "pmessage"
+   2) "CHANNEL_1_*"
+   3) "CHANNEL_1_3"
+   4) "HELLO CHANNEL 1 3"
+   Reading messages... (press Ctrl-C to quit or any key to type command)       
+   ```
 
 4. pub
-```redis
-127.0.0.1:6379> PUBLISH CHANNEL_1_0 "HELLO CHANNEL 1 0"
-(integer) 3
-127.0.0.1:6379> PUBLISH CHANNEL_1_1 "HELLO CHANNEL 1 1"
-(integer) 2
-127.0.0.1:6379> PUBLISH CHANNEL_1_3 "HELLO CHANNEL 1 3"
-(integer) 1
-127.0.0.1:6379>
-```
+   ```redis
+   127.0.0.1:6379> PUBLISH CHANNEL_1_0 "HELLO CHANNEL 1 0"
+   (integer) 3
+   127.0.0.1:6379> PUBLISH CHANNEL_1_1 "HELLO CHANNEL 1 1"
+   (integer) 2
+   127.0.0.1:6379> PUBLISH CHANNEL_1_3 "HELLO CHANNEL 1 3"
+   (integer) 1
+   127.0.0.1:6379>
+   ```
