@@ -56,6 +56,10 @@ const config = {
             docId: 'multiExecPro',
             position: 'left',
             label: 'Documentation',
+          },{
+            to: 'create-new-document', // to specific url
+            position: 'left',
+            label: 'create new document',
           }
         ],
       },
