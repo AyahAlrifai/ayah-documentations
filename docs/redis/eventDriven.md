@@ -411,7 +411,7 @@ XREAD [COUNT count] [BLOCK milliseconds] STREAMS key [key ...] ID [ID ...]
 When XREAD is used with the BLOCK option, it blocks until new messages arrive in the specified streams or until the timeout expires. Without the BLOCK option, it returns immediately with the available messages.
 
 
-Example 1:
+Example:
 
 ```redis
 127.0.0.1:6379> xread streams stream  1715588710523-1
@@ -600,7 +600,7 @@ Example 1:
              8) "d"
 ```
 
-Example 2:
+### Example
 
 <ReactPlayer controls height="100%" url={MyVideoUrl1} width="100%" />
 
