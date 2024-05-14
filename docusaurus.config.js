@@ -59,7 +59,7 @@ const config = {
           },{
             to: 'create-new-document', // to specific url
             position: 'left',
-            label: 'create new document',
+            label: 'Review Markdown',
           }
         ],
       },
