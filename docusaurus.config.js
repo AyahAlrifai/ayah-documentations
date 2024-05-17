@@ -67,12 +67,15 @@ const config = {
         style: 'dark',
         links: [
           {
-            title: 'Auther',
+            title: 'Auther Ayah Al-Refai',
             items: [
               {
-                label: 'Ayah Alrifai',
+                label: 'LinkedIn',
                 href: 'https://www.linkedin.com/in/ayah-alrefai-may1997/',
-              },
+              },{
+                label: 'GitHub',
+                href: 'https://github.com/AyahAlrifai',
+              }
             ],
           }
         ],

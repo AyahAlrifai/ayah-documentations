@@ -6,9 +6,7 @@ import ReactMarkdown from 'react-markdown';
 
 export default function SNewDocumentql() {
 
-  const initValue = `
-
-# BIT CMD
+  const initValue = `# BIT CMD
 
 ## SETBIT
 
