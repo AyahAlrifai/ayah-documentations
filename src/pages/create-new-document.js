@@ -116,6 +116,7 @@ Example:
 
   return (
     <Layout>
+      <div className={styles.container}>
       <Editor
         language="markdown"
         value={initValue}
@@ -127,6 +128,7 @@ Example:
       />
       <div className={styles.reactMarkdown}>
         <ReactMarkdown children={value} />
+      </div>
       </div>
     </Layout>
   );

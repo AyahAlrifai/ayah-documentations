@@ -4,32 +4,29 @@ import styles from '../../css/style.module.css';
 
 const FeatureList = [
   {
-    title: 'Easy to Use',
+    title: '',
     Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        Unleash the ultimate programming potential within you by exploring our comprehensive website documentation.
       </>
     ),
   },
   {
-    title: 'Focus on What Matters',
+    title: '',
     Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        Elevate your coding prowess with our meticulously curated resources and tutorials, tailored to empower both beginners and seasoned developers alike.
       </>
     ),
   },
   {
-    title: 'Powered by React',
+    title: '',
     Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        Embark on the ultimate journey of knowledge acquisition and mastery in the realm of programming through our enriching online platform.
       </>
     ),
   },

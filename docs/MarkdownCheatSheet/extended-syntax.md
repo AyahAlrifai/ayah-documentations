@@ -13,3 +13,7 @@ sidebar_position: 2
 | Emoji |	`That is so funny! :joy:` | That is so funny! :joy: |
 | Highlight |	`I need to highlight these ==very important words==.`| I need to highlight these <mark>very important words</mark> |
 | Fenced Code Block |	` ```{`   <br />`"firstName": "John,` <br /> `"lastName": "Smith",` <br />  `"age": 25` <br />`}``` ` | `{`   <br />`"firstName": "John,` <br /> `"lastName": "Smith",` <br />  `"age": 25` <br />`} ` |
+
+---
+
+- [Complete list of markdown emoji](https://gist.github.com/rxaviers/7360908)

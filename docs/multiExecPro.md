@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# multiExecPro
+# MultiExecPro
 
 ![alt text](img/image.png)
 
