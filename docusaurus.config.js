@@ -41,6 +41,11 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      prism: {
+        theme: require('prism-react-renderer/themes/github'),
+        darkTheme: require('prism-react-renderer/themes/dracula'),
+        additionalLanguages: ['java'],
+      },
       image: 'img/ayah.png',
       navbar: {
         style:"primary", // same as primary color

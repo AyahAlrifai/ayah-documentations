@@ -26,7 +26,7 @@ facilitates dynamic query generation based on search criteria provided through a
 
 The `DataManipulationModel` encapsulates filters and sorting criteria.
 
-```java
+```javascript
 public class DataManipulationModel {
 
     /**
@@ -47,7 +47,7 @@ public class DataManipulationModel {
 
     - **FilterCriteria**: Represents a single filter condition. It can be instantiated using
       the `condition(fieldName, operation, fieldValue)` method.
-```java
+```javascript
 package com.aya.search.model;
 
 import lombok.Getter;
@@ -84,8 +84,8 @@ public final class FilterCriteria implements Filter {
   - **FilterGroup**: Represents a group of filter conditions combined with logical operators (AND/OR). It can be
     instantiated using the `and(FilterCriteria|FilterGroup)` or `or(FilterCriteria|FilterGroup)` method.
 
-   ```java
-   package com.aya.search.model;
+```javascript
+package com.aya.search.model;
 
 import lombok.Getter;
 import java.util.List;
@@ -117,7 +117,7 @@ public final class FilterGroup implements Filter {
 - **SortDataModel**: Represents sorting criteria with a field name and sort order. It can be instantiated using
   the `asc(fieldName)` or `desc(fieldName)` methods.
 
-```java
+```javascript
 package com.aya.search.model;
 
 import lombok.Getter;
@@ -167,7 +167,7 @@ Ensure that you include the necessary dependency in your project's Maven `pom.xm
 
 Instantiate a `DataManipulationModel` object encapsulating your search and sort criteria.
 
-```java
+```javascript
 public static void main(String... args) {
     DataManipulationModel dataManipulationModel = new DataManipulationModel();
     dataManipulationModel.setSortModel(asc("gpa"), desc("firstName"));
@@ -188,7 +188,7 @@ public static void main(String... args) {
 
 Instantiate a `GeneralSpecification` object with the `DataManipulationModel`.
 
-```java
+```javascript
 GeneralSpecification<Student> studentGeneralSpecification = new GeneralSpecification<>(dataManipulationModel);
 ```
 
@@ -197,7 +197,7 @@ GeneralSpecification<Student> studentGeneralSpecification = new GeneralSpecifica
 Pass the `GeneralSpecification` object to the `findAll` method of your Spring Data JPA repository along with
 a `Pageable` object for pagination.
 
-```java
+```javascript
 Page<Student> page = studentRepository.findAll(studentGeneralSpecification, PageRequest.of(0, 10));
 ```
 
@@ -209,7 +209,7 @@ Here's an example demonstrating the usage of `GeneralSpecification` in a service
 based on dynamic search and sort criteria.
 
 ### Student.java anf Community.java
-```java
+```javascript
 @Entity
 @Data
 @AllArgsConstructor
@@ -276,7 +276,7 @@ public class Community {
 ```
 
 ### StudentRepository.java
-```java
+```javascript
 @Repository
 public interface StudentRepository extends JpaRepository<Student, Long>, JpaSpecificationExecutor<Student> {
 
@@ -284,7 +284,7 @@ public interface StudentRepository extends JpaRepository<Student, Long>, JpaSpec
 ```
 
 ### StudentService.java
-```java
+```javascript
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.aya.search.entity.Student;
