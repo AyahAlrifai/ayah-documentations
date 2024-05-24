@@ -41,11 +41,6 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      prism: {
-        theme: require('prism-react-renderer/themes/github'),
-        darkTheme: require('prism-react-renderer/themes/dracula'),
-        additionalLanguages: ['java'],
-      },
       image: 'img/ayah.png',
       navbar: {
         style:"primary", // same as primary color
@@ -62,7 +57,7 @@ const config = {
             position: 'left',
             label: 'Documentation',
           },{
-            to: 'create-new-document', // to specific url
+            to: 'create-new-document',
             position: 'left',
             label: 'Review Markdown',
           }
@@ -89,6 +84,7 @@ const config = {
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
+        additionalLanguages: ['java', 'powershell'],
       },
     }),
     scripts: [
@@ -98,6 +94,7 @@ const config = {
         crossorigin:'anonymous'
       },
     ],
+    themes: ['@docusaurus/theme-live-codeblock'],
 };
 
 module.exports = config;

@@ -4,7 +4,7 @@ import Editor from '@monaco-editor/react';
 import styles from '../css/style.module.css';
 import ReactMarkdown from 'react-markdown';
 
-export default function SNewDocumentql() {
+export default function createNewDocument() {
 
   const initValue = `# BIT CMD
 

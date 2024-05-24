@@ -1,0 +1,8 @@
+{
+  "label": "General Specification",
+  "position": 2,
+  "link": {
+    "type": "generated-index",
+    "description": "A dynamic query builder library for Spring Boot applications"
+  }
+}
