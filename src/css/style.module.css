@@ -63,17 +63,31 @@ body {
   text-transform: uppercase;
   font-weight: 700;
   display: inline-block;
-  background-image: linear-gradient(to right, #6d9eff, #0859fc);
+  background-image: linear-gradient(to right, #f967bd, #3492d4,  #efbe16, #5db432);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  letter-spacing: 0.2rem;
-  transition: all 0.4s;
+  letter-spacing: 0.5rem;
+  transform-style: preserve-3d;
+  transition: all 3.0s;
 }
 
 .headeringSecondary:hover {
-  transform: skewY(2deg) skewX(15deg) scale(1.1);
-  text-shadow: 0.5rem 1rem 2rem rgba(0, 0, 0, 0.4588235294);
+  /*rotate(360deg) */
+  transform: skewX(20deg) translateZ(200px) scale(1.2);
+  text-shadow: 1rem 2rem 2rem rgba(0, 0, 0, 0.4588235294);
+}
+
+.move-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;
+  background-color: #007bff;
+  color: white;
+  border-radius: 5px;
+  position: absolute;
 }
 
 .uCenterText {
@@ -246,6 +260,13 @@ body {
 .btn.whiteBtn {
   background-color: #ffffff;
   color: #777;
+  font-size: 1rem;
+}
+
+.btn.colorBtn {
+  background-color: #528dff;
+  color: #000000;
+  font-weight: bolder;
   font-size: 1rem;
 }
 

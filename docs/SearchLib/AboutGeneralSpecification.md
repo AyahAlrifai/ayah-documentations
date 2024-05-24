@@ -201,7 +201,12 @@ a `Pageable` object for pagination.
 Page<Student> page = studentRepository.findAll(studentGeneralSpecification, PageRequest.of(0, 10));
 ```
 
-*Note: Ensure that your `studentRepository` implements `JpaSpecificationExecutor`.*
+:::note
+
+Ensure that your `studentRepository` implements `JpaSpecificationExecutor`.
+
+:::
+
 
 ## Example
 

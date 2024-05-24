@@ -15,7 +15,7 @@ export default function HomepageHeader(prop) {
         <p className="hero__subtitle">{prop.siteConfig.tagline}</p>
         <div className={styles.buttons}>
           <Link
-            className={styles.btn + " " + styles.whiteBtn}
+            className={styles.btn + " " + styles.colorBtn}
             to="/docs/multiExecPro">
             start tutorial
           </Link>
