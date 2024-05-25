@@ -3,10 +3,10 @@ const darkCodeTheme = require('prism-react-renderer/themes/oceanicNext');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Ayah\'s Documentation ', // show in home
+  title: 'Ayah\'s DocumentationS', // show in home
   tagline: 'Lets go to...', // show in home
   favicon: 'img/ayah.png', 
-  url: 'https://github.com',
+  url: 'https://canvas-eye-416011.web.app/',
 
   baseUrl: '/',
   organizationName: 'Ayah',
