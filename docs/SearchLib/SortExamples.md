@@ -16,7 +16,7 @@ import TabItem from '@theme/TabItem';
 DataManipulationModel dataManipulationModel = new DataManipulationModel();
 dataManipulationModel.setSortModel(asc("gpa"));
 GeneralSpecification<Student> studentGeneralSpecification = new GeneralSpecification<>(dataManipulationModel);
-Page<Student> students = studentRepository.findAll(studentGeneralSpecification, PageRequest.of(0, 10));
+studentRepository.findAll(studentGeneralSpecification);
   ```
 
   </TabItem>
@@ -42,10 +42,6 @@ Page<Student> students = studentRepository.findAll(studentGeneralSpecification, 
     order by
     // highlight-next-line
         s1_0.gpa 
-    offset
-        ? rows 
-    fetch
-        first ? rows only
   ```
 
   </TabItem>
@@ -60,7 +56,7 @@ Page<Student> students = studentRepository.findAll(studentGeneralSpecification, 
 DataManipulationModel dataManipulationModel = new DataManipulationModel();
 dataManipulationModel.setSortModel(desc("gpa"));
 GeneralSpecification<Student> studentGeneralSpecification = new GeneralSpecification<>(dataManipulationModel);
-Page<Student> students = studentRepository.findAll(studentGeneralSpecification, PageRequest.of(0, 10));
+studentRepository.findAll(studentGeneralSpecification);
   ```
 
   </TabItem>
@@ -86,10 +82,6 @@ Page<Student> students = studentRepository.findAll(studentGeneralSpecification, 
     order by
     // highlight-next-line
         s1_0.gpa desc 
-    offset
-        ? rows 
-    fetch
-        first ? rows only
   ```
 
   </TabItem>
@@ -104,7 +96,7 @@ Page<Student> students = studentRepository.findAll(studentGeneralSpecification, 
 DataManipulationModel dataManipulationModel = new DataManipulationModel();
 dataManipulationModel.setSortModel(desc("gpa"), asc("firstName"));
 GeneralSpecification<Student> studentGeneralSpecification = new GeneralSpecification<>(dataManipulationModel);
-Page<Student> students = studentRepository.findAll(studentGeneralSpecification, PageRequest.of(0, 10));
+studentRepository.findAll(studentGeneralSpecification);
   ```
 
   </TabItem>
@@ -132,10 +124,6 @@ Page<Student> students = studentRepository.findAll(studentGeneralSpecification, 
         s1_0.gpa desc,
     // highlight-next-line
         s1_0.first_name 
-    offset
-        ? rows 
-    fetch
-        first ? rows only
 
   ```
 
@@ -151,7 +139,7 @@ Page<Student> students = studentRepository.findAll(studentGeneralSpecification, 
 DataManipulationModel dataManipulationModel = new DataManipulationModel();
 dataManipulationModel.setSortModel(asc("gpa"), desc("firstName"));
 GeneralSpecification<Student> studentGeneralSpecification = new GeneralSpecification<>(dataManipulationModel);
-Page<Student> students = studentRepository.findAll(studentGeneralSpecification, PageRequest.of(0, 10));
+studentRepository.findAll(studentGeneralSpecification);
   ```
 
   </TabItem>
@@ -179,10 +167,6 @@ Page<Student> students = studentRepository.findAll(studentGeneralSpecification, 
         s1_0.gpa,
     // highlight-next-line
         s1_0.first_name desc 
-    offset
-        ? rows 
-    fetch
-        first ? rows only
   ```
 
   </TabItem>

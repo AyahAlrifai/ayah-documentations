@@ -17,7 +17,7 @@ DataManipulationModel dataManipulationModel = new DataManipulationModel();
 // highlight-next-line
 dataManipulationModel.setCriteria(condition("id", Operation.EQUAL, "a"));
 GeneralSpecification<Student> studentGeneralSpecification = new GeneralSpecification<>(dataManipulationModel);
-studentRepository.findAll(studentGeneralSpecification, PageRequest.of(0, 10));
+studentRepository.findAll(studentGeneralSpecification);
   ```
 
   </TabItem>
@@ -44,7 +44,7 @@ DataManipulationModel dataManipulationModel = new DataManipulationModel();
 // highlight-next-line
 dataManipulationModel.setCriteria(condition("enrollmentDate", Operation.EQUAL, "05-05-2022"));
 GeneralSpecification<Student> studentGeneralSpecification = new GeneralSpecification<>(dataManipulationModel);
-studentRepository.findAll(studentGeneralSpecification, PageRequest.of(0, 10));
+studentRepository.findAll(studentGeneralSpecification);
   ```
 
   </TabItem>
@@ -70,7 +70,7 @@ DataManipulationModel dataManipulationModel = new DataManipulationModel();
 // highlight-next-line
 dataManipulationModel.setCriteria(condition("id", Operation.EQUAL, 3.7));
 GeneralSpecification<Student> studentGeneralSpecification = new GeneralSpecification<>(dataManipulationModel);
-studentRepository.findAll(studentGeneralSpecification, PageRequest.of(0, 10));
+studentRepository.findAll(studentGeneralSpecification);
   ```
 
   </TabItem>
@@ -96,7 +96,7 @@ DataManipulationModel dataManipulationModel = new DataManipulationModel();
 // highlight-next-line
 dataManipulationModel.setCriteria(condition("gpa", Operation.IS_NULL, 3.7));
 GeneralSpecification<Student> studentGeneralSpecification = new GeneralSpecification<>(dataManipulationModel);
-studentRepository.findAll(studentGeneralSpecification, PageRequest.of(0, 10));
+studentRepository.findAll(studentGeneralSpecification);
   ```
 
   </TabItem>
@@ -122,7 +122,7 @@ DataManipulationModel dataManipulationModel = new DataManipulationModel();
 // highlight-next-line
 dataManipulationModel.setCriteria(condition("gpa", Operation.IS_NOT_NULL, 3.7));
 GeneralSpecification<Student> studentGeneralSpecification = new GeneralSpecification<>(dataManipulationModel);
-studentRepository.findAll(studentGeneralSpecification, PageRequest.of(0, 10));
+studentRepository.findAll(studentGeneralSpecification);
   ```
 
   </TabItem>
@@ -148,7 +148,7 @@ DataManipulationModel dataManipulationModel = new DataManipulationModel();
 // highlight-next-line
 dataManipulationModel.setCriteria(condition("gpa", Operation.IS_EMPTY_STRING, 3.7));
 GeneralSpecification<Student> studentGeneralSpecification = new GeneralSpecification<>(dataManipulationModel);
-studentRepository.findAll(studentGeneralSpecification, PageRequest.of(0, 10));
+studentRepository.findAll(studentGeneralSpecification);
   ```
 
   </TabItem>
@@ -175,7 +175,7 @@ DataManipulationModel dataManipulationModel = new DataManipulationModel();
 // highlight-next-line
 dataManipulationModel.setCriteria(condition("gpa", Operation.IS_NOT_EMPTY_STRING, 3.7));
 GeneralSpecification<Student> studentGeneralSpecification = new GeneralSpecification<>(dataManipulationModel);
-studentRepository.findAll(studentGeneralSpecification, PageRequest.of(0, 10));
+studentRepository.findAll(studentGeneralSpecification);
   ```
 
   </TabItem>
@@ -201,7 +201,7 @@ DataManipulationModel dataManipulationModel = new DataManipulationModel();
 // highlight-next-line
 dataManipulationModel.setCriteria(condition("GPA", Operation.GREATER_THAN, 3.7));
 GeneralSpecification<Student> studentGeneralSpecification = new GeneralSpecification<>(dataManipulationModel);
-studentRepository.findAll(studentGeneralSpecification, PageRequest.of(0, 10));
+studentRepository.findAll(studentGeneralSpecification);
   ```
 
   </TabItem>
@@ -227,7 +227,7 @@ DataManipulationModel dataManipulationModel = new DataManipulationModel();
 // highlight-next-line
 dataManipulationModel.setCriteria(condition("community.Teacher", Operation.LIKE, "%Ayah%"));
 GeneralSpecification<Student> studentGeneralSpecification = new GeneralSpecification<>(dataManipulationModel);
-studentRepository.findAll(studentGeneralSpecification, PageRequest.of(0, 10));
+studentRepository.findAll(studentGeneralSpecification);
   ```
 
   </TabItem>

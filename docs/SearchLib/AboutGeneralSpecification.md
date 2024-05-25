@@ -2,6 +2,9 @@
 sidebar_position: 1
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 # About General Specification Library
 
 ## Introduction
@@ -198,7 +201,7 @@ Pass the `GeneralSpecification` object to the `findAll` method of your Spring Da
 a `Pageable` object for pagination.
 
 ```java showLineNumbers
-Page<Student> page = studentRepository.findAll(studentGeneralSpecification, PageRequest.of(0, 10));
+List<Student> students = studentRepository.findAll(studentGeneralSpecification);
 ```
 
 :::note
@@ -213,9 +216,11 @@ Ensure that your `studentRepository` implements `JpaSpecificationExecutor`.
 Here's an example demonstrating the usage of `GeneralSpecification` in a service method to retrieve paginated results
 based on dynamic search and sort criteria.
 
-### Student.java anf Community.java
-```java showLineNumbers
-@Entity
+<Tabs>
+  <TabItem value="Student.java" label="Student.java">
+
+  ```java showLineNumbers 
+  @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -259,8 +264,13 @@ public class Student {
     @Column(name = "phone_number")
     private String phoneNumber;
 }
+  ```
 
-@Data
+  </TabItem>
+  <TabItem value="Community.java" label="Community.java">
+
+  ```java showLineNumbers 
+  @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -278,19 +288,23 @@ public class Community {
     @OneToMany(mappedBy = "community", fetch = FetchType.LAZY)
     private List<Student> students;
 }
-```
+  ```
 
-### StudentRepository.java
-```java showLineNumbers
-@Repository
+  </TabItem>
+  <TabItem value="StudentRepository.java" label="StudentRepository.java">
+
+  ```java showLineNumbers 
+  @Repository
 public interface StudentRepository extends JpaRepository<Student, Long>, JpaSpecificationExecutor<Student> {
 
 }
-```
+  ```
 
-### StudentService.java
-```java showLineNumbers
-import org.springframework.beans.factory.annotation.Autowired;
+  </TabItem>
+  <TabItem value="StudentService.java" label="StudentService.java">
+
+  ```java showLineNumbers 
+  import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.aya.search.entity.Student;
 import com.aya.search.model.DataManipulationModel;
@@ -330,96 +344,103 @@ public class StudentService {
         return studentRepository.findAll(studentGeneralSpecification, PageRequest.of(0, 10));
     }
 }
-```
+  ```
 
-### query.sql
-```sql
-    select s1_0.id,
-           s1_0.additional_info,
-           s1_0.address,
-           s1_0.community_id,
-           s1_0.date_of_birth,
-           s1_0.email,
-           s1_0.enrollment_date,
-           s1_0.first_name,
-           s1_0.gpa,
-           s1_0.gpa_letter,
-           s1_0.is_full_time,
-           s1_0.last_name,
-           s1_0.phone_number
-    from student s1_0
-    join community c1_0 on c1_0.id = s1_0.community_id
-    where s1_0.gpa > 3.5
-      and c1_0.class_name like '%9%' escape ''
-        and (
-            s1_0.additional_info is null
-                or s1_0.additional_info = ''
-            )
-    order by s1_0.community_id,
-             s1_0.first_name desc
-    offset 0 rows fetch
-        first 10 rows only
-```
-### result.json
-```json
+  </TabItem>
+  <TabItem value="query.sql" label="query.sql">
+
+  ```sql showLineNumbers 
+select s1_0.id,
+          s1_0.additional_info,
+          s1_0.address,
+          s1_0.community_id,
+          s1_0.date_of_birth,
+          s1_0.email,
+          s1_0.enrollment_date,
+          s1_0.first_name,
+          s1_0.gpa,
+          s1_0.gpa_letter,
+          s1_0.is_full_time,
+          s1_0.last_name,
+          s1_0.phone_number
+  from student s1_0
+  join community c1_0 on c1_0.id = s1_0.community_id
+  where s1_0.gpa > 3.5
+    and c1_0.class_name like '%9%' escape ''
+      and (
+          s1_0.additional_info is null
+              or s1_0.additional_info = ''
+          )
+  order by s1_0.community_id,
+            s1_0.first_name desc
+  offset 0 rows fetch
+      first 10 rows only
+  ```
+
+  </TabItem>
+  <TabItem value="result.json" label="result.json">
+
+  ```json showLineNumbers 
 [
-  {
-    "id": 11,
-    "gpa": 3.7,
-    "community": {
-      "id": 1,
-      "className": "9th A",
-      "teacher": "Mr. Smith",
-      "students": null
+    {
+      "id": 11,
+      "gpa": 3.7,
+      "community": {
+        "id": 1,
+        "className": "9th A",
+        "teacher": "Mr. Smith"
+      },
+      "dateOfBirth": [
+        2002,
+        2,
+        12
+      ],
+      "enrollmentDate": [
+        2022,
+        9,
+        1
+      ],
+      "additionalInfo": null,
+      "address": "",
+      "email": "olivia.rodriguez@example.com",
+      "firstName": "Olivia",
+      "gpaLetter": "A-",
+      "lastName": "Rodriguez",
+      "phoneNumber": "9876543210",
+      "fullTime": true
     },
-    "dateOfBirth": [
-      2002,
-      2,
-      12
-    ],
-    "enrollmentDate": [
-      2022,
-      9,
-      1
-    ],
-    "additionalInfo": null,
-    "address": "",
-    "email": "olivia.rodriguez@example.com",
-    "firstName": "Olivia",
-    "gpaLetter": "A-",
-    "lastName": "Rodriguez",
-    "phoneNumber": "9876543210",
-    "fullTime": true
-  },
-  {
-    "id": 17,
-    "gpa": 3.9,
-    "community": {
-      "id": 3,
-      "className": "9th B",
-      "teacher": "Ms. Brown",
-      "students": null
-    },
-    "dateOfBirth": [
-      2000,
-      7,
-      30
-    ],
-    "enrollmentDate": [
-      2023,
-      4,
-      20
-    ],
-    "additionalInfo": null,
-    "address": "369 Maple St, City",
-    "email": "charlotte.rivera@example.com",
-    "firstName": "Charlotte",
-    "gpaLetter": "A",
-    "lastName": "Rivera",
-    "phoneNumber": "9870123456",
-    "fullTime": true
-  }
+    {
+      "id": 17,
+      "gpa": 3.9,
+      "community": {
+        "id": 3,
+        "className": "9th B",
+        "teacher": "Ms. Brown"
+      },
+      "dateOfBirth": [
+        2000,
+        7,
+        30
+      ],
+      "enrollmentDate": [
+        2023,
+        4,
+        20
+      ],
+      "additionalInfo": null,
+      "address": "369 Maple St, City",
+      "email": "charlotte.rivera@example.com",
+      "firstName": "Charlotte",
+      "gpaLetter": "A",
+      "lastName": "Rivera",
+      "phoneNumber": "9870123456",
+      "fullTime": true
+    }
 ]
-```
+  ```
+
+  </TabItem>
+</Tabs>
+
 This revised documentation provides a clear understanding of how to use `GeneralSpecification` for dynamic queries in
 Spring Data JPA.

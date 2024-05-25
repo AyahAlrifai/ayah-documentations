@@ -17,7 +17,7 @@ DataManipulationModel dataManipulationModel = new DataManipulationModel();
 // highlight-next-line
 dataManipulationModel.setCriteria(condition("id", Operation.EQUAL, 1L));
 GeneralSpecification<Student> studentGeneralSpecification = new GeneralSpecification<>(dataManipulationModel);
-Page<Student> page = studentRepository.findAll(studentGeneralSpecification, PageRequest.of(0, 10));
+studentRepository.findAll(studentGeneralSpecification);
   ```
 
   </TabItem>
@@ -43,10 +43,6 @@ Page<Student> page = studentRepository.findAll(studentGeneralSpecification, Page
     where
    // highlight-next-line
         s1_0.id=? 
-    offset
-        ? rows 
-    fetch
-        first ? rows only
   ```
 
   </TabItem>
@@ -63,7 +59,7 @@ DataManipulationModel dataManipulationModel = new DataManipulationModel();
 // highlight-next-line
 dataManipulationModel.setCriteria(condition("gpa", Operation.EQUAL, 3.2));
 GeneralSpecification<Student> studentGeneralSpecification = new GeneralSpecification<>(dataManipulationModel);
-Page<Student> page = studentRepository.findAll(studentGeneralSpecification, PageRequest.of(0, 10));
+studentRepository.findAll(studentGeneralSpecification);
   ```
 
   </TabItem>
@@ -89,10 +85,6 @@ Page<Student> page = studentRepository.findAll(studentGeneralSpecification, Page
     where
    // highlight-next-line
         s1_0.gpa=? 
-    offset
-        ? rows 
-    fetch
-        first ? rows only
 
   ```
 
@@ -111,7 +103,7 @@ Page<Student> page = studentRepository.findAll(studentGeneralSpecification, Page
   // highlight-next-line
 dataManipulationModel.setCriteria(condition("community.id", Operation.EQUAL, 5L));
   GeneralSpecification<Student> studentGeneralSpecification = new GeneralSpecification<>(dataManipulationModel);
-  Page<Student> page = studentRepository.findAll(studentGeneralSpecification, PageRequest.of(0, 10));
+  studentRepository.findAll(studentGeneralSpecification);
   ```
 
   </TabItem>
@@ -137,10 +129,6 @@ select
     where
    // highlight-next-line
         s1_0.community_id=? 
-    offset
-        ? rows 
-    fetch
-        first ? rows only
   ```
 
   </TabItem>
@@ -157,7 +145,7 @@ select
   // highlight-next-line
 dataManipulationModel.setCriteria(condition("dateOfBirth", Operation.EQUAL, LocalDate.of(1997, 5, 7)));
   GeneralSpecification<Student> studentGeneralSpecification = new GeneralSpecification<>(dataManipulationModel);
-  Page<Student> page = studentRepository.findAll(studentGeneralSpecification, PageRequest.of(0, 10));
+  studentRepository.findAll(studentGeneralSpecification);
   ```
 
   </TabItem>
@@ -183,10 +171,6 @@ dataManipulationModel.setCriteria(condition("dateOfBirth", Operation.EQUAL, Loca
     where
    // highlight-next-line
         s1_0.date_of_birth=? 
-    offset
-        ? rows 
-    fetch
-        first ? rows only
   ```
 
   </TabItem>
@@ -201,7 +185,7 @@ dataManipulationModel.setCriteria(condition("dateOfBirth", Operation.EQUAL, Loca
 DataManipulationModel dataManipulationModel = new DataManipulationModel();
 dataManipulationModel.setCriteria(condition("students.id", Operation.IN, 1, 2));
 GeneralSpecification<Community> communityGeneralSpecification = new GeneralSpecification<>(dataManipulationModel);
-Page<Community> page = communityRepository.findAll(communityGeneralSpecification, PageRequest.of(0, 10));
+communityRepository.findAll(communityGeneralSpecification);
   ```
 
   </TabItem>
@@ -220,11 +204,6 @@ Page<Community> page = communityRepository.findAll(communityGeneralSpecification
     where
     // highlight-next-line
         s1_0.id in (?, ?) 
-    offset
-        ? rows 
-    fetch
-        first ? rows only
-
   ```
 
   </TabItem>
@@ -242,7 +221,7 @@ DataManipulationModel dataManipulationModel = new DataManipulationModel();
 // highlight-next-line
 dataManipulationModel.setCriteria(condition("gpaLetter", Operation.IN, "A", "A-", "A+"));
 GeneralSpecification<Student> studentGeneralSpecification = new GeneralSpecification<>(dataManipulationModel);
-Page<Student> page = studentRepository.findAll(studentGeneralSpecification, PageRequest.of(0, 10));
+studentRepository.findAll(studentGeneralSpecification);
   ```
 
   </TabItem>
@@ -268,10 +247,6 @@ Page<Student> page = studentRepository.findAll(studentGeneralSpecification, Page
     where
     // highlight-next-line
         s1_0.gpa_letter in (?, ?, ?) 
-    offset
-        ? rows 
-    fetch
-        first ? rows only
   ```
 
   </TabItem>
@@ -288,7 +263,7 @@ DataManipulationModel dataManipulationModel = new DataManipulationModel();
 // highlight-next-line
 dataManipulationModel.setCriteria(condition("gpaLetter", Operation.NOT_IN, "A", "A-", "A+"));
 GeneralSpecification<Student> studentGeneralSpecification = new GeneralSpecification<>(dataManipulationModel);
-Page<Student> page = studentRepository.findAll(studentGeneralSpecification, PageRequest.of(0, 10));    
+studentRepository.findAll(studentGeneralSpecification);    
   ```
 
   </TabItem>
@@ -314,10 +289,7 @@ Page<Student> page = studentRepository.findAll(studentGeneralSpecification, Page
     where
     // highlight-next-line
         s1_0.gpa_letter not in (?, ?, ?) 
-    offset
-        ? rows 
-    fetch
-        first ? rows only
+
   ```
 
   </TabItem>
@@ -333,7 +305,7 @@ Page<Student> page = studentRepository.findAll(studentGeneralSpecification, Page
 DataManipulationModel dataManipulationModel = new DataManipulationModel();
 dataManipulationModel.setCriteria(condition("id", Operation.IN));
 GeneralSpecification<Community> communityGeneralSpecification = new GeneralSpecification<>(dataManipulationModel);
-Page<Community> page = communityRepository.findAll(communityGeneralSpecification, PageRequest.of(0, 10));
+communityRepository.findAll(communityGeneralSpecification);
   ```
 
   </TabItem>
@@ -349,10 +321,6 @@ Page<Community> page = communityRepository.findAll(communityGeneralSpecification
     where
     // highlight-next-line
         1=0 
-    offset
-        ? rows 
-    fetch
-        first ? rows only
   ```
 
   </TabItem>
@@ -369,7 +337,7 @@ DataManipulationModel dataManipulationModel = new DataManipulationModel();
 // highlight-next-line
 dataManipulationModel.setCriteria(condition("firstName", Operation.LIKE, "%Aya%"));
 GeneralSpecification<Student> studentGeneralSpecification = new GeneralSpecification<>(dataManipulationModel);
-Page<Student> page = studentRepository.findAll(studentGeneralSpecification, PageRequest.of(0, 10));
+studentRepository.findAll(studentGeneralSpecification);
   ```
 
   </TabItem>
@@ -395,10 +363,6 @@ Page<Student> page = studentRepository.findAll(studentGeneralSpecification, Page
     where
     // highlight-next-line
         s1_0.first_name like ? escape '' 
-    offset
-        ? rows 
-    fetch
-        first ? rows only
   ```
 
   </TabItem>
@@ -415,7 +379,7 @@ DataManipulationModel dataManipulationModel = new DataManipulationModel();
 // highlight-next-line
 dataManipulationModel.setCriteria(condition("firstName", Operation.NOT_LIKE, "%Aya%"));
 GeneralSpecification<Student> studentGeneralSpecification = new GeneralSpecification<>(dataManipulationModel);
-Page<Student> page = studentRepository.findAll(studentGeneralSpecification, PageRequest.of(0, 10));
+studentRepository.findAll(studentGeneralSpecification);
   ```
 
   </TabItem>
@@ -441,10 +405,6 @@ Page<Student> page = studentRepository.findAll(studentGeneralSpecification, Page
     where
    // highlight-next-line
         s1_0.first_name not like ? escape ''
-    offset
-        ? rows 
-    fetch
-        first ? rows only
   ```
 
   </TabItem>
@@ -461,7 +421,7 @@ DataManipulationModel dataManipulationModel = new DataManipulationModel();
 // highlight-next-line
 dataManipulationModel.setCriteria(condition("students.lastName", Operation.LIKE, "Ri%"));
 GeneralSpecification<Community> communityGeneralSpecification = new GeneralSpecification<>(dataManipulationModel);
-Page<Community> page = communityRepository.findAll(communityGeneralSpecification, PageRequest.of(0, 10));
+communityRepository.findAll(communityGeneralSpecification);
   ```
 
   </TabItem>
@@ -480,10 +440,6 @@ Page<Community> page = communityRepository.findAll(communityGeneralSpecification
     where
     // highlight-next-line
         s1_0.last_name like ? escape '' 
-    offset
-        ? rows 
-    fetch
-        first ? rows only
   ```
 
   </TabItem>
@@ -499,7 +455,7 @@ DataManipulationModel dataManipulationModel = new DataManipulationModel();
 // highlight-next-line
 dataManipulationModel.setCriteria(condition("gpa", Operation.GREATER_THAN, 3.2));
 GeneralSpecification<Student> studentGeneralSpecification = new GeneralSpecification<>(dataManipulationModel);
-Page<Student> page = studentRepository.findAll(studentGeneralSpecification, PageRequest.of(0, 10));
+studentRepository.findAll(studentGeneralSpecification);
 
   ```
 
@@ -526,10 +482,6 @@ Page<Student> page = studentRepository.findAll(studentGeneralSpecification, Page
     where
     // highlight-next-line
         s1_0.gpa>? 
-    offset
-        ? rows 
-    fetch
-        first ? rows only
   ```
 
   </TabItem>
@@ -546,7 +498,7 @@ DataManipulationModel dataManipulationModel = new DataManipulationModel();
 // highlight-next-line
 dataManipulationModel.setCriteria(condition("gpa", Operation.GREATER_THAN_EQUAL, 3.2));
 GeneralSpecification<Student> studentGeneralSpecification = new GeneralSpecification<>(dataManipulationModel);
-Page<Student> page = studentRepository.findAll(studentGeneralSpecification, PageRequest.of(0, 10));
+studentRepository.findAll(studentGeneralSpecification);
   ```
 
   </TabItem>
@@ -572,10 +524,6 @@ Page<Student> page = studentRepository.findAll(studentGeneralSpecification, Page
     where
     // highlight-next-line
         s1_0.gpa>=? 
-    offset
-        ? rows 
-    fetch
-        first ? rows only
   ```
 
   </TabItem>
@@ -591,7 +539,7 @@ DataManipulationModel dataManipulationModel = new DataManipulationModel();
 // highlight-next-line
 dataManipulationModel.setCriteria(condition("gpa", Operation.LESS_THAN, 3.2));
 GeneralSpecification<Student> studentGeneralSpecification = new GeneralSpecification<>(dataManipulationModel);
-Page<Student> page = studentRepository.findAll(studentGeneralSpecification, PageRequest.of(0, 10));
+studentRepository.findAll(studentGeneralSpecification);
   ```
 
   </TabItem>
@@ -617,10 +565,6 @@ Page<Student> page = studentRepository.findAll(studentGeneralSpecification, Page
     where
     // highlight-next-line
         s1_0.gpa<? 
-    offset
-        ? rows 
-    fetch
-        first ? rows only
   ```
 
   </TabItem>
@@ -636,7 +580,7 @@ DataManipulationModel dataManipulationModel = new DataManipulationModel();
 // highlight-next-line
 dataManipulationModel.setCriteria(condition("gpa", Operation.LESS_THAN_EQUAL, 3.2));
 GeneralSpecification<Student> studentGeneralSpecification = new GeneralSpecification<>(dataManipulationModel);
-Page<Student> page = studentRepository.findAll(studentGeneralSpecification, PageRequest.of(0, 10));
+studentRepository.findAll(studentGeneralSpecification);
   ```
 
   </TabItem>
@@ -662,10 +606,6 @@ Page<Student> page = studentRepository.findAll(studentGeneralSpecification, Page
     where
     // highlight-next-line
         s1_0.gpa<=? 
-    offset
-        ? rows 
-    fetch
-        first ? rows only
   ```
 
   </TabItem>
@@ -682,7 +622,7 @@ DataManipulationModel dataManipulationModel = new DataManipulationModel();
 // highlight-next-line
 dataManipulationModel.setCriteria(condition("dateOfBirth", Operation.GREATER_THAN, LocalDate.of(1997, 5, 7)));
 GeneralSpecification<Student> studentGeneralSpecification = new GeneralSpecification<>(dataManipulationModel);
-Page<Student> page = studentRepository.findAll(studentGeneralSpecification, PageRequest.of(0, 10));
+studentRepository.findAll(studentGeneralSpecification);
   ```
 
   </TabItem>
@@ -708,10 +648,6 @@ Page<Student> page = studentRepository.findAll(studentGeneralSpecification, Page
     where
     // highlight-next-line
         s1_0.date_of_birth>? 
-    offset
-        ? rows 
-    fetch
-        first ? rows only
   ```
 
   </TabItem>
@@ -727,7 +663,7 @@ DataManipulationModel dataManipulationModel = new DataManipulationModel();
 // highlight-next-line
 dataManipulationModel.setCriteria(condition("address", Operation.IS_EMPTY_STRING));
 GeneralSpecification<Student> studentGeneralSpecification = new GeneralSpecification<>(dataManipulationModel);
-Page<Student> page = studentRepository.findAll(studentGeneralSpecification, PageRequest.of(0, 10));
+studentRepository.findAll(studentGeneralSpecification);
   ```
 
   </TabItem>
@@ -753,10 +689,6 @@ Page<Student> page = studentRepository.findAll(studentGeneralSpecification, Page
     where
     // highlight-next-line
         s1_0.address=? 
-    offset
-        ? rows 
-    fetch
-        first ? rows only
   ```
 
   </TabItem>
@@ -772,7 +704,7 @@ DataManipulationModel dataManipulationModel = new DataManipulationModel();
 // highlight-next-line
 dataManipulationModel.setCriteria(condition("address", Operation.IS_NOT_EMPTY_STRING));
 GeneralSpecification<Student> studentGeneralSpecification = new GeneralSpecification<>(dataManipulationModel);
-Page<Student> page = studentRepository.findAll(studentGeneralSpecification, PageRequest.of(0, 10));
+studentRepository.findAll(studentGeneralSpecification);
   ```
 
   </TabItem>
@@ -798,10 +730,6 @@ Page<Student> page = studentRepository.findAll(studentGeneralSpecification, Page
     where
     // highlight-next-line
         s1_0.address<>? 
-    offset
-        ? rows 
-    fetch
-        first ? rows only
   ```
 
   </TabItem>
@@ -816,7 +744,7 @@ Page<Student> page = studentRepository.findAll(studentGeneralSpecification, Page
 DataManipulationModel dataManipulationModel = new DataManipulationModel();
 dataManipulationModel.setCriteria(condition("community", Operation.IS_NULL));
 GeneralSpecification<Student> studentGeneralSpecification = new GeneralSpecification<>(dataManipulationModel);
-Page<Student> page = studentRepository.findAll(studentGeneralSpecification, PageRequest.of(0, 10));
+studentRepository.findAll(studentGeneralSpecification);
   ```
 
   </TabItem>
@@ -842,11 +770,6 @@ Page<Student> page = studentRepository.findAll(studentGeneralSpecification, Page
     where
     // highlight-next-line
         s1_0.community_id is null 
-    offset
-        ? rows 
-    fetch
-        first ? rows only
-
   ```
 
   </TabItem>
@@ -863,7 +786,7 @@ DataManipulationModel dataManipulationModel = new DataManipulationModel();
 // highlight-next-line
 dataManipulationModel.setCriteria(condition("isFullTime", Operation.IS_TRUE));
 GeneralSpecification<Student> studentGeneralSpecification = new GeneralSpecification<>(dataManipulationModel);
-Page<Student> page = studentRepository.findAll(studentGeneralSpecification, PageRequest.of(0, 10));
+studentRepository.findAll(studentGeneralSpecification);
   ```
 
   </TabItem>
@@ -889,10 +812,6 @@ Page<Student> page = studentRepository.findAll(studentGeneralSpecification, Page
     where
     // highlight-next-line
         s1_0.is_full_time=? 
-    offset
-        ? rows 
-    fetch
-        first ? rows only
   ```
 
   </TabItem>
@@ -908,7 +827,7 @@ DataManipulationModel dataManipulationModel = new DataManipulationModel();
 // highlight-next-line
 dataManipulationModel.setCriteria(condition("isFullTime", Operation.IS_FALSE));
 GeneralSpecification<Student> studentGeneralSpecification = new GeneralSpecification<>(dataManipulationModel);
-Page<Student> page = studentRepository.findAll(studentGeneralSpecification, PageRequest.of(0, 10));
+studentRepository.findAll(studentGeneralSpecification);
   ```
 
   </TabItem>
@@ -934,10 +853,6 @@ Page<Student> page = studentRepository.findAll(studentGeneralSpecification, Page
     where
     // highlight-next-line
         s1_0.is_full_time=? 
-    offset
-        ? rows 
-    fetch
-        first ? rows only
   ```
 
   </TabItem>
@@ -953,7 +868,7 @@ DataManipulationModel dataManipulationModel = new DataManipulationModel();
 // highlight-next-line
 dataManipulationModel.setCriteria(condition("gpa", Operation.BETWEEN, 3.2, 3.9));
 GeneralSpecification<Student> studentGeneralSpecification = new GeneralSpecification<>(dataManipulationModel);
-Page<Student> page = studentRepository.findAll(studentGeneralSpecification, PageRequest.of(0, 10));
+studentRepository.findAll(studentGeneralSpecification);
   ```
 
   </TabItem>
@@ -979,10 +894,6 @@ Page<Student> page = studentRepository.findAll(studentGeneralSpecification, Page
     where
     // highlight-next-line
         s1_0.gpa between ? and ? 
-    offset
-        ? rows 
-    fetch
-        first ? rows only
   ```
 
   </TabItem>
@@ -1000,7 +911,7 @@ dataManipulationModel.setCriteria(condition("enrollmentDate", Operation.BETWEEN,
 // highlight-next-line
         LocalDate.of(2022, 7, 1)));
 GeneralSpecification<Student> studentGeneralSpecification = new GeneralSpecification<>(dataManipulationModel);
-Page<Student> page = studentRepository.findAll(studentGeneralSpecification, PageRequest.of(0, 10));
+studentRepository.findAll(studentGeneralSpecification);
   ```
 
   </TabItem>
@@ -1026,10 +937,6 @@ Page<Student> page = studentRepository.findAll(studentGeneralSpecification, Page
     where
     // highlight-next-line
         s1_0.enrollment_date between ? and ? 
-    offset
-        ? rows 
-    fetch
-        first ? rows only
   ```
 
   </TabItem>
