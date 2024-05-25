@@ -62,7 +62,7 @@ function Feature({ Svg, title, description }) {
 
 export default function HomepageFeatures() {
   return (
-    <div className={styles.container}>
+    <div className={styles.cubeContainer}>
       <div className={styles.cube}>
         <div className={styles.face + ' ' + styles.top}></div>
         <div className={styles.face + ' ' + styles.bottom}></div>

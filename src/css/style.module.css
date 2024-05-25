@@ -419,7 +419,7 @@ body {
   padding: 5px;
 }
 
-.container {
+.cubeContainer {
   width: 90vw;
   height: 90vh;
   display: flex;
