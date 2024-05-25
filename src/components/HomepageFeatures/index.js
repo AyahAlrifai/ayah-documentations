@@ -64,8 +64,8 @@ export default function HomepageFeatures() {
   return (
     <div className={styles.cubeContainer}>
       <div className={styles.cube}>
-        <div className={styles.face + ' ' + styles.top}></div>
-        <div className={styles.face + ' ' + styles.bottom}></div>
+        {/* <div className={styles.face + ' ' + styles.top}></div>
+        <div className={styles.face + ' ' + styles.bottom}></div> */}
         <div className={styles.face + ' ' + styles.left}><Feature key={0} {...FeatureList[0]} /></div>
         <div className={styles.face + ' ' + styles.right}><Feature key={1} {...FeatureList[1]} /></div>
         <div className={styles.face + ' ' + styles.front}><Feature key={2} {...FeatureList[2]} /></div>

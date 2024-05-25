@@ -47,7 +47,6 @@ const config = {
       },
       navbar: {
         style:"primary", // same as primary color
-        title: 'Home', // first page allways read pages/index.js
         logo: {
           alt: 'My Site Logo',
           src: 'img/ayah.png',
