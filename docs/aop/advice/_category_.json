@@ -1,0 +1,8 @@
+{
+  "label": "Advice Types",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "In Aspect-Oriented Programming (AOP), advice is the code that is executed at specific join points (points during the execution of the program). Advice allows you to add additional behavior to your application, such as logging, security checks, or transactions, without modifying the actual business logic code."
+  }
+}

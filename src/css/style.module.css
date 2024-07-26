@@ -207,22 +207,26 @@ body {
   }
 
   to {
-    transform: rotate3d(0, 1, 0.1, 360deg);
+    transform: rotate3d(0.1, 1, 0.1, 360deg);
   }
 }
 
 .cube {
   position: relative;
-  width: 30em;
-  height: 30em;
+  width: 24em;
+  height: 24em;
   transform-style: preserve-3d;
   animation: turn 15s linear infinite;
 }
 
+.cube:hover {
+  animation-play-state: paused;
+}
+
 .face {
   position: relative;
-  width: 28em;
-  height: 28em;
+  width: 22em;
+  height: 22em;
   position: absolute;
   opacity: 0.95;
   display: flex;
@@ -235,32 +239,34 @@ body {
 }
 
 .front {
-  transform: translateZ(15em);
+  transform: translateZ(12em);
   background-image: linear-gradient(45deg, var(--color--pink), var(--ifm-color-primary), var(--color--yellow), var(--color--green));
 }
 
 .back {
-  transform: translateZ(-15em) rotateY(180deg);
+  transform: translateZ(-12em) rotateY(180deg);
   background-image: linear-gradient(45deg, var(--color--pink), var(--ifm-color-primary), var(--color--yellow), var(--color--green));
 }
 
 .left {
-  transform: translateX(-15em) rotateY(-90deg);
+  transform: translateX(-12em) rotateY(-90deg);
   background-image: linear-gradient(135deg, var(--color--green), var(--color--yellow), var(--ifm-color-primary), var(--color--pink));
 }
 
 .right {
-  transform: translateX(15em) rotateY(90deg);
+  transform: translateX(12em) rotateY(90deg);
   background-image: linear-gradient(135deg, var(--color--green), var(--color--yellow), var(--ifm-color-primary), var(--color--pink));
 }
 
-/* .top {
-  transform: translateY(-15em) rotateX(90deg);
+.top {
+  transform: translateY(-12em) rotateX(90deg);
+  background-image: linear-gradient(135deg, var(--color--pink), var(--color--green), var(--color--yellow), var(--ifm-color-primary));
 }
 
 .bottom {
-  transform: translateY(18em) rotateX(-90deg);
-} */
+  transform: translateY(12em) rotateX(-90deg);
+  background-image: linear-gradient(135deg, var(--color--green), var(--color--yellow), var(--ifm-color-primary), var(--color--pink));
+}
 
 /************************** scroll bar *********************************/
 ::-webkit-scrollbar {

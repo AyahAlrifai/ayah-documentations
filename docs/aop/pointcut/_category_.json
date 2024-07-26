@@ -1,0 +1,8 @@
+{
+  "label": "Pointcut Types",
+  "position": 2,
+  "link": {
+    "type": "generated-index",
+    "description": "In Aspect-Oriented Programming (AOP), a pointcut is an expression that matches join points. Pointcuts help you specify where advice should be applied in your program. Here are the common "
+  }
+}
