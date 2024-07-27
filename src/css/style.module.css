@@ -111,6 +111,7 @@ body {
   border-radius: 1.6rem;
   border: none;
   cursor: pointer;
+  margin: 2px;
 }
 
 .btn:hover {
@@ -176,23 +177,21 @@ body {
 
 /******************************** TextArena *********************************/
 .jsonFormatter {
-  width: 99vw;
-  height: 90vh;
+  width: 95vw;
+  height: 86vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
+  margin-top: 4vh;
+  margin-left: 2vw;
+  margin-right: 2vw;
 }
 
 .textarea {
   width: 80%;
   height: 80%;
   padding: 10px;
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 14px;
-  border: 1px solid var(--ifm-color-gray);
-  border-radius: 6px;
   background-color: var(--ifm-color-gray);
 }
 

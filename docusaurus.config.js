@@ -65,7 +65,7 @@ const config = {
           },{
             to: 'json-formatter',
             position: 'left',
-            label: 'Jsom Foramtter',
+            label: 'JSON Foramtter',
           }
         ],
       },
