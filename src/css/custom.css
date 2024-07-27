@@ -25,8 +25,8 @@
   --ifm-tabs-color-active: var(--color--yellow);
   --ifm-tabs-color-active-border: var(--color--yellow);
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
-  --ifm-color-gray: #242526;
-
+  --ifm-color-gray: #d9dadb;
+  --toastify-color-light: #eef1f5;
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
@@ -50,7 +50,7 @@
   --ifm-tabs-color-active-border: var(--color--yellow);
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
   --ifm-color-gray: #242526;
-
+  --toastify-color-light: #242526;
 }
 
 [data-theme='dark'] .hero--primary {
@@ -71,8 +71,8 @@
 }
 
 [data-theme='light'] .footer--dark {
-  --ifm-footer-background-color: #242526;
-  --ifm-footer-color: #f1f4f9;
-  --ifm-footer-link-color: #eaedf1;
-  --ifm-footer-title-color: rgb(253 253 254);
+  --ifm-footer-background-color: #d9dadb;
+  --ifm-footer-color: #171717;
+  --ifm-footer-link-color: #171717;
+  --ifm-footer-title-color: rgb(22, 22, 22);
 }
