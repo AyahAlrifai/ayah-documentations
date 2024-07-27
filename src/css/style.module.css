@@ -207,7 +207,7 @@ body {
   }
 
   to {
-    transform: rotate3d(0.1, 1, 0.1, 360deg);
+    transform: rotate3d(0, 1, 0.1, 360deg);
   }
 }
 
