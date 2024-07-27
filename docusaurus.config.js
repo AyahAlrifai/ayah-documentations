@@ -62,6 +62,10 @@ const config = {
             to: 'create-new-document',
             position: 'left',
             label: 'Review Markdown',
+          },{
+            to: 'json-formatter',
+            position: 'left',
+            label: 'Jsom Foramtter',
           }
         ],
       },

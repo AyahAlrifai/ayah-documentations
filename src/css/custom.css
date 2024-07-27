@@ -25,6 +25,8 @@
   --ifm-tabs-color-active: var(--color--yellow);
   --ifm-tabs-color-active-border: var(--color--yellow);
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+  --ifm-color-gray: #242526;
+
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
@@ -47,6 +49,8 @@
   --ifm-tabs-color-active: var(--color--yellow);
   --ifm-tabs-color-active-border: var(--color--yellow);
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+  --ifm-color-gray: #242526;
+
 }
 
 [data-theme='dark'] .hero--primary {
