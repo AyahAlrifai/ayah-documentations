@@ -8,7 +8,7 @@ Spring Expression Language (SpEL) is a powerful feature in the Spring Framework 
 
 ### 1. **Basic Syntax:**
 
-SpEL expressions are enclosed in `${}` when used within annotations like `@Value`. The general format for SpEL is:
+SpEL expressions are enclosed in `#{}` when used within annotations like `@Value`. The general format for SpEL is:
 
 ```java
 @Value("#{expression}")

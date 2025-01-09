@@ -31,6 +31,7 @@
     "@uiw/react-monacoeditor": "^3.5.7",
     "clsx": "^1.2.1",
     "docusaurus-pdf": "^1.2.0",
+    "docusurus-demo": "file:",
     "firebase": "^9.17.1",
     "prism-react-renderer": "^1.3.5",
     "react": "^17.0.2",
