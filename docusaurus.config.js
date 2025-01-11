@@ -100,7 +100,7 @@ const config = {
         crossorigin:'anonymous'
       },
     ],
-    themes: ['@docusaurus/theme-live-codeblock', '@docusaurus/theme-mermaid'],
+    themes: ['@docusaurus/theme-live-codeblock'],
 };
 
 module.exports = config;
