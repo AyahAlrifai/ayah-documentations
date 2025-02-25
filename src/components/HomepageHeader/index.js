@@ -17,7 +17,7 @@ export default function HomepageHeader(prop) {
           <Link
             className={styles.btn + " " + styles.colorBtn}
             to="/docs/multiExecPro">
-            start tutorial
+            Begin Your Journey
           </Link>
         </div>
       </div>
