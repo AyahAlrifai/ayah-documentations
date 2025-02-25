@@ -2,55 +2,41 @@
 sidebar_position: 1
 ---
 
-import ReactPlayer from 'react-player';
-import vedio1 from './vedio/1.mp4';
-import vedio2 from './vedio/2.mp4';
-import vedio3 from './vedio/3.mp4';
-import vedio4 from './vedio/4.mp4';
-import vedio5 from './vedio/5.mp4';
-import vedio6 from './vedio/6.mp4';
-import vedio7 from './vedio/7.mp4';
-import vedio8 from './vedio/8.mp4';
-import vedio9 from './vedio/9.mp4';
-import vedio10 from './vedio/10.mp4';
-import vedio11 from './vedio/11.mp4';
-import vedio12 from './vedio/12.mp4';
-
-
 # Camunda
 
 ## User Task
-<ReactPlayer controls height="100%" url={vedio1} width="100%" />
+<iframe width="100%" height="400" src="https://www.youtube.com/embed/zIf4uXQVKxs?si=siw_AVIgltgZp2Tz" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 
 ## Service Task
-<ReactPlayer controls height="100%" url={vedio2} width="100%" />
+<iframe width="100%" height="400" src="https://www.youtube.com/embed/rmSgiwyNf-k?si=ZJOVn-Jqk2qlp2H5" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## Script Task, Send Task, and Manual Task
-<ReactPlayer controls height="100%" url={vedio3} width="100%" />
+<iframe width="100%" height="400" src="https://www.youtube.com/embed/X99JdtXA_Ho?si=P-Gy4p0S0Jb4TnwO" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## Business Rule Task
-<ReactPlayer controls height="100%" url={vedio4} width="100%" />
+<iframe width="100%" height="400" src="https://www.youtube.com/embed/VuV1qAeJeYw?si=AAtJydypbneKzr_S" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## Exclusive Gateway
-<ReactPlayer controls height="100%" url={vedio5} width="100%" />
+<iframe width="100%" height="400" src="https://www.youtube.com/embed/mha8jZjBFKs?si=-BOqFYUakGkjJx36" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## Inclusive Gateway
-<ReactPlayer controls height="100%" url={vedio6} width="100%" />
+<iframe width="100%" height="400" src="https://www.youtube.com/embed/ItNgBiKI9RY?si=tSVFMz4pCCGHdvV-" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## Parallel Gateway
-<ReactPlayer controls height="100%" url={vedio7} width="100%" />
+<iframe width="100%" height="400" src="https://www.youtube.com/embed/vHnbRzfbHLA?si=IgYgtq9vrj1Ou3T-" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## Intermediate Throw Event, and Message Event
-<ReactPlayer controls height="100%" url={vedio8} width="100%" />
+<iframe width="100%" height="400" src="https://www.youtube.com/embed/uW_LFBKH5Pg?si=w2pDSnbaHAzzWP2F" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## Timer Event
-<ReactPlayer controls height="100%" url={vedio9} width="100%" />
+<iframe width="100%" height="400" src="https://www.youtube.com/embed/pTkPuG2ju5k?si=_tO139f5XIJUGzfp" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## Conditional Event
-<ReactPlayer controls height="100%" url={vedio10} width="100%" />
+<iframe width="100%" height="400" src="https://www.youtube.com/embed/iTiOhhYuWuA?si=BVlrv9gsP_MveDi5" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## Error Event
-<ReactPlayer controls height="100%" url={vedio11} width="100%" />
+<iframe width="100%" height="400" src="https://www.youtube.com/embed/iTiOhhYuWuA?si=BVlrv9gsP_MveDi5" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## Signal Event
-<ReactPlayer controls height="100%" url={vedio12} width="100%" />
+<iframe width="100%" height="400" src="https://www.youtube.com/embed/iTiOhhYuWuA?si=BVlrv9gsP_MveDi5" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
