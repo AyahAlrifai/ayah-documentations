@@ -8,26 +8,27 @@ class ApiDocumentationGenerator extends Component {
     super(props);
     this.state = {
       apiInput: "@PostMapping(Paths.OnboardingProcess.ROOT)\n" +
-                "@PreAuthorize(\"hasAnyRole('COB_ADD_CUSTOMER_ONBOARDING','CUSTOMER_ONBOARDING_ADMIN','SUPER_ADMIN')\")\n" +
-                "@Audit(actionType = \"COB_ADD_CUSTOMER_ONBOARDING\", objectName = \"CUSTOMER_ONBOARDING\",\n" +
-                "\t\tdocumentIdJsonPath = \"data.idNumber\", httpMethod = Request.HttpMethod.POST)\n" +
-                "@Operation(summary = \"start OnBoarding Application\", description = \"start OnBoarding Application.\")\n" +
-                "@ApiResponses(value = {\n" +
-                "\t\t@ApiResponse(responseCode = \"200\", content = {\n" +
-                "\t\t\t\t@Content(mediaType = \"application/json\", schema = @Schema(implementation = OnBoarding.class))}),\n" +
-                "\t\t@ApiResponse(responseCode = \"400\", content = {\n" +
-                "\t\t\t\t@Content(mediaType = \"application/json\", schema = @Schema(implementation = ResponseModel.class))})})\n" +
-                "public ResponseEntity<ResponseModel<OnBoardingModel>> startOnBoardingApplication(\n" +
-                "\t\t@RequestBody @Valid final CreateOnBoardingModel createOnBoardingModel, \n" +
-                "\t\t@PathVariable final Long referenceId, \n" +
-                "\t\t@PathVariable String test,\n" +
-                "\t\t@RequestParam(required = false, defaultValue = \"20\") int pageSize,\n" +
-                "\t\t@RequestParam(required = false, defaultValue = \"0\") final int pageNumber,\n" +
-                "\t\t@RequestParam(defaultValue = \"desc\") final String sortOrder,\n" +
-                "\t\t@RequestParam(required = false) final String searchKey) {\n" +
-                "\n" +
-                "\treturn ResponseEntity.ok().body(this.onboardingService.startOnBoardingApplication(createOnBoardingModel));\n" +
-                "}",
+        "@PreAuthorize(\"hasAnyRole('COB_ADD_CUSTOMER_ONBOARDING','CUSTOMER_ONBOARDING_ADMIN','SUPER_ADMIN')\")\n" +
+        "@Audit(actionType = \"COB_ADD_CUSTOMER_ONBOARDING\", objectName = \"CUSTOMER_ONBOARDING\",\n" +
+        "\t\tdocumentIdJsonPath = \"data.idNumber\", httpMethod = Request.HttpMethod.POST)\n" +
+        "@Operation(summary = \"start OnBoarding Application\", description = \"start OnBoarding Application.\")\n" +
+        "@ApiResponses(value = {\n" +
+        "\t\t@ApiResponse(responseCode = \"200\", content = {\n" +
+        "\t\t\t\t@Content(mediaType = \"application/json\", schema = @Schema(implementation = OnBoarding.class))}),\n" +
+        "\t\t@ApiResponse(responseCode = \"400\", content = {\n" +
+        "\t\t\t\t@Content(mediaType = \"application/json\", schema = @Schema(implementation = ResponseModel.class))})})\n" +
+        "public ResponseEntity<ResponseModel<OnBoardingModel>> startOnBoardingApplication(\n" +
+        "\t\t@RequestBody @Valid final CreateOnBoardingModel createOnBoardingModel, \n" +
+        "\t\t@PathVariable() @Mask final Long referenceId, \n" +
+        "\t\t@PathVariable(value = sss) String test,\n" +
+        "\t\t@RequestParam(required = false, defaultValue = \"20\") @Valid int pageSize,\n" +
+        "\t\t@RequestParam(required = false, defaultValue = \"0\") final final final int pageNumber,\n" +
+        "\t\t@RequestParam(defaultValue = \"desc\") final String sortOrder,\n" +
+        "\t\t@RequestParam(required = false) final String searchKey, \n" +
+        "\t\t@PathVariable final String searchKey) {\n" +
+        "\n" +
+        "\treturn ResponseEntity.ok().body(this.onboardingService.startOnBoardingApplication(createOnBoardingModel));\n" +
+        "}",
       apiDoc: '',
       auditInfo: {},
       pathVariables: [],
@@ -43,7 +44,6 @@ class ApiDocumentationGenerator extends Component {
 
   generateDocumentation = () => {
     const { apiInput } = this.state;
-    console.log(apiInput);
 
     const auditInfo = this.extractAuditInfo(apiInput);
     const pathVariables = this.extractPathVariables(apiInput);
@@ -75,37 +75,49 @@ class ApiDocumentationGenerator extends Component {
     return auditInfo;
   }
 
-
   extractPathVariables(input) {
+
     const pathVariables = [];
 
+    const regex = /@PathVariable(?:\s*(\(.*\)))?(?:\s+[\w\@]+)*/g;
 
-    const regex = /@PathVariable\s+(final\s+)?(\w+)\s+(\w+)/g;
     let match;
-
     while ((match = regex.exec(input)) !== null) {
-      const type = match[2].toLowerCase();
-      const variable = match[3];
 
+      console.log(match);
+      
+
+      const words = match[0].split(/\s+/);
+      
+      const type = words[words.length - 2];
+      const variable = words[words.length - 1];
+  
       pathVariables.push({ type, variable });
     }
-
+  
     return pathVariables;
   }
+
 
   extractQueryParams(input) {
     const queryParams = [];
 
-    const regex = /@RequestParam\s*(\(.*?\))?\s*(final\s+)?(\w+)\s+(\w+)/g;
+    const regex = /@RequestParam\s*(\(.*\))?(?:\s+[\w\@]+)*/g;
+
     let match;
 
     while ((match = regex.exec(input)) !== null) {
+
+      console.log(match);
+      
+      const words = match[0].split(/\s+/);
+
       const annotationContent = match[1] || "";
-      const type = match[3] ? match[3].toLowerCase() : "unknown";
-      const param = match[4];
+      const type = words[words.length - 2];
+      const param = words[words.length - 1];
 
       const requiredMatch = annotationContent.match(/required\s*=\s*(\w+)/);
-            
+
       const required = requiredMatch ? requiredMatch[1] ? requiredMatch[1] : "true" : "true";
 
       const defaultMatch = annotationContent.match(/defaultValue\s*=\s*"([^"]+)"/);
@@ -118,14 +130,12 @@ class ApiDocumentationGenerator extends Component {
         defaultValue: defaultValue,
       });
     }
-    
+
     return queryParams;
   }
 
 
   parseApiInput(input, auditInfo, pathVariables, queryParams) {
-
-    console.log({input, auditInfo, pathVariables, queryParams});
 
     const methodColors = {
       GET: 'green',
@@ -135,14 +145,11 @@ class ApiDocumentationGenerator extends Component {
       PATCH: 'purple'
     };
 
-
-    const summaryMatch = input.match(/@Operation\(summary = "(.*?)"/);
-    const descriptionMatch = input.match(/@Operation\(description = "(.*?)"/);
+    const summaryMatch = input.match(/@Operation\(.*summary = "(.*?)"/);
+    const descriptionMatch = input.match(/@Operation\(.*description = "(.*?)"/);
     const rolesMatch = input.match(/@PreAuthorize\("hasAnyRole\((.*?)\)"/);
     const methodMatch = input.match(/@(Post|Get|Put|Delete|Patch)Mapping\((.*?)\)/);
     const pathMatch = input.match(/@(?:Post|Get|Put|Delete|Patch)Mapping\(([^)]+)\)/);
-    console.log({pathMatch});
-    
 
     const summary = summaryMatch ? summaryMatch[1] : 'Write API summary here';
 
@@ -157,10 +164,10 @@ class ApiDocumentationGenerator extends Component {
 
     return (
       <div ref={this.apiDocRef}>
-        <h3 className={styles.blueText}>API NAME</h3>
+        <h3 className={styles.blueText}>SUMMARY</h3>
         <p>{summary}</p>
 
-        <h3 className={styles.blueText}>SUMMARY</h3>
+        <h3 className={styles.blueText}>DESCRIPTION</h3>
         <p>{description}</p>
 
         <h3 className={styles.blueText}>ROLE(S) REQUIRED</h3>
@@ -201,7 +208,7 @@ class ApiDocumentationGenerator extends Component {
               <td>application/json</td>
             </tr>
             <tr>
-            <td colSpan="3" style={{textAlign: "center"}}>Add any othere headers</td>
+              <td colSpan="3" style={{ textAlign: "center" }}>Add any othere headers</td>
             </tr>
           </tbody>
         </table>
@@ -305,7 +312,7 @@ class ApiDocumentationGenerator extends Component {
               <td>Invalid or missing authentication token</td>
             </tr>
             <tr>
-            <td colSpan="4" style={{textAlign: "center"}}>Add any othere error responses</td>
+              <td colSpan="4" style={{ textAlign: "center" }}>Add any othere error responses</td>
             </tr>
           </tbody>
         </table>
