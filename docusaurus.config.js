@@ -65,6 +65,10 @@ const config = {
             to: 'json-formatter',
             position: 'left',
             label: 'JSON Foramtter',
+          },{
+            to: 'apiDocumentationGenerator',
+            position: 'left',
+            label: 'API Documentation Generator',
           }
         ],
       },

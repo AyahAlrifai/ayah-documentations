@@ -342,3 +342,138 @@ body {
 .breadcrumbs__item:hover {
   color: var(--color--pink) !important;
 }
+
+/*********************************** API Documantation Generator ********************/
+
+/* Default light theme styles */
+.apiDocumentationGenerator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  margin-top: 2rem;
+  width: 100%;
+  max-width: 1200px; /* Set max-width for better structure */
+  margin: 0 auto;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 10px; /* Adds space between buttons */
+  margin-bottom: 20px; /* Adds space between buttons and the content */
+  width: 100%;
+  justify-content: center; /* Center buttons */
+}
+
+
+.actionButtons button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.contentContainer {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  max-width: 1200px;
+  justify-content: space-between; /* Align textarea and result side-by-side */
+}
+
+.textareaContainer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+textarea {
+  width: 100%;
+  height: 400px;
+  padding: 15px;
+  border-radius: 8px;
+  border: 2px solid white; /* White border instead of background */
+  font-size: 14px;
+  resize: vertical; /* Allows resizing vertically */
+  color: white; /* Set text color to white for contrast */
+  background-color: transparent; /* Transparent background */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.resultContainer {
+  flex: 1;
+  padding: 15px;
+  border-radius: 8px;
+  border: 2px solid white; /* White border instead of background */
+  color: white; /* Set text color to white for contrast */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-height: 400px;
+  overflow-y: auto; /* Allows scrolling if content is long */
+}
+
+.resultContainer div {
+  white-space: pre-wrap; /* To handle line breaks and spaces in the output */
+}
+
+/* Dark theme styles */
+[data-theme='dark'] .apiDocumentationGenerator {
+  background-color: #1e1e1e; /* Dark background for generator */
+}
+
+[data-theme='dark'] .actionButtons button {
+  background-color: var(--ifm-color-primary); /* Same button color for dark theme */
+  color: white; /* White text for button */
+}
+
+[data-theme='dark'] .contentContainer {
+  background-color: #333; /* Dark background for content container */
+}
+
+[data-theme='dark'] textarea {
+  border: 2px solid white; /* White border for dark theme */
+  background-color: transparent; /* Transparent background for dark theme */
+  color: white; /* White text for dark theme */
+}
+
+[data-theme='dark'] .resultContainer {
+  border: 2px solid white; /* White border for result container */
+  background-color: #333; /* Dark background for result container */
+  color: white; /* White text for result container */
+}
+
+[data-theme='dark'] .resultContainer div {
+  white-space: pre-wrap; /* To handle line breaks and spaces in the output */
+}
+
+/* Light theme styles (you can customize this if needed, it's default) */
+[data-theme='light'] .apiDocumentationGenerator {
+  background-color: #f9f9f9; /* Light background for generator */
+}
+
+[data-theme='light'] .actionButtons button {
+  background-color: var(--ifm-color-primary); /* Same button color for light theme */
+  color: white; /* White text for button */
+}
+
+[data-theme='light'] .contentContainer {
+  background-color: #fff; /* Light background for content container */
+}
+
+[data-theme='light'] textarea {
+  border: 2px solid black; /* Black border for light theme */
+  background-color: transparent; /* Transparent background for light theme */
+  color: black; /* Dark text for light theme */
+}
+
+[data-theme='light'] .resultContainer {
+  border: 2px solid black; /* Black border for result container */
+  background-color: #fff; /* Light background for result container */
+  color: black; /* Dark text for result container */
+}
+
+[data-theme='light'] .resultContainer div {
+  white-space: pre-wrap; /* To handle line breaks and spaces in the output */
+}
+
+.blueText {
+  color: var(--ifm-color-primary);;
+  font-weight: bold;
+}
