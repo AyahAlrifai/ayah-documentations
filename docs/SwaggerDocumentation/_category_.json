@@ -1,0 +1,8 @@
+{
+  "label": "Swagger Documentation",
+  "position": 4,
+  "link": {
+    "type": "generated-index",
+    "description": "now! you can access all Documentations for Swagger"
+  }
+}

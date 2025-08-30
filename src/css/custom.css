@@ -1,0 +1,79 @@
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/* You can override the default Infima variables here. */
+:root {
+  --color--blue: #528dff;
+  --color--green: #44bb08;
+  --color--yellow: #d6c401;
+  --color--pink: #9c025c;
+  --ifm-color-red: #f41e1e;
+  --ifm-cube-shadow-color: #d4d4d480;
+  --ifm-color-primary-dark: #0859fc;
+  --ifm-color-primary-darker: #1e69fd;
+  --ifm-color-primary-darkest: #3b7cff;
+  --ifm-color-primary: var(--color--blue);
+  --ifm-color-primary-light: #689afc;
+  --ifm-color-primary-lighter: #98b8fa;
+  --ifm-color-primary-lightest: #b6cdfc;
+  --ifm-code-font-size: 95%;
+  --ifm-breadcrumb-color-active: var(--color--pink);
+  --ifm-menu-color-active: var(--color--green);
+  --ifm-tabs-color-active: var(--color--yellow);
+  --ifm-tabs-color-active-border: var(--color--yellow);
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+  --ifm-color-gray: #d9dadb;
+  --toastify-color-light: #eef1f5;
+}
+
+/* For readability concerns, you should choose a lighter palette in dark mode. */
+[data-theme='dark'] {
+  --color--blue: #528dff;
+  --color--green: #74e03e;
+  --color--yellow: #e8c246;
+  --color--pink: #fc7dc7;  
+  --ifm-cube-shadow-color: #80808080;
+  --ifm-color-red: #f41e1e;
+  --ifm-color-primary-dark: #0859fc;
+  --ifm-color-primary-darker: #1e69fd;
+  --ifm-color-primary-darkest: #3b7cff;
+  --ifm-color-primary: var(--color--blue);
+  --ifm-color-primary-light: #689afc;
+  --ifm-color-primary-lighter: #98b8fa;
+  --ifm-color-primary-lightest: #b6cdfc;
+  --ifm-breadcrumb-color-active: var(--color--pink);
+  --ifm-menu-color-active: var(--color--green);
+  --ifm-tabs-color-active: var(--color--yellow);
+  --ifm-tabs-color-active-border: var(--color--yellow);
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+  --ifm-color-gray: #242526;
+  --toastify-color-light: #242526;
+}
+
+[data-theme='dark'] .hero--primary {
+  --ifm-hero-background-color: #242526;
+  --ifm-hero-text-color: #fff;
+}
+
+[data-theme='dark'] .footer--dark {
+  --ifm-footer-background-color: #242526;
+  --ifm-footer-color: #f1f4f9;
+  --ifm-footer-link-color: #eaedf1;
+  --ifm-footer-title-color: rgb(253 253 254);
+}
+
+[data-theme='light'] .hero--primary {
+  --ifm-hero-background-color: #d9dadb;
+  --ifm-hero-text-color: #000;
+}
+
+[data-theme='light'] .footer--dark {
+  --ifm-footer-background-color: #d9dadb;
+  --ifm-footer-color: #171717;
+  --ifm-footer-link-color: #171717;
+  --ifm-footer-title-color: rgb(22, 22, 22);
+}
+

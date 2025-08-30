@@ -1,0 +1,522 @@
+# OpenAPI version identifier - required for OpenAPI 3.0 domains
+openapi: 3.0.0
+
+#######################
+# Optional info section
+#######################
+info:
+  title: Blulogix Components
+  description: Common components for Blulogix APIs
+  version: '1.0.0'
+
+components:
+
+  ####################
+  # Common data models
+  ####################
+  schemas:
+    addContract_1:
+      type: object
+      properties:
+        executionSuccessful: 
+          type: boolean
+          example: true
+        successCode: 
+          type: string
+          example: 10505
+        errorCode: 
+          type: string
+          example: null
+        returnValue: 
+          type: object
+          properties: 
+            contractId:
+              type: integer
+          example: 
+            contractId: 4852
+        message: 
+          type: string
+          example: Contract Added
+        missingParams: 
+          type: array
+          items:
+            type: string
+          example: null
+        invalidParam: 
+          type: array
+          items:
+            type: string
+          example: null
+        orderDetail: 
+          type: string
+          example: null
+    addContract_2:
+       type: object
+       properties:
+        executionSuccessful: 
+          type: boolean
+          example: false
+        successCode: 
+          type: string
+          example: null
+        errorCode: 
+          type: string
+          example: 10504
+        returnValue: 
+          type: object
+          properties: 
+            contractId:
+              type: integer
+          example: null
+        message: 
+          type: string
+          example: Existing Contract Name
+        missingParams: 
+          type: array
+          items:
+            type: string
+          example: null
+        invalidParam: 
+          type: array
+          items:
+            type: string
+          example: null
+        orderDetail: 
+          type: string
+          example: null
+    addContractTemplate_1:
+      type: object
+      properties:
+        executionSuccessful: 
+          type: boolean
+          example: true
+        successCode: 
+          type: string
+          example: 10502
+        errorCode: 
+          type: string
+          example: null
+        returnValue: 
+          type: object
+          properties: 
+            conTemplateId:
+              type: integer
+          example: 
+            contractId: 2125
+        message: 
+          type: string
+          example: Template Added
+        missingParams: 
+          type: array
+          items:
+            type: string
+          example: null
+        invalidParam: 
+          type: array
+          items:
+            type: string
+          example: null
+        orderDetail: 
+          type: string
+          example: null
+    addContractTemplate_2:
+      type: object
+      properties:
+        executionSuccessful: 
+          type: boolean
+          example: false
+        successCode: 
+          type: string
+          example: null
+        errorCode: 
+          type: string
+          example: 10504
+        returnValue: 
+          type: object
+          properties: 
+            contractId:
+              type: integer
+          example: null
+        message: 
+          type: string
+          example: Existing Template Name
+        missingParams: 
+          type: array
+          items:
+            type: string
+          example: null
+        invalidParam: 
+          type: array
+          items:
+            type: string
+          example: null
+        orderDetail: 
+          type: string
+          example: null
+          
+  ####################
+  # Common parameters
+  ####################
+  parameters:
+    referer:
+      name : Referer
+      in: header
+      description: Referer
+      required: true
+      schema:
+        type: string
+        default: http://192.168.1.85/
+    accessControlOrigin:
+      name : Access-Control-Allow-Origin
+      in: header
+      description: Access-Control-Allow-Origin
+      required: true
+      schema:
+        type: string
+        default: http://192.168.1.85/
+    accessControlCredentials:
+      name : Access-Control-Allow-Credentials
+      in: header
+      description: Access-Control-Allow-Headers
+      required: false
+      schema:
+        type: boolean 
+        default: true
+    accessControlAllowHeader:
+      name : Access-Control-Allow-Headers
+      in: header
+      description: Access-Control-Allow-Headers
+      required: false
+      schema:
+        type: string
+        default: http://192.168.1.85/
+    accessControlAllowMethod:
+      name : Access-Control-Allow-Methods
+      in: header
+      description: Access-Control-Allow-Methods
+      required: false
+      schema:
+        type: string 
+        default: '*'
+    origin:
+      name : origin
+      in: header
+      description: origin
+      required: true
+      schema:
+        type: string
+        default: http://192.168.1.85/
+    
+  #######################
+  # Common request bodies
+  #######################
+  requestBodies:
+    contractTemplate:
+      description: A JSON object containing contract template data
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              contractName: 
+                type: string
+                example: 123123123
+              contractDesc: 
+                type: string
+                example: aaa
+              startDate: 
+                type: string
+                example: 2/1/2023
+              endDate: 
+                type: string
+                example: 12/31/2029
+              categoryList:
+                type: array
+                items:
+                  type: string
+                example:
+                  - D109
+              termedFlag: 
+                type: string
+                enum: [M, D, N]
+                example: D
+              termInMonth: 
+                type: integer
+                example: null
+                minimum: 1
+                maximum: 999
+              termEndDate: 
+                type: string
+                example: 2/28/2023
+              trialLengthInDays: 
+                type: integer
+                example: 30
+                minimum: 1
+                maximum: 999
+              contractPostfix: 
+                type: string
+                example: aaa
+              contractPrefix: 
+                type: string
+                example: aaa
+              renewalType:
+                type: string
+                enum: [A, M]
+                example: A
+              renewalTermInMonth: 
+                type: integer
+                example: 1
+                minimum: 1
+                maximum: 999
+              renewalReqCustAcc: 
+                type: boolean
+                example: false
+              renewalReqIntApp: 
+                type: boolean
+                example: false
+              cancelationAllowed: 
+                type: boolean
+                example: false
+              cancelationProductCode: 
+                type: string
+                example: null
+              cancelationFlatRate: 
+                type: string
+                example: null
+              cancelationPctFull: 
+                type: string
+                example: null
+              cancelationPctLeft: 
+                type: string
+                example: null
+              eSignatureReq: 
+                type: boolean
+                example: false
+              discountPct: 
+                type: integer
+                example: 5
+                minimum: 1
+                maximum: 999
+              planList:
+                type: array
+                items:
+                  type: string
+                example:
+                  - D109-000000000008885
+              templateDocList: 
+                type: array
+                items:
+                  type: string
+                example: []
+              pdfTemplateId: 
+                type: string
+                example: contractTemplateSettings
+              reminderDays: 
+                type: integer
+                example: 10
+                minimum: 1
+                maximum: 999
+            required:  
+              - accountNumber
+              - conTemplateId
+              - contractName
+              - contractDesc
+              - trialLengthInDays
+              - termInMonth
+              - termedFlag
+              - renewalType
+              - renewalTermInMonth
+              - reminderDays
+              - planList
+              - categoryList
+              - endDate
+              - startDate
+    contract:
+      description: A JSON object containing contract data
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              contractName:
+                type: string
+                example: swagger_contract
+              contractDesc:
+                type: string
+                example: swagger contract for test
+              conTemplateId:
+                type: integer
+                example: 1863
+              accountNumber:
+                type: string
+                example: D109-0001387
+              termedFlag:
+                type: string
+                enum: [M, D, N]
+                example: M
+              termInMonth:
+                type: integer
+                minimum: 1
+                maximum: 999
+                example: 60
+              allowTermChange:
+                type: boolean
+                example: false
+              trialLengthInDays:
+                type: integer
+                minimum: 1
+                maximum: 999
+                example: 20
+              startDate:
+                type: string
+                example: null
+              termEndDate:
+                type: string
+                example: 1/10/2023
+              renewalType:
+                type: string
+                enum: [A, M]
+                example: A
+              renewalTermInMonth:
+                type: integer
+                minimum: 1
+                maximum: 999
+                example: 20
+              renewalReqCustAcc:
+                type: boolean
+                example: false
+              renewalReqIntApp:
+                type: boolean
+                example: false
+              cancelationAllowed:
+                type: boolean
+                example: true
+              cancelationProductCode:
+                type: string
+                example: P0000000000000031298
+              cancelationFlatRate:
+                type: integer
+                example: 0
+              cancelationPctFull:
+                type: string
+                example: 25
+              cancelationPctLeft:
+                type: integer
+                example: 0
+              eSignatureReq:
+                type: boolean
+                example: true
+              discountPct:
+                type: integer
+                example: 5
+                minimum: 1
+                maximum: 999
+              contactList:
+                type: array
+                items:
+                  type: integer
+                example: []
+              contractDocumentList:
+                type: array
+                items:
+                  type: string
+                example: []
+              contractDocumentIds:
+                type: array
+                items:
+                  type: integer
+                example: []
+              reminderDays:
+                type: integer
+                example: 9
+                minimum: 1
+                maximum: 999
+            required:  
+              - accountNumber
+              - conTemplateId
+              - contractName
+              - contractDesc
+              - trialLengthInDays
+              - termInMonth
+              - termedFlag
+              - renewalType
+              - renewalTermInMonth
+  
+  ####################
+  # Common responses
+  ####################
+  responses:
+    badRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            type: string
+            example: bad Request
+    addedContract:
+      description: contract added with out any error
+      content:
+        application/json:
+          schema:
+            oneOf:
+              - $ref: '#/components/schemas/addContract_1'
+              - $ref: '#/components/schemas/addContract_2'
+      links:
+        getContractId:
+          $ref: '#/components/links/getContractId'
+          
+    addedContractTemplate:
+      description: contract template added with out any error
+      content:
+        application/json:
+          schema:
+            oneOf:
+              - $ref: '#/components/schemas/addContractTemplate_1'
+              - $ref: '#/components/schemas/addContractTemplate_2'
+
+  #########################
+  # Common headers
+  # (except request headers - they are defined as parameters)
+  #########################
+  headers:
+    X-RateLimit-Limit:
+      description: Request limit per hour
+      schema:
+        type: integer
+      example: 100
+    X-RateLimit-Remaining:
+      description: Remaining requests for the hour
+      schema:
+        type: integer
+      example: 94
+
+  ######################################
+  # Common examples of input/output data
+  ######################################
+  examples:
+    contractTemplate:
+      summary: Sample T-shirt data
+      value:
+        # Example value starts here
+        id: 17
+        name: T-shirt
+        description: 100% cotton shirt
+        categories: [clothes]
+
+  #########################
+  # Common link definitions
+  # See: https://swagger.io/docs/specification/links/
+  #########################
+  links: 
+    getContractId:
+      operationId: getContract
+      parameters: 
+        contractId: '$response.body#/returnValue/contractId'
+
+  #########################
+  # Common callback definitions
+  # See: https://swagger.io/docs/specification/callbacks/
+  #########################
+  callbacks: {}
