@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#4f80ff"/>
+      <stop offset="100%" stop-color="#c77dff"/>
+    </linearGradient>
+  </defs>
+
+  <!--
+    6 outer nodes arranged in a hexagon at radius 52 from center (80,80):
+    Top       (80, 28)
+    TopRight  (125, 54)
+    BotRight  (125, 106)
+    Bottom    (80, 132)
+    BotLeft   (35, 106)
+    TopLeft   (35, 54)
+  -->
+
+  <!-- Spoke lines: center → each outer node, gradient across the set -->
+  <line x1="80" y1="80" x2="80"  y2="28"  stroke="#4f80ff" stroke-width="2.2" stroke-linecap="round" opacity="0.85"/>
+  <line x1="80" y1="80" x2="125" y2="54"  stroke="#6b6bff" stroke-width="2.2" stroke-linecap="round" opacity="0.85"/>
+  <line x1="80" y1="80" x2="125" y2="106" stroke="#8f4fff" stroke-width="2.2" stroke-linecap="round" opacity="0.85"/>
+  <line x1="80" y1="80" x2="80"  y2="132" stroke="#a83eff" stroke-width="2.2" stroke-linecap="round" opacity="0.85"/>
+  <line x1="80" y1="80" x2="35"  y2="106" stroke="#bc5eff" stroke-width="2.2" stroke-linecap="round" opacity="0.85"/>
+  <line x1="80" y1="80" x2="35"  y2="54"  stroke="#c77dff" stroke-width="2.2" stroke-linecap="round" opacity="0.85"/>
+
+  <!-- Outer nodes -->
+  <circle cx="80"  cy="28"  r="9" fill="#4f80ff"/>
+  <circle cx="125" cy="54"  r="9" fill="#6b6bff"/>
+  <circle cx="125" cy="106" r="9" fill="#8f4fff"/>
+  <circle cx="80"  cy="132" r="9" fill="#a83eff"/>
+  <circle cx="35"  cy="106" r="9" fill="#bc5eff"/>
+  <circle cx="35"  cy="54"  r="9" fill="#c77dff"/>
+
+  <!-- Center hub: gradient filled circle + white inner dot -->
+  <circle cx="80" cy="80" r="24" fill="url(#g)"/>
+  <circle cx="80" cy="80" r="9"  fill="white" opacity="0.92"/>
+</svg>

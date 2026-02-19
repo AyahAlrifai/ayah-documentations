@@ -1,23 +1,29 @@
 import React from 'react';
-import clsx from 'clsx';
-import styles from '../../css/style.module.css';
 import Link from '@docusaurus/Link';
+import styles from '../../css/style.module.css';
 
-export default function HomepageHeader(prop) {
+export default function HomepageHeader({ siteConfig }) {
   return (
-    <header className={clsx('hero hero--primary', styles.heroBanner)}>
-      <div className="container">
-        <div className={styles.uCenterText+" "+styles.uMarginBottom1 }>
-          <h2 className={styles.headeringSecondary}>
-            {prop.siteConfig.title}
-          </h2>
-        </div>
-        <p className="hero__subtitle">{prop.siteConfig.tagline}</p>
-        <div className={styles.buttons}>
-          <Link
-            className={styles.btn + " " + styles.colorBtn}
-            to="/docs/multiExecPro">
-            Begin Your Journey
+    <header className={styles.heroBanner}>
+      <div className={styles.heroGlow} aria-hidden="true" />
+      <div className={styles.heroGrid} aria-hidden="true" />
+
+      <div className={styles.heroContent}>
+        <span className={styles.heroLabel}>Developer Documentation &amp; Tools</span>
+
+        <h1 className={styles.heroTitle}>{siteConfig.title}</h1>
+
+        <p className={styles.heroSubtitle}>{siteConfig.tagline}</p>
+
+        <div className={styles.heroButtons}>
+          {/* Primary CTA — animated gradient with sweeping shimmer */}
+          <Link className={styles.btnPrimary} to="/docs/multiExecPro">
+            ✦ Explore Docs <span className={styles.btnArrow}>→</span>
+          </Link>
+
+          {/* Secondary — text link with animated underline */}
+          <Link className={styles.btnLink} to="/json-formatter">
+            Try the Tools <span>→</span>
           </Link>
         </div>
       </div>

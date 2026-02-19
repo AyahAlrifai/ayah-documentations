@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160">
+  <defs>
+    <!-- Blue at top fading to purple at bottom (natural for an A shape) -->
+    <linearGradient id="ga" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#4f80ff"/>
+      <stop offset="100%" stop-color="#c77dff"/>
+    </linearGradient>
+    <!-- Accent glow -->
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Left leg of A: peak (80,16) → bottom-left (20,144) -->
+  <line x1="80" y1="16" x2="20" y2="144"
+    stroke="url(#ga)"
+    stroke-width="17"
+    stroke-linecap="round"
+    filter="url(#glow)"/>
+
+  <!-- Right leg of A: peak (80,16) → bottom-right (140,144) -->
+  <line x1="80" y1="16" x2="140" y2="144"
+    stroke="url(#ga)"
+    stroke-width="17"
+    stroke-linecap="round"
+    filter="url(#glow)"/>
+
+  <!-- Crossbar — slightly thinner, positioned at ~62% height -->
+  <line x1="44" y1="97" x2="116" y2="97"
+    stroke="url(#ga)"
+    stroke-width="13"
+    stroke-linecap="round"
+    filter="url(#glow)"/>
+
+  <!-- Peak accent dot — feels like a cursor/node -->
+  <circle cx="80" cy="16" r="10" fill="#4f80ff" filter="url(#glow)"/>
+</svg>

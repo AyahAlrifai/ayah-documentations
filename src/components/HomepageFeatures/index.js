@@ -1,75 +1,131 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from '../../css/style.module.css';
 
-const FeatureList = [
+const features = [
   {
-    title: '',
-    image: require('@site/static/img/2.png').default, // Use PNG image
-    description: (
-      <>
-        Unleash the ultimate programming potential within you by exploring our comprehensive website documentation.
-      </>
-    ),
+    icon: '📚',
+    gradient: 'linear-gradient(135deg, rgba(82,141,255,0.18), rgba(82,141,255,0.06))',
+    accent: '#528dff',
+    title: 'Rich Documentation',
+    description:
+      '11+ technology topics — Angular, SQL, Java/Spring, RabbitMQ, Redis, AOP, Camunda, Swagger, and more — all structured and searchable.',
   },
   {
-    title: '',
-    image: require('@site/static/img/3.jpg').default, // Use JPG image
-    description: (
-      <>
-        Elevate your coding prowess with our meticulously curated resources and tutorials, tailored to empower both beginners and seasoned developers alike.
-      </>
-    ),
+    icon: '🛠️',
+    gradient: 'linear-gradient(135deg, rgba(68,187,8,0.18), rgba(68,187,8,0.06))',
+    accent: '#44bb08',
+    title: 'Interactive Tools',
+    description:
+      'JSON Formatter, Markdown Editor with live preview, and an API Documentation Generator — powerful utilities that run entirely in your browser.',
   },
   {
-    title: '',
-    image: require('@site/static/img/1.png').default, // Use PNG image
-    description: (
-      <>
-        Embark on the ultimate journey of knowledge acquisition and mastery in the realm of programming through our enriching online platform.
-      </>
-    ),
+    icon: '🤖',
+    gradient: 'linear-gradient(135deg, rgba(156,2,92,0.18), rgba(156,2,92,0.06))',
+    accent: '#fc7dc7',
+    title: 'AI-Powered REST Adapter',
+    description:
+      'Smart REST Adapter backed by N8N workflow automation — format, map, and test your API requests with the help of an AI agent.',
   },
   {
-    title: '',
-    image: require('@site/static/img/1.png').default, // Use PNG image
-    description: (
-      <>
-        Embark on the ultimate journey of knowledge acquisition and mastery in the realm of programming through our enriching online platform.
-      </>
-    ),
+    icon: '⚡',
+    gradient: 'linear-gradient(135deg, rgba(214,196,1,0.18), rgba(214,196,1,0.06))',
+    accent: '#e8c246',
+    title: 'Learn by Doing',
+    description:
+      'Hands-on Monaco code editors, real-time markdown preview, and visual SQL execution flow diagrams that make concepts click.',
   },
 ];
 
-function Feature({ image, title, description }) {
+const stats = [
+  { end: 11, suffix: '+', label: 'Technology Topics' },
+  { end: 4,  suffix: '',  label: 'Developer Tools' },
+  { end: 100, suffix: '%', label: 'Free to Use' },
+  { special: '∞', label: 'Things to Learn' },
+];
+
+function CountUp({ end, suffix }) {
+  const [count, setCount] = useState(0);
+  const ref = useRef(null);
+  const animated = useRef(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !animated.current) {
+          animated.current = true;
+          const duration = 1600;
+          const startTime = performance.now();
+          const step = (now) => {
+            const progress = Math.min((now - startTime) / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            setCount(Math.round(eased * end));
+            if (progress < 1) requestAnimationFrame(step);
+          };
+          requestAnimationFrame(step);
+        }
+      },
+      { threshold: 0.4 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [end]);
+
   return (
-    <div style={{
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      flexDirection: "column"
-    }}>
-      <div>
-        <img src={image} alt={title} className={styles.featureSvg} />
+    <span ref={ref} className={styles.statNumber}>
+      {count}{suffix}
+    </span>
+  );
+}
+
+function FeatureCard({ icon, gradient, accent, title, description }) {
+  return (
+    <div
+      className={styles.featureCard}
+      style={{ '--card-accent': accent }}
+    >
+      <div className={styles.featureIcon} style={{ background: gradient }}>
+        <span role="img" aria-label={title}>{icon}</span>
       </div>
-      <div style={{ color: "#ffffff", fontWeight: "bolder", fontSize: "1rem", textWrap: "pretty" }}>
-        <h3>{title}</h3>
-        <p>{description}</p>
-      </div>
+      <h3 className={styles.featureCardTitle}>{title}</h3>
+      <p className={styles.featureCardDesc}>{description}</p>
     </div>
   );
 }
 
 export default function HomepageFeatures() {
   return (
-    <div className={styles.cubeContainer}>
-      <div className={styles.cube}>
-        <div className={styles.face + ' ' + styles.top}></div>
-        <div className={styles.face + ' ' + styles.bottom}></div>
-        <div className={styles.face + ' ' + styles.left}><Feature key={0} {...FeatureList[0]} /></div>
-        <div className={styles.face + ' ' + styles.right}><Feature key={1} {...FeatureList[1]} /></div>
-        <div className={styles.face + ' ' + styles.front}><Feature key={2} {...FeatureList[2]} /></div>
-        <div className={styles.face + ' ' + styles.back}><Feature key={3} {...FeatureList[3]} /></div>
+    <section className={styles.featuresSection}>
+      <div className={styles.sectionHeader}>
+        <span className={styles.sectionLabel}>What We Offer</span>
+        <h2 className={styles.sectionTitle}>Everything you need to level&nbsp;up</h2>
+        <p className={styles.sectionSubtitle}>
+          A comprehensive platform combining structured documentation with
+          interactive developer tools.
+        </p>
       </div>
-    </div>
+
+      <div className={styles.featureGrid}>
+        {features.map((f, i) => (
+          <FeatureCard key={i} {...f} />
+        ))}
+      </div>
+
+      <div className={styles.statsRow}>
+        {stats.map((s, i) => (
+          <div key={i} className={styles.statItem}>
+            {s.special ? (
+              <span className={`${styles.statNumber} ${styles.statInfinity}`}>
+                {s.special}
+              </span>
+            ) : (
+              <CountUp end={s.end} suffix={s.suffix} />
+            )}
+            <span className={styles.statLabel}>{s.label}</span>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }

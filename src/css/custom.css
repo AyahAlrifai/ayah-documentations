@@ -32,6 +32,8 @@
 /* For readability concerns, you should choose a lighter palette in dark mode. */
 [data-theme='dark'] {
   --color--blue: #528dff;
+  --ifm-background-color: #0d1117;
+  --ifm-background-surface-color: #161b22;
   --color--green: #74e03e;
   --color--yellow: #e8c246;
   --color--pink: #fc7dc7;  
@@ -53,27 +55,438 @@
   --toastify-color-light: #242526;
 }
 
-[data-theme='dark'] .hero--primary {
-  --ifm-hero-background-color: #242526;
-  --ifm-hero-text-color: #fff;
+/* ── Navbar CSS variables (light mode base) ── */
+:root {
+  --nav-bg-light:    rgba(255, 255, 255, 0.94);
+  --nav-border-light: rgba(0, 0, 0, 0.07);
+  --nav-link-color-light:  #4b5563;
+  --nav-link-hover-light:  #0d1117;
+  --nav-link-active-light: #0859fc;
 }
 
+/* ── Navbar CSS variables (dark mode override) ── */
+[data-theme='dark'] {
+  --ifm-navbar-background-color: rgba(8, 11, 18, 0.9);
+  --ifm-navbar-link-color:        rgba(255, 255, 255, 0.58);
+  --ifm-navbar-link-hover-color:  rgba(255, 255, 255, 0.92);
+}
+
+[data-theme='light'] {
+  --ifm-navbar-background-color: rgba(255, 255, 255, 0.94);
+  --ifm-navbar-link-color:        #4b5563;
+  --ifm-navbar-link-hover-color:  #0d1117;
+}
+
+/* ── Navbar base ── */
+/*
+ * backdrop-filter MUST NOT be on the <nav> element itself.
+ * Browsers treat any element with backdrop-filter as a "containing block"
+ * for position:fixed descendants. The .navbar-sidebar is position:fixed
+ * inside the nav, so it would be anchored to the nav's ~60px height
+ * instead of the viewport — producing the "tiny div with scrollbar" bug.
+ * Solution: move the blur to a ::before pseudo-element (which has no children).
+ */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  box-shadow: none !important;
+  border-bottom: 1px solid transparent;
+  background-color: transparent !important;
+  overflow: visible;
+}
+
+/* Glass blur layer — pseudo-element has no children, so no containing-block trap */
+.navbar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+[data-theme='dark']  .navbar::before { background: rgba(8, 11, 18, 0.9); }
+[data-theme='light'] .navbar::before { background: rgba(255, 255, 255, 0.94); }
+
+/* Navbar content sits above the blur layer */
+.navbar__inner {
+  position: relative;
+  z-index: 1;
+}
+
+/* Gradient glow line at bottom — orbit-logo inspired */
+.navbar::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  z-index: 2;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    #4f80ff     28%,
+    #c77dff     72%,
+    transparent 100%
+  );
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+[data-theme='dark']  .navbar::after { opacity: 0.55; }
+[data-theme='light'] .navbar::after { opacity: 0.35; }
+
+/* ── Brand / logo area ── */
+.navbar__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none !important;
+}
+
+/* Gradient site-title text */
+[data-theme='dark'] .navbar__title {
+  font-size: 0.98rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: linear-gradient(130deg, #ffffff 0%, #a8c4ff 50%, #c77dff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+[data-theme='light'] .navbar__title {
+  font-size: 0.98rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: linear-gradient(130deg, #0d1117 0%, #1d4ed8 55%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Nav links — base ── */
+.navbar__link {
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  border-radius: 8px;
+  padding: 0.42rem 0.9rem;
+  /* transparent border reserves space → no layout shift on active */
+  border: 1px solid transparent;
+  transition:
+    background  0.2s ease,
+    color       0.2s ease,
+    border-color 0.2s ease,
+    box-shadow  0.2s ease;
+  text-decoration: none !important;
+  position: relative;
+}
+
+/* ── Nav links — hover ── */
+[data-theme='dark'] .navbar__link:hover:not(.navbar__link--active) {
+  background: rgba(255, 255, 255, 0.06);
+  color:      rgba(255, 255, 255, 0.92) !important;
+}
+
+[data-theme='light'] .navbar__link:hover:not(.navbar__link--active) {
+  background: rgba(0, 0, 0, 0.045);
+  color:      #0d1117 !important;
+}
+
+/* ── Nav links — ACTIVE (selected page) ── */
+[data-theme='dark'] .navbar__link--active {
+  color: #6fa3ff !important;
+  background: linear-gradient(
+    135deg,
+    rgba(79, 128, 255, 0.15) 0%,
+    rgba(199, 125, 255, 0.09) 100%
+  );
+  border-color: rgba(79, 128, 255, 0.32) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(79, 128, 255, 0.1),
+    0 0 14px rgba(79, 128, 255, 0.12);
+}
+
+[data-theme='light'] .navbar__link--active {
+  color: #0859fc !important;
+  background: linear-gradient(
+    135deg,
+    rgba(8, 89, 252, 0.1) 0%,
+    rgba(124, 58, 237, 0.06) 100%
+  );
+  border-color: rgba(8, 89, 252, 0.28) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(8, 89, 252, 0.08),
+    0 0 12px rgba(8, 89, 252, 0.1);
+}
+
+/* ── Theme toggle button ── */
+[data-theme='dark'] .navbar__toggle,
+[data-theme='dark'] .clean-btn {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+[data-theme='dark'] .navbar__toggle:hover,
+[data-theme='dark'] .clean-btn:hover {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* ── Mobile hamburger ── */
+.navbar__toggle {
+  border-radius: 8px;
+  padding: 0.3rem;
+  transition: background 0.2s;
+}
+
+[data-theme='dark'] .navbar__toggle:hover  { background: rgba(255,255,255,0.07); }
+[data-theme='light'] .navbar__toggle:hover { background: rgba(0,0,0,0.05); }
+
+/* ── Footer ── */
 [data-theme='dark'] .footer--dark {
-  --ifm-footer-background-color: #242526;
+  --ifm-footer-background-color: #080b12;
   --ifm-footer-color: #f1f4f9;
   --ifm-footer-link-color: #eaedf1;
   --ifm-footer-title-color: rgb(253 253 254);
-}
-
-[data-theme='light'] .hero--primary {
-  --ifm-hero-background-color: #d9dadb;
-  --ifm-hero-text-color: #000;
+  border-top: 1px solid rgba(79, 128, 255, 0.1);
 }
 
 [data-theme='light'] .footer--dark {
-  --ifm-footer-background-color: #d9dadb;
-  --ifm-footer-color: #171717;
-  --ifm-footer-link-color: #171717;
-  --ifm-footer-title-color: rgb(22, 22, 22);
+  --ifm-footer-background-color: #eef2ff;
+  --ifm-footer-color: #1f2937;
+  --ifm-footer-link-color: #374151;
+  --ifm-footer-title-color: #0d1117;
+  border-top: 1px solid rgba(8, 89, 252, 0.1);
+}
+
+/* ── Footer link hover ── */
+[data-theme='light'] .footer--dark a:hover {
+  color: #0859fc;
+}
+
+/* ── Light mode page background ── */
+[data-theme='light'] {
+  --ifm-background-color: #f4f7ff;
+  --ifm-background-surface-color: #ffffff;
+}
+
+/* ── Navbar logo size ── */
+.navbar__logo {
+  height: 44px !important;
+  width: 44px !important;
+}
+
+/* ── Modern Sidebar ── */
+.theme-doc-sidebar-container {
+  border-right: 1px solid rgba(79, 128, 255, 0.1) !important;
+}
+
+[data-theme='dark'] .theme-doc-sidebar-container {
+  background: #0d1117;
+}
+
+[data-theme='light'] .theme-doc-sidebar-container {
+  background: #f4f7ff;
+}
+
+/* Sidebar menu */
+[data-theme='dark'] .menu {
+  background: #0d1117;
+}
+
+[data-theme='light'] .menu {
+  background: #f4f7ff;
+}
+
+/* Menu links */
+.menu__link {
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+  border-left: 2px solid transparent;
+  margin: 1px 0;
+}
+
+[data-theme='dark'] .menu__link {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+[data-theme='dark'] .menu__link:hover:not(.menu__link--active) {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+[data-theme='dark'] .menu__link--active {
+  background: rgba(82, 141, 255, 0.12) !important;
+  color: #6fa3ff !important;
+  border-left-color: #528dff;
+  font-weight: 600;
+}
+
+[data-theme='light'] .menu__link {
+  color: #4b5563;
+}
+
+[data-theme='light'] .menu__link:hover:not(.menu__link--active) {
+  background: rgba(8, 89, 252, 0.05);
+  color: #0d1117;
+}
+
+[data-theme='light'] .menu__link--active {
+  background: rgba(8, 89, 252, 0.08) !important;
+  color: #0859fc !important;
+  border-left-color: #0859fc;
+  font-weight: 600;
+}
+
+/* Collapsible category */
+[data-theme='dark'] .menu__list-item-collapsible:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+[data-theme='light'] .menu__list-item-collapsible:hover {
+  background: rgba(8, 89, 252, 0.04);
+}
+
+[data-theme='dark'] .menu__list-item-collapsible .menu__link {
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 600;
+}
+
+[data-theme='light'] .menu__list-item-collapsible .menu__link {
+  color: #1f2937;
+  font-weight: 600;
+}
+
+/* Table of contents (right sidebar) */
+[data-theme='dark'] .table-of-contents__link {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+[data-theme='dark'] .table-of-contents__link:hover,
+[data-theme='dark'] .table-of-contents__link--active {
+  color: #6fa3ff;
+}
+
+[data-theme='light'] .table-of-contents__link {
+  color: #6b7280;
+}
+
+[data-theme='light'] .table-of-contents__link:hover,
+[data-theme='light'] .table-of-contents__link--active {
+  color: #0859fc;
+}
+
+[data-theme='dark'] .table-of-contents__left-border {
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+[data-theme='light'] .table-of-contents__left-border {
+  border-left: 1px solid rgba(8, 89, 252, 0.15);
+}
+
+/* ── Docs main content — background consistency (dark mode) ── */
+/* Override Docusaurus's html[data-theme='dark'] with higher-specificity rule */
+html[data-theme='dark'] {
+  --ifm-background-color: #0d1117;
+  --ifm-background-surface-color: #161b22;
+}
+
+/* Directly target main wrapper — no reliance on CSS variable cascade */
+[data-theme='dark'] .main-wrapper {
+  background: #0d1117;
+}
+
+/* Doc content containers should be transparent so #0d1117 shows through */
+[data-theme='dark'] article,
+[data-theme='dark'] .container.padding-top--md {
+  background: transparent !important;
+}
+
+/* ── Mobile navbar sidebar ── */
+/*
+ * With backdrop-filter moved to .navbar::before, the <nav> element is no longer
+ * a containing block for fixed descendants. The sidebar now correctly spans
+ * the full viewport height (top:0 → bottom:0 relative to viewport, not navbar).
+ */
+
+/* Hamburger button — move to the RIGHT side on mobile */
+@media (max-width: 996px) {
+  /* .navbar__items--left is a flex row: [toggle][brand][hidden-links] */
+  /* Set brand order:-1 so it renders before the toggle, and margin-right:auto */
+  /* fills remaining space → toggle is pushed to the far right of the group.   */
+  .navbar__items--left {
+    flex: 1;
+  }
+
+  .navbar__brand {
+    order: -1;
+    margin-right: auto;
+  }
+
+  .navbar__toggle {
+    order: 1;
+    flex-shrink: 0;
+    margin-left: 0.5rem;
+  }
+}
+
+/* Sidebar panel — dark mode */
+[data-theme='dark'] .navbar-sidebar {
+  background: #080b12;
+  border-right: 1px solid rgba(79, 128, 255, 0.12);
+}
+
+[data-theme='dark'] .navbar-sidebar__brand {
+  background: #080b12;
+  border-bottom: 1px solid rgba(79, 128, 255, 0.12);
+}
+
+[data-theme='dark'] .navbar-sidebar .navbar__link {
+  color: rgba(255, 255, 255, 0.72);
+  border-radius: 8px;
+  padding: 0.55rem 1rem;
+}
+
+[data-theme='dark'] .navbar-sidebar .navbar__link:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: #ffffff;
+}
+
+[data-theme='dark'] .navbar-sidebar .navbar__link--active {
+  color: #6fa3ff !important;
+  background: rgba(82, 141, 255, 0.12);
+}
+
+/* Sidebar panel — light mode */
+[data-theme='light'] .navbar-sidebar {
+  background: #ffffff;
+  border-right: 1px solid rgba(0, 0, 0, 0.07);
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='light'] .navbar-sidebar__brand {
+  background: #ffffff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+}
+
+[data-theme='light'] .navbar-sidebar .navbar__link {
+  color: #374151;
+  border-radius: 8px;
+  padding: 0.55rem 1rem;
+}
+
+[data-theme='light'] .navbar-sidebar .navbar__link:hover {
+  background: rgba(8, 89, 252, 0.06);
+  color: #0d1117;
+}
+
+[data-theme='light'] .navbar-sidebar .navbar__link--active {
+  color: #0859fc !important;
+  background: rgba(8, 89, 252, 0.08);
 }
 

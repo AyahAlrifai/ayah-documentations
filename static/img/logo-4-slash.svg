@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160">
+  <defs>
+    <!-- Top-to-bottom gradient (blue at top → purple at bottom) -->
+    <linearGradient id="gs" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#4f80ff"/>
+      <stop offset="100%" stop-color="#c77dff"/>
+    </linearGradient>
+    <!-- Reversed for the second slash -->
+    <linearGradient id="gs2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#4f80ff" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#c77dff" stop-opacity="0.45"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Second slash (background, ghost) -->
+  <line x1="82" y1="16" x2="42" y2="144"
+    stroke="url(#gs2)"
+    stroke-width="16"
+    stroke-linecap="round"/>
+
+  <!-- Primary slash — bold, opaque -->
+  <line x1="118" y1="16" x2="78" y2="144"
+    stroke="url(#gs)"
+    stroke-width="22"
+    stroke-linecap="round"/>
+
+  <!-- Top accent dot -->
+  <circle cx="132" cy="28" r="9" fill="#4f80ff" opacity="0.65"/>
+
+  <!-- Bottom accent dot -->
+  <circle cx="28"  cy="132" r="9" fill="#c77dff" opacity="0.65"/>
+</svg>

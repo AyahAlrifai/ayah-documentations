@@ -1,9 +1,185 @@
-1. npm install
-2. npm install -g firebase-tools
-3. set NODE_ENV=production
-4. npm run build
-4. firebase login
-5. firebase init (if not init)
-6. firebase deploy
-8. firebase deploy --only hosting
+# Learn Technology Easily
 
+> *Let's Go on a Tech Journey Together*
+
+A comprehensive educational platform and interactive developer toolset built with Docusaurus and React, deployed on Firebase. Created by **Ayah Al-Rifai**.
+
+**Live Site**: [https://canvas-eye-416011.web.app/](https://canvas-eye-416011.web.app/)
+
+---
+
+## Overview
+
+This project is a documentation website combined with a suite of interactive developer tools. It covers a wide range of technology topics through Markdown-based documentation and provides hands-on utilities directly in the browser.
+
+---
+
+## Features
+
+### Documentation Topics
+
+| Category | Topics Covered |
+|---|---|
+| **Angular** | Framework guides and best practices |
+| **AOP** | Aspect-Oriented Programming tutorials |
+| **RabbitMQ** | Message queue setup and usage |
+| **Redis** | Caching and data store documentation |
+| **SQL** | SELECT statement deep-dives and workflow diagrams |
+| **Swagger** | API documentation generation guides |
+| **JPA** | Entity relationships and Spring Data |
+| **Spring** | Spring Expression Language, Hibernate |
+| **Camunda** | Workflow and BPM documentation |
+| **MultiExecPro** | Featured PowerShell tool for managing microservices |
+| **Markdown** | Cheat sheet and syntax reference |
+
+### Interactive Developer Tools
+
+| Tool | Description |
+|---|---|
+| **Markdown Editor** | Live Monaco editor with real-time preview using React Markdown |
+| **JSON Formatter** | Format (pretty-print) or minify JSON with syntax highlighting |
+| **API Documentation Generator** | Parses Java Spring annotations and generates formatted HTML documentation |
+| **REST Adapter** | AI-powered REST request helper via N8N webhook integration |
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Documentation framework | [Docusaurus 2.3.1](https://docusaurus.io/) |
+| UI library | React 17 |
+| Code editors | Monaco Editor, CodeMirror |
+| Styling | SCSS/SASS, CSS Modules |
+| Backend/Hosting | Firebase (Hosting + Analytics) |
+| AI integration | N8N webhook (REST Adapter) |
+| Ads | Google AdSense |
+| Markdown rendering | React Markdown, MDX |
+| Notifications | React Toastify |
+| Video support | React Player |
+
+---
+
+## Project Structure
+
+```
+ayah-documentations-master/
+├── docs/                        # All Markdown documentation content
+│   ├── angular/
+│   ├── aop/
+│   ├── RabbitMQ/
+│   ├── redis/
+│   ├── sql/
+│   ├── SwaggerDocumentation/
+│   ├── SearchLib/
+│   ├── MarkdownCheatSheet/
+│   └── others/                  # Spring, Hibernate, PL/SQL
+├── src/
+│   ├── pages/                   # Interactive tool pages (React)
+│   │   ├── index.js             # Homepage
+│   │   ├── apiDocumentationGenerator.js
+│   │   ├── create-new-document.js
+│   │   ├── json-formatter.js
+│   │   └── rest-adapter.js
+│   ├── components/
+│   │   ├── HomepageHeader/      # Hero banner
+│   │   ├── HomepageFeatures/    # 3D rotating cube with feature cards
+│   │   └── Diagram/             # SQL SELECT flow diagram
+│   ├── css/                     # Global styles + CSS modules
+│   └── scss/                    # SCSS architecture (abstract, base, components, layout)
+├── static/img/                  # Static image assets
+├── docusaurus.config.js         # Main site configuration
+├── sidebars.js                  # Auto-generated sidebar from docs/ structure
+├── firebase.json                # Firebase hosting config
+└── .firebaserc                  # Firebase project reference
+```
+
+---
+
+## Development
+
+### Prerequisites
+
+- **Node.js** >= 16.14
+
+### Install dependencies
+
+```bash
+npm install
+```
+
+### Start development server
+
+```bash
+npm start
+```
+
+### Build for production
+
+```bash
+npm run build
+```
+
+### Serve production build locally
+
+```bash
+npm run serve
+```
+
+### Clear Docusaurus cache
+
+```bash
+npm run clear
+```
+
+### Compile SCSS
+
+```bash
+npm run sass
+```
+
+---
+
+## Environment Variables
+
+Create a `.env.development` or `.env.production` file in the root:
+
+```env
+REACT_APP_N8N_API_URL=<your-n8n-webhook-url>
+```
+
+This variable is used by the **REST Adapter** page to connect to the N8N workflow automation endpoint. It is loaded in `docusaurus.config.js` via `customFields`.
+
+---
+
+## Deployment
+
+The site is hosted on **Firebase Hosting**. The build output directory is `/build`, and all routes rewrite to `/index.html` (SPA mode).
+
+```bash
+npm install -g firebase-tools   # Install Firebase CLI (once)
+firebase login                  # Authenticate
+npm run build                   # Build production output
+firebase deploy --only hosting  # Deploy to Firebase
+```
+
+Firebase project ID: `canvas-eye-416011`
+
+---
+
+## Key Architectural Decisions
+
+- **Docusaurus as foundation**: Provides auto-generated sidebars, dark/light theme, search, MDX support, and code highlighting (Prism with `nightOwlLight` / `oceanicNext` themes) out of the box.
+- **Hybrid docs + tools**: Documentation lives in `docs/` as Markdown; interactive tools are standalone React pages in `src/pages/`.
+- **Auto-sidebar**: `sidebars.js` uses `autogenerated` to build navigation directly from the `docs/` folder structure — no manual sidebar config needed.
+- **SCSS architecture**: Styles are split into `abstract/` (variables, mixins), `base/` (typography, resets), `components/`, `layout/`, and `pages/` to keep styles organized and scalable.
+- **API Documentation Generator**: Uses regex to parse Java Spring annotations (`@PostMapping`, `@PreAuthorize`, `@PathVariable`, `@RequestParam`, `@Audit`, `@Operation`, `@ApiResponse`) and produces formatted HTML documentation tables.
+- **N8N integration**: The REST Adapter page sends user input to an N8N webhook which processes it through an AI agent and returns a structured JSON response.
+
+---
+
+## Author
+
+**Ayah Al-Rifai**
+- [GitHub](https://github.com/AyahAlrifai)
+- [LinkedIn](https://www.linkedin.com/in/ayah-al-rifai/)

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Logo Concepts — Learn Technology Easily</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #0d1117;
+    color: #e6edf3;
+    min-height: 100vh;
+    padding: 3rem 2rem;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #4f80ff, #c77dff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: rgba(255,255,255,0.4);
+    font-size: 0.9rem;
+    margin-bottom: 3rem;
+  }
+
+  /* Toggle buttons */
+  .toggle-row {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .toggle-btn {
+    padding: 0.45rem 1.25rem;
+    border-radius: 50px;
+    border: 1.5px solid rgba(255,255,255,0.15);
+    background: transparent;
+    color: rgba(255,255,255,0.6);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .toggle-btn.active,
+  .toggle-btn:hover {
+    border-color: #4f80ff;
+    color: #4f80ff;
+    background: rgba(79,128,255,0.08);
+  }
+
+  /* Grid of logo cards */
+  .grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: center;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .card {
+    border-radius: 20px;
+    padding: 2rem 1.75rem 1.75rem;
+    width: 190px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+    border: 1px solid rgba(255,255,255,0.07);
+    background: rgba(255,255,255,0.03);
+    transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+  }
+
+  .card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(79,128,255,0.4);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  }
+
+  .card img {
+    width: 130px;
+    height: 130px;
+    border-radius: 16px;
+  }
+
+  /* Dark swatch */
+  .card img.dark-bg  { background: #0d1117; }
+  /* Light swatch */
+  .card img.light-bg { background: #f4f7ff; }
+
+  .card-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #4f80ff;
+  }
+
+  .card-name {
+    font-size: 1rem;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  .card-desc {
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.45);
+    text-align: center;
+    line-height: 1.55;
+  }
+
+  /* Wordmark row below the mark */
+  .wordmark {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: rgba(255,255,255,0.55);
+    text-align: center;
+  }
+
+  /* Light mode preview */
+  body.light-mode {
+    background: #f4f7ff;
+    color: #0d1117;
+  }
+
+  body.light-mode .card {
+    background: #ffffff;
+    border-color: rgba(0,0,0,0.07);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+
+  body.light-mode .card:hover {
+    border-color: rgba(8,89,252,0.3);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+  }
+
+  body.light-mode .card-name  { color: #0d1117; }
+  body.light-mode .card-desc  { color: #6b7280; }
+  body.light-mode .wordmark   { color: #6b7280; }
+  body.light-mode .subtitle   { color: #6b7280; }
+  body.light-mode .toggle-btn { color: #374151; border-color: rgba(0,0,0,0.15); }
+  body.light-mode .toggle-btn.active,
+  body.light-mode .toggle-btn:hover { color: #0859fc; border-color: #0859fc; background: rgba(8,89,252,0.06); }
+</style>
+</head>
+<body>
+
+<h1>Logo Concepts — Learn Technology Easily</h1>
+<p class="subtitle">Open this file in your browser · hover cards to preview · toggle background</p>
+
+<div class="toggle-row">
+  <button class="toggle-btn active" onclick="setTheme('dark')">Dark Mode</button>
+  <button class="toggle-btn" onclick="setTheme('light')">Light Mode</button>
+</div>
+
+<div class="grid">
+
+  <!-- Logo 1: Diamond Code -->
+  <div class="card">
+    <img src="logo-1-diamond.svg" alt="Diamond Code" class="dark-bg" id="img1"/>
+    <div class="card-label">Concept 1</div>
+    <div class="card-name">Diamond Code</div>
+    <div class="card-desc">
+      A sharp diamond filled with a blue-purple gradient and the
+      iconic <code>&lt;/&gt;</code> symbol. Clean, memorable, works great as a favicon.
+    </div>
+    <div class="wordmark">LEARN TECH EASILY</div>
+  </div>
+
+  <!-- Logo 2: Neural Network -->
+  <div class="card">
+    <img src="logo-2-network.svg" alt="Node Network" class="dark-bg" id="img2"/>
+    <div class="card-label">Concept 2</div>
+    <div class="card-name">Neural Network</div>
+    <div class="card-desc">
+      Six gradient-colored nodes in a hexagonal arrangement connected to a
+      central hub. Represents a network of interconnected knowledge.
+    </div>
+    <div class="wordmark">LEARN TECH EASILY</div>
+  </div>
+
+  <!-- Logo 3: Orbit -->
+  <div class="card">
+    <img src="logo-3-orbit.svg" alt="Orbit" class="dark-bg" id="img3"/>
+    <div class="card-label">Concept 3</div>
+    <div class="card-name">Orbit</div>
+    <div class="card-desc">
+      Two elliptical orbits (blue + purple) crossing at different angles,
+      with a glowing center core. Scientific, exploratory, dynamic.
+    </div>
+    <div class="wordmark">LEARN TECH EASILY</div>
+  </div>
+
+  <!-- Logo 4: Slash Mark -->
+  <div class="card">
+    <img src="logo-4-slash.svg" alt="Slash Mark" class="dark-bg" id="img4"/>
+    <div class="card-label">Concept 4</div>
+    <div class="card-name">Slash Mark</div>
+    <div class="card-desc">
+      An ultra-minimal double slash <code>//</code> (like a code comment)
+      with a bold gradient stroke and two accent dots. Modern startup energy.
+    </div>
+    <div class="wordmark">LEARN TECH EASILY</div>
+  </div>
+
+  <!-- Logo 5: Letter A -->
+  <div class="card">
+    <img src="logo-5-letter.svg" alt="Letter A" class="dark-bg" id="img5"/>
+    <div class="card-label">Concept 5</div>
+    <div class="card-name">Monogram A</div>
+    <div class="card-desc">
+      A bold gradient "A" for <em>Ayah</em> — peak dot, two legs, a crossbar.
+      Personal, powerful, instantly recognizable as the author's brand.
+    </div>
+    <div class="wordmark">AYAH · LEARN TECH EASILY</div>
+  </div>
+
+</div>
+
+<script>
+  function setTheme(theme) {
+    document.body.classList.toggle('light-mode', theme === 'light');
+    document.querySelectorAll('.toggle-btn').forEach((btn, i) => {
+      btn.classList.toggle('active', (theme === 'dark' && i === 0) || (theme === 'light' && i === 1));
+    });
+    // Swap image background class
+    ['img1','img2','img3','img4','img5'].forEach(id => {
+      const el = document.getElementById(id);
+      el.className = theme === 'dark' ? 'dark-bg' : 'light-bg';
+    });
+  }
+</script>
+
+</body>
+</html>

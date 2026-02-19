@@ -1,199 +1,161 @@
-import React, { Component } from 'react';
+import React, { useState, useRef } from 'react';
 import Layout from '@theme/Layout';
+import { useColorMode } from '@docusaurus/theme-common';
 import styles from '../css/style.module.css';
 
-class ApiDocumentationGenerator extends Component {
+const INITIAL_INPUT =
+  "@PostMapping(Paths.OnboardingProcess.ROOT)\n" +
+  "@PreAuthorize(\"hasAnyRole('COB_ADD_CUSTOMER_ONBOARDING','CUSTOMER_ONBOARDING_ADMIN','SUPER_ADMIN')\")\n" +
+  "@Audit(actionType = \"COB_ADD_CUSTOMER_ONBOARDING\", objectName = \"CUSTOMER_ONBOARDING\",\n" +
+  "\t\tdocumentIdJsonPath = \"data.idNumber\", httpMethod = Request.HttpMethod.POST)\n" +
+  "@Operation(summary = \"start OnBoarding Application\", description = \"start OnBoarding Application.\")\n" +
+  "@ApiResponses(value = {\n" +
+  "\t\t@ApiResponse(responseCode = \"200\", content = {\n" +
+  "\t\t\t\t@Content(mediaType = \"application/json\", schema = @Schema(implementation = OnBoarding.class))}),\n" +
+  "\t\t@ApiResponse(responseCode = \"400\", content = {\n" +
+  "\t\t\t\t@Content(mediaType = \"application/json\", schema = @Schema(implementation = ResponseModel.class))})})\n" +
+  "public ResponseEntity<ResponseModel<OnBoardingModel>> startOnBoardingApplication(\n" +
+  "\t\t@RequestBody @Valid final CreateOnBoardingModel createOnBoardingModel, \n" +
+  "\t\t@PathVariable() @Mask final Long referenceId, \n" +
+  "\t\t@PathVariable(value = sss) String test,\n" +
+  "\t\t@RequestParam(required = false, defaultValue = \"20\") @Valid int pageSize,\n" +
+  "\t\t@RequestParam(required = false, defaultValue = \"0\") final int pageNumber,\n" +
+  "\t\t@RequestParam(defaultValue = \"desc\") final String sortOrder,\n" +
+  "\t\t@RequestParam(required = false) final String searchKey,\n" +
+  "\t\t@PathVariable final String searchKey) {\n" +
+  "\n" +
+  "\treturn ResponseEntity.ok().body(this.onboardingService.startOnBoardingApplication(createOnBoardingModel));\n" +
+  "}";
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      apiInput: "@PostMapping(Paths.OnboardingProcess.ROOT)\n" +
-        "@PreAuthorize(\"hasAnyRole('COB_ADD_CUSTOMER_ONBOARDING','CUSTOMER_ONBOARDING_ADMIN','SUPER_ADMIN')\")\n" +
-        "@Audit(actionType = \"COB_ADD_CUSTOMER_ONBOARDING\", objectName = \"CUSTOMER_ONBOARDING\",\n" +
-        "\t\tdocumentIdJsonPath = \"data.idNumber\", httpMethod = Request.HttpMethod.POST)\n" +
-        "@Operation(summary = \"start OnBoarding Application\", description = \"start OnBoarding Application.\")\n" +
-        "@ApiResponses(value = {\n" +
-        "\t\t@ApiResponse(responseCode = \"200\", content = {\n" +
-        "\t\t\t\t@Content(mediaType = \"application/json\", schema = @Schema(implementation = OnBoarding.class))}),\n" +
-        "\t\t@ApiResponse(responseCode = \"400\", content = {\n" +
-        "\t\t\t\t@Content(mediaType = \"application/json\", schema = @Schema(implementation = ResponseModel.class))})})\n" +
-        "public ResponseEntity<ResponseModel<OnBoardingModel>> startOnBoardingApplication(\n" +
-        "\t\t@RequestBody @Valid final CreateOnBoardingModel createOnBoardingModel, \n" +
-        "\t\t@PathVariable() @Mask final Long referenceId, \n" +
-        "\t\t@PathVariable(value = sss) String test,\n" +
-        "\t\t@RequestParam(required = false, defaultValue = \"20\") @Valid int pageSize,\n" +
-        "\t\t@RequestParam(required = false, defaultValue = \"0\") final final final int pageNumber,\n" +
-        "\t\t@RequestParam(defaultValue = \"desc\") final String sortOrder,\n" +
-        "\t\t@RequestParam(required = false) final String searchKey, \n" +
-        "\t\t@PathVariable final String searchKey) {\n" +
-        "\n" +
-        "\treturn ResponseEntity.ok().body(this.onboardingService.startOnBoardingApplication(createOnBoardingModel));\n" +
-        "}",
-      apiDoc: '',
-      auditInfo: {},
-      pathVariables: [],
-      queryParams: {}
-    };
-    this.apiDocRef = React.createRef();
+/* ── Parsing helpers ── */
+function extractAuditInfo(input) {
+  const auditInfo = {};
+  const match = input.match(/@Audit\(([\s\S]*?)\)/);
+  if (match?.[1]) {
+    match[1].split(',').forEach(prop => {
+      const [key, value] = prop.split('=').map(s => s.trim().replace(/"/g, ''));
+      if (key && value) auditInfo[key] = value;
+    });
   }
+  return auditInfo;
+}
 
-
-  handleInputChange = (event) => {
-    this.setState({ apiInput: event.target.value });
-  };
-
-  generateDocumentation = () => {
-    const { apiInput } = this.state;
-
-    const auditInfo = this.extractAuditInfo(apiInput);
-    const pathVariables = this.extractPathVariables(apiInput);
-    const queryParams = this.extractQueryParams(apiInput);
-
-    const doc = this.parseApiInput(apiInput, auditInfo, pathVariables, queryParams);
-
-    this.setState({ apiDoc: doc, auditInfo, queryParams });
-  };
-
-
-  extractAuditInfo(input) {
-    const auditInfo = {};
-    const regex = /@Audit\(([\s\S]*?)\)/;
-    const match = input.match(regex);
-
-    if (match && match[1]) {
-
-      const properties = match[1].split(',').map(prop => prop.trim());
-
-      properties.forEach(prop => {
-        const [key, value] = prop.split('=').map(item => item.trim().replace(/"/g, ''));
-        if (key && value) {
-          auditInfo[key] = value;
-        }
-      });
-    }
-
-    return auditInfo;
+function extractPathVariables(input) {
+  const result = [];
+  const regex = /@PathVariable(?:\s*(\(.*\)))?(?:\s+[\w@]+)*/g;
+  let m;
+  while ((m = regex.exec(input)) !== null) {
+    const words = m[0].split(/\s+/);
+    result.push({ type: words[words.length - 2], variable: words[words.length - 1] });
   }
+  return result;
+}
 
-  extractPathVariables(input) {
-
-    const pathVariables = [];
-
-    const regex = /@PathVariable(?:\s*(\(.*\)))?(?:\s+[\w\@]+)*/g;
-
-    let match;
-    while ((match = regex.exec(input)) !== null) {
-
-      console.log(match);
-      
-
-      const words = match[0].split(/\s+/);
-      
-      const type = words[words.length - 2];
-      const variable = words[words.length - 1];
-  
-      pathVariables.push({ type, variable });
-    }
-  
-    return pathVariables;
+function extractQueryParams(input) {
+  const result = [];
+  const regex = /@RequestParam\s*(\(.*?\))?(?:\s+[\w@]+)*/g;
+  let m;
+  while ((m = regex.exec(input)) !== null) {
+    const words = m[0].split(/\s+/);
+    const annotation = m[1] || '';
+    const requiredM = annotation.match(/required\s*=\s*(\w+)/);
+    const defaultM  = annotation.match(/defaultValue\s*=\s*"([^"]+)"/);
+    result.push({
+      parameter:    words[words.length - 1],
+      type:         words[words.length - 2],
+      required:     requiredM ? requiredM[1] : 'true',
+      defaultValue: defaultM ? defaultM[1] : null,
+    });
   }
+  return result;
+}
 
+/* ── Method badge helper ── */
+function MethodBadge({ method }) {
+  const cls = {
+    GET: styles.mGET,
+    POST: styles.mPOST,
+    PUT: styles.mPUT,
+    PATCH: styles.mPATCH,
+    DELETE: styles.mDELETE,
+  }[method] || styles.mGET;
+  return <span className={`${styles.methodBadge} ${cls}`}>{method}</span>;
+}
 
-  extractQueryParams(input) {
-    const queryParams = [];
+/* ── Section wrapper ── */
+function Section({ title, children }) {
+  return (
+    <div className={styles.apiSection}>
+      <div className={styles.apiSectionHeading}>{title}</div>
+      <div className={styles.apiSectionBody}>{children}</div>
+    </div>
+  );
+}
 
-    const regex = /@RequestParam\s*(\(.*\))?(?:\s+[\w\@]+)*/g;
+/* ── Build output ── */
+function buildDoc(input) {
+  const auditInfo     = extractAuditInfo(input);
+  const pathVariables = extractPathVariables(input);
+  const queryParams   = extractQueryParams(input);
 
-    let match;
+  const summaryM     = input.match(/@Operation\(.*?summary\s*=\s*"(.*?)"/);
+  const descriptionM = input.match(/@Operation\(.*?description\s*=\s*"(.*?)"/);
+  const rolesM       = input.match(/@PreAuthorize\("hasAnyRole\((.*?)\)"/);
+  const methodM      = input.match(/@(Post|Get|Put|Delete|Patch)Mapping\(/i);
+  const pathM        = input.match(/@(?:Post|Get|Put|Delete|Patch)Mapping\(([^)]+)\)/i);
 
-    while ((match = regex.exec(input)) !== null) {
+  const summary     = summaryM?.[1]     ?? 'Write API summary here';
+  const description = descriptionM?.[1] ?? 'Write API description here';
+  const roles       = rolesM?.[1]
+    ? rolesM[1].split(',').map(r => r.replace(/'/g, '').trim())
+    : [];
+  const method      = methodM?.[1]?.toUpperCase() ?? 'GET';
+  const route       = pathM?.[1] ?? 'Set the route here';
 
-      console.log(match);
-      
-      const words = match[0].split(/\s+/);
+  return { summary, description, roles, method, route, auditInfo, pathVariables, queryParams };
+}
 
-      const annotationContent = match[1] || "";
-      const type = words[words.length - 2];
-      const param = words[words.length - 1];
+/* ── Doc output component ── */
+function DocOutput({ data }) {
+  const { summary, description, roles, method, route, auditInfo, pathVariables, queryParams } = data;
 
-      const requiredMatch = annotationContent.match(/required\s*=\s*(\w+)/);
-
-      const required = requiredMatch ? requiredMatch[1] ? requiredMatch[1] : "true" : "true";
-
-      const defaultMatch = annotationContent.match(/defaultValue\s*=\s*"([^"]+)"/);
-      const defaultValue = defaultMatch ? defaultMatch[1] : null;
-
-      queryParams.push({
-        parameter: param,
-        type: type,
-        required: required,
-        defaultValue: defaultValue,
-      });
-    }
-
-    return queryParams;
-  }
-
-
-  parseApiInput(input, auditInfo, pathVariables, queryParams) {
-
-    const methodColors = {
-      GET: 'green',
-      POST: 'yellow',
-      PUT: 'blue',
-      DELETE: 'red',
-      PATCH: 'purple'
-    };
-
-    const summaryMatch = input.match(/@Operation\(.*summary = "(.*?)"/);
-    const descriptionMatch = input.match(/@Operation\(.*description = "(.*?)"/);
-    const rolesMatch = input.match(/@PreAuthorize\("hasAnyRole\((.*?)\)"/);
-    const methodMatch = input.match(/@(Post|Get|Put|Delete|Patch)Mapping\((.*?)\)/);
-    const pathMatch = input.match(/@(?:Post|Get|Put|Delete|Patch)Mapping\(([^)]+)\)/);
-
-    const summary = summaryMatch ? summaryMatch[1] : 'Write API summary here';
-
-    const description = descriptionMatch ? descriptionMatch[1] : 'Write API description here';
-
-    const roles = rolesMatch ? rolesMatch[1].split(',').map(role => role.replace(/'/g, '').trim()) : [];
-
-    const method = methodMatch ? methodMatch[1].toUpperCase() : 'GET';
-    const methodColor = methodColors[method] || 'black';
-
-    const route = pathMatch ? pathMatch[1] : 'Set the route here.';
-
-    return (
-      <div ref={this.apiDocRef}>
-        <h3 className={styles.blueText}>SUMMARY</h3>
+  return (
+    <>
+      <Section title="Summary">
         <p>{summary}</p>
+      </Section>
 
-        <h3 className={styles.blueText}>DESCRIPTION</h3>
+      <Section title="Description">
         <p>{description}</p>
+      </Section>
 
-        <h3 className={styles.blueText}>ROLE(S) REQUIRED</h3>
-        <ul>
-          {roles.map((role, index) => (
-            <li key={index}>{role}</li>
-          ))}
-        </ul>
-        <h3 className={styles.blueText}>AUDIT TRAIL</h3>
+      <Section title="HTTP Method">
+        <MethodBadge method={method} />
+      </Section>
+
+      <Section title="Route">
+        <code className={styles.apiCode}>{route}</code>
+      </Section>
+
+      <Section title="Role(s) Required">
+        {roles.length > 0
+          ? <ul style={{ paddingLeft: '1.25rem' }}>{roles.map((r, i) => <li key={i}>{r}</li>)}</ul>
+          : <p>No roles specified</p>
+        }
+      </Section>
+
+      <Section title="Audit Trail">
         {auditInfo.actionType && <p><strong>Action Type:</strong> {auditInfo.actionType}</p>}
         {auditInfo.objectName && <p><strong>Object Name:</strong> {auditInfo.objectName}</p>}
+        {!auditInfo.actionType && !auditInfo.objectName && <p>No audit info found</p>}
+      </Section>
 
-        <h3 className={styles.blueText}>VALIDATIONS</h3>
-        <p>{'Add your validations here or add N/A if there is no validation.'}</p>
+      <Section title="Authorization">
+        <p>Add the type of authorization here (e.g. Bearer token).</p>
+      </Section>
 
-        <h3 className={styles.blueText}>HTTP METHOD</h3>
-        <p style={{ color: methodColor, fontWeight: "bold" }}>{method}</p>
-
-        <h3 className={styles.blueText}>ROUTE</h3>
-        <p>{route}</p>
-
-        <h3 className={styles.blueText}>AUTHORIZATION</h3>
-        <p>{'Add the type of authorization here, such as Bearer token.'}</p>
-
-        <h3 className={styles.blueText}>HEADERS</h3>
-        <table border="1">
+      <Section title="Headers">
+        <table className={styles.apiTable}>
           <thead>
             <tr>
               <th>Header Name</th>
@@ -204,46 +166,48 @@ class ApiDocumentationGenerator extends Component {
           <tbody>
             <tr>
               <td>Content-Type</td>
-              <td>Content type of the request</td>
+              <td>Media type of the request body</td>
               <td>application/json</td>
             </tr>
             <tr>
-              <td colSpan="3" style={{ textAlign: "center" }}>Add any othere headers</td>
+              <td colSpan="3" style={{ textAlign: 'center', opacity: 0.5 }}>
+                Add any other headers here
+              </td>
             </tr>
           </tbody>
         </table>
+      </Section>
 
-        <h3 className={styles.blueText}>QUERY PARAMETERS</h3>
-        <table border="1">
+      <Section title="Query Parameters">
+        <table className={styles.apiTable}>
           <thead>
             <tr>
               <th>Parameter</th>
               <th>Type</th>
-              <th>Description</th>
               <th>Required</th>
               <th>Default</th>
+              <th>Description</th>
             </tr>
           </thead>
           <tbody>
-            {queryParams != undefined && queryParams.length > 0 ? queryParams.map((param, index) => (
-              <tr key={index}>
-                <td>{param.parameter}</td>
-                <td>{param.type}</td>
-                <td>{`Description for ${param.parameter}`}</td>
-                <td>{param.required == "true" ? "Required" : "Optional"}</td>
-                <td>{param.defaultValue !== null ? param.defaultValue : "N/A"}</td>
-              </tr>
-            )) : (
-              <tr>
-                <td colSpan="5">No query parameters found</td>
-              </tr>
-            )}
+            {queryParams.length > 0
+              ? queryParams.map((p, i) => (
+                  <tr key={i}>
+                    <td><code>{p.parameter}</code></td>
+                    <td>{p.type}</td>
+                    <td>{p.required === 'true' ? 'Required' : 'Optional'}</td>
+                    <td>{p.defaultValue ?? '—'}</td>
+                    <td>Description for {p.parameter}</td>
+                  </tr>
+                ))
+              : <tr><td colSpan="5" style={{ textAlign: 'center', opacity: 0.5 }}>No query parameters found</td></tr>
+            }
           </tbody>
         </table>
+      </Section>
 
-
-        <h3 className={styles.blueText}>PATH VARIABLES</h3>
-        <table border="1">
+      <Section title="Path Variables">
+        <table className={styles.apiTable}>
           <thead>
             <tr>
               <th>Variable</th>
@@ -252,44 +216,34 @@ class ApiDocumentationGenerator extends Component {
             </tr>
           </thead>
           <tbody>
-            {pathVariables.length > 0 ? (
-              pathVariables.map((pathVariable, index) => {
-                const variableName = pathVariable.variable;
-                return (
-                  <tr key={index}>
-                    <td>{variableName}</td>
-                    <td>{pathVariable.type}</td>
-                    <td>{`Description for ${variableName}`}</td>
+            {pathVariables.length > 0
+              ? pathVariables.map((v, i) => (
+                  <tr key={i}>
+                    <td><code>{v.variable}</code></td>
+                    <td>{v.type}</td>
+                    <td>Description for {v.variable}</td>
                   </tr>
-                );
-              })
-            ) : (
-              <tr>
-                <td colSpan="3" style={{ textAlign: 'center' }}>
-                  No path variables found
-                </td>
-              </tr>
-            )}
+                ))
+              : <tr><td colSpan="3" style={{ textAlign: 'center', opacity: 0.5 }}>No path variables found</td></tr>
+            }
           </tbody>
         </table>
+      </Section>
 
+      <Section title="Validations">
+        <p>Add your validations here, or N/A if none.</p>
+      </Section>
 
-        <h3 className={styles.blueText}>REQUEST BODY</h3>
-        <pre>
-          {`{
-  "key": "value"
-}`}
-        </pre>
+      <Section title="Request Body">
+        <pre className={styles.apiCode}>{`{\n  "key": "value"\n}`}</pre>
+      </Section>
 
-        <h3 className={styles.blueText}>RESPONSE</h3>
-        <pre>
-          {`{
-  "success": "data"
-}`}
-        </pre>
+      <Section title="Response">
+        <pre className={styles.apiCode}>{`{\n  "success": "data"\n}`}</pre>
+      </Section>
 
-        <h3 className={styles.blueText}>ERROR RESPONSES</h3>
-        <table border="1">
+      <Section title="Error Responses">
+        <table className={styles.apiTable}>
           <thead>
             <tr>
               <th>HTTP Status</th>
@@ -312,71 +266,105 @@ class ApiDocumentationGenerator extends Component {
               <td>Invalid or missing authentication token</td>
             </tr>
             <tr>
-              <td colSpan="4" style={{ textAlign: "center" }}>Add any othere error responses</td>
+              <td colSpan="4" style={{ textAlign: 'center', opacity: 0.5 }}>
+                Add any other error responses
+              </td>
             </tr>
           </tbody>
         </table>
-      </div>
-    );
-  }
+      </Section>
+    </>
+  );
+}
 
-  copyToClipboard = () => {
-    const { current: docElement } = this.apiDocRef;
+/* ── Page component ── */
+function ApiDocContent() {
+  useColorMode(); // ensures theme context is active
+  const [apiInput, setApiInput] = useState(INITIAL_INPUT);
+  const [docData, setDocData]   = useState(null);
+  const [copied, setCopied]     = useState(false);
+  const docRef = useRef(null);
 
-    if (docElement) {
-      const range = document.createRange();
-      range.selectNodeContents(docElement);
-      const selection = window.getSelection();
-      selection.removeAllRanges();
-      selection.addRange(range);
+  const generate = () => setDocData(buildDoc(apiInput));
 
-      try {
-        document.execCommand('copy');
-      } catch (err) {
-        alert('Failed to copy documentation');
-      }
+  const copyDoc = async () => {
+    if (!docRef.current) return;
+    try {
+      await navigator.clipboard.writeText(docRef.current.innerText);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      alert('Copy failed — try selecting the text manually.');
     }
   };
 
+  return (
+    <div className={styles.toolPage}>
+      {/* Toolbar */}
+      <div className={styles.toolBar}>
+        <span className={styles.toolBarTitle}>API Documentation Generator</span>
+        <button className={`${styles.tBtn} ${styles.tBtnPrimary}`} onClick={generate}>
+          ⚡ Generate
+        </button>
+        <button
+          className={`${styles.tBtn} ${styles.tBtnGhost} ${copied ? styles.tBtnSuccess : ''}`}
+          onClick={copyDoc}
+          disabled={!docData}
+        >
+          {copied ? '✓ Copied!' : '⎘ Copy Output'}
+        </button>
+        <div className={styles.toolBarDivider} />
+        <span className={styles.toolBarMeta}>Paste Spring annotations · click Generate</span>
+      </div>
 
-  render() {
-    return (
-      <Layout>
-        <div className={styles.apiDocumentationGenerator}>
-          {/* Buttons above the textarea */}
-          <div className={styles.actionButtons}>
-            <button
-              className={`${styles.btn} ${styles.colorBtn}`}
-              onClick={this.generateDocumentation}
-            >
-              Generate
-            </button>
-            <button
-              className={`${styles.btn} ${styles.colorBtn}`}
-              onClick={this.copyToClipboard}
-              disabled={!this.state.apiDoc}
-            >
-              Copy
-            </button>
+      {/* Split pane */}
+      <div className={styles.splitPane}>
+        {/* Left — code input */}
+        <div className={styles.pane}>
+          <div className={styles.paneHeader}>
+            <span>✎</span> input — spring annotations
           </div>
-
-          {/* Content container with textarea and result side-by-side */}
-          <div className={styles.contentContainer}>
-            <div className={styles.textareaContainer}>
-              <textarea
-                value={this.state.apiInput}
-                onChange={this.handleInputChange}
-                placeholder="Paste API annotations here..."
-              />
-            </div>
-            <div className={styles.resultContainer}>
-              {this.state.apiDoc && <div>{this.state.apiDoc}</div>}
-            </div>
+          <div className={styles.paneBody}>
+            <textarea
+              className={styles.codeInput}
+              value={apiInput}
+              onChange={(e) => setApiInput(e.target.value)}
+              placeholder="Paste your Spring Boot controller method annotations here..."
+              spellCheck={false}
+            />
           </div>
         </div>
-      </Layout>
-    );
-  }
+
+        {/* Right — generated output */}
+        <div className={styles.pane}>
+          <div className={styles.paneHeader}>
+            <span>◉</span> output — generated documentation
+          </div>
+          <div className={styles.paneBody}>
+            {docData
+              ? (
+                <div className={styles.apiDocOutput} ref={docRef}>
+                  <DocOutput data={docData} />
+                </div>
+              )
+              : (
+                <div className={styles.emptyState}>
+                  <span className={styles.emptyStateIcon}>⚡</span>
+                  <p>Paste annotations on the left, then click <strong>Generate</strong>.</p>
+                </div>
+              )
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
-export default ApiDocumentationGenerator;
+export default function ApiDocumentationGenerator() {
+  return (
+    <Layout title="API Documentation Generator" description="Generate API docs from Spring annotations">
+      <ApiDocContent />
+    </Layout>
+  );
+}

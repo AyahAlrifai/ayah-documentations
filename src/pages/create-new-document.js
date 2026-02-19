@@ -1,134 +1,120 @@
 import React, { useState } from 'react';
 import Layout from '@theme/Layout';
 import Editor from '@monaco-editor/react';
-import styles from '../css/style.module.css';
 import ReactMarkdown from 'react-markdown';
+import { useColorMode } from '@docusaurus/theme-common';
+import styles from '../css/style.module.css';
 
-export default function createNewDocument() {
+const INIT_VALUE = `# Welcome to the Markdown Editor
 
-  const initValue = `# BIT CMD
+Write your **markdown** on the left, see the *live preview* on the right.
 
-## SETBIT
+## Code Example
 
-This command sets or clears the bit at a specified offset in a Redis string. If the offset is beyond the length of the string, the string is automatically extended to accommodate the specified offset.
-
-Syntax:
-\`\`\`
-SETBIT key offset value
-\`\`\`
-
-- \`key\`: The name of the Redis string key.
-- \`offset\`: The bit offset at which to set or clear the bit.
-- \`value\`: The value to set (0 or 1).
-
-Example:
-
-\`\`\`redis
-127.0.0.1:6379> SETBIT b1 5 1
-(integer) 1
+\`\`\`javascript
+const greet = (name) => \`Hello, \${name}!\`;
+console.log(greet('World'));
 \`\`\`
 
-## GETBIT
+## Features
 
-This command returns the value of a bit at a specified offset in a Redis string.
+- Live preview as you type
+- Syntax highlighting in the editor
+- Supports tables, code blocks, lists, and more
 
-Syntax:
-\`\`\`
-GETBIT key offset
-\`\`\`
+| Column A | Column B |
+|---|---|
+| Value 1  | Value 2  |
+| Value 3  | Value 4  |
 
-- \`key\`: The name of the Redis string key.
-- \`offset\`: The bit offset whose value is to be retrieved.
-
-Example:
-\`\`\`redis
-127.0.0.1:6379> getbit b1 5 // index 5
-(integer) 1
-127.0.0.1:6379> getbit b1 3 // index 3
-(integer) 0
-\`\`\`
-
-\`\`\`
-          0  1  2  3  4  5  6  7
-b1 -----> 0  0  0  0  0  1  0  0
-
-\`\`\`
-## STRLEN
-
-This command returns the length of the string value stored at a key. If the key does not exist, it returns 0.
-
-Syntax:
-\`\`\`
-STRLEN key
-\`\`\`
-
-- \`key\`: The name of the Redis string key.
-
-Example:
-
-\`\`\`redis
-127.0.0.1:6379> STRLEN b1
-(integer) 1
-127.0.0.1:6379> SETBIT b1 9 1
-(integer) 1
-127.0.0.1:6379> SETBIT b1 7 1
-(integer) 1
-127.0.0.1:6379> SETBIT b1 3 1
-(integer) 1
-127.0.0.1:6379> SETBIT b1 10 1
-(integer) 1
-127.0.0.1:6379> STRLEN b1
-(integer) 2 // 2 byte
-\`\`\`
-
-\`\`\`
-          0  1  2  3  4  5  6  7  8 9 10 11 12 13 14 15
-b1 -----> 0  0  0  1  0  1  0  1  0 1 1  0  0  0  0  0
-
-\`\`\`
-
-## BITCOUNT
-
-This command counts the number of set bits (bits with a value of 1) in a Redis string.
-
-Syntax:
-\`\`\`
-BITCOUNT key [start end] [BYTE | BIT]
-\`\`\`
-
-- \`key\`: The name of the Redis string key.
-- \`[start end]\` (optional): The optional range of bytes within the string in which to count the bits.
-
-Example:
-\`\`\`redis
-127.0.0.1:6379> BITCOUNT b1
-(integer) 5
-127.0.0.1:6379> BITCOUNT b1 0 7 BIT
-(integer) 3
-127.0.0.1:6379> BITCOUNT b1 1 1 BYTE
-(integer) 2
-\`\`\`
+> Start editing to see your changes reflected instantly.
 `;
 
-  const [value, setValue] = useState(initValue);
+const defineEditorThemes = (monaco) => {
+  monaco.editor.defineTheme('site-dark', {
+    base: 'vs-dark',
+    inherit: true,
+    rules: [],
+    colors: {
+      'editor.background': '#0d1117',
+      'editor.lineHighlightBackground': '#161b22',
+      'editorLineNumber.foreground': '#4a5568',
+      'editorLineNumber.activeForeground': '#6fa3ff',
+    },
+  });
+  monaco.editor.defineTheme('site-light', {
+    base: 'vs',
+    inherit: true,
+    rules: [],
+    colors: {
+      'editor.background': '#ffffff',
+      'editor.lineHighlightBackground': '#f0f4ff',
+    },
+  });
+};
+
+function MarkdownEditorContent() {
+  const { colorMode } = useColorMode();
+  const [value, setValue] = useState(INIT_VALUE);
+
+  const words = value ? value.trim().split(/\s+/).filter(Boolean).length : 0;
+  const lines = value ? value.split('\n').length : 0;
 
   return (
-    <Layout>
-      <div className={styles.container}>
-        <Editor
-          language="markdown"
-          value={initValue}
-          className={styles.monacoEditor}
-          onChange={(newValue) => {
-            setValue(newValue);
-          }}
-          theme='vs-dark'
-        />
-        <div className={styles.reactMarkdown}>
-          <ReactMarkdown children={value} />
+    <div className={styles.toolPage}>
+      {/* Toolbar */}
+      <div className={styles.toolBar}>
+        <span className={styles.toolBarTitle}>Markdown Editor</span>
+        <div className={styles.toolBarDivider} />
+        <span className={styles.toolBarMeta}>{lines} lines · {words} words</span>
+      </div>
+
+      {/* Split pane */}
+      <div className={styles.splitPane}>
+        {/* Left — Monaco editor */}
+        <div className={styles.pane}>
+          <div className={styles.paneHeader}>
+            <span>✏</span> editor
+          </div>
+          <div className={styles.paneBody}>
+            <Editor
+              language="markdown"
+              value={value}
+              theme={colorMode === 'dark' ? 'site-dark' : 'site-light'}
+              beforeMount={defineEditorThemes}
+              onChange={(v) => setValue(v ?? '')}
+              options={{
+                fontSize: 14,
+                minimap: { enabled: false },
+                lineNumbers: 'on',
+                wordWrap: 'on',
+                scrollBeyondLastLine: false,
+                padding: { top: 12, bottom: 12 },
+                renderLineHighlight: 'gutter',
+                smoothScrolling: true,
+              }}
+            />
+          </div>
+        </div>
+
+        {/* Right — Preview */}
+        <div className={styles.pane}>
+          <div className={styles.paneHeader}>
+            <span>◉</span> preview
+          </div>
+          <div className={styles.mdPreview}>
+            <ReactMarkdown>{value}</ReactMarkdown>
+          </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+export default function CreateNewDocument() {
+  return (
+    <Layout title="Markdown Editor" description="Write and preview markdown in real time">
+      <MarkdownEditorContent />
     </Layout>
   );
-
 }

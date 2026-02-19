@@ -9,7 +9,7 @@ const n8nApiUrl = process.env.REACT_APP_N8N_API_URL;
 const config = {
   title: 'Learn Technology Easily', // show in home
   tagline: 'Let’s Go on a Tech Journey Together', // show in home
-  favicon: 'img/ayah.png',
+  favicon: 'img/logo-3-orbit.svg',
   url: 'https://canvas-eye-416011.web.app/',
   baseUrl: '/',
   organizationName: 'Ayah',
@@ -50,11 +50,11 @@ const config = {
         respectPrefersColorScheme: true
       },
       navbar: {
-        style: "primary", // same as primary color
         logo: {
-          alt: 'My Site Logo',
-          src: 'img/ayah.png',
-          style: { width: '150px', height: '40px' }
+          alt: 'Learn Technology Easily',
+          src: 'img/logo-3-orbit.svg',
+          srcDark: 'img/logo-3-orbit-dark.svg',
+          style: { width: '44px', height: '44px' }
         },
         items: [
           {
@@ -65,20 +65,21 @@ const config = {
           }, {
             to: 'create-new-document',
             position: 'left',
-            label: 'Review Markdown',
+            label: 'Markdown Editor',
           }, {
             to: 'json-formatter',
             position: 'left',
-            label: 'JSON Foramtter',
+            label: 'JSON Formatter',
           }, {
             to: 'apiDocumentationGenerator',
             position: 'left',
-            label: 'API Documentation Generator',
-          }, {
-            to: 'rest-adapter',
-            position: 'left',
-            label: 'REST Adapter',
+            label: 'API Doc Generator',
           }
+          // , {
+          //   to: 'rest-adapter',
+          //   position: 'left',
+          //   label: 'REST Adapter',
+          // }
         ],
       },
       footer: {
