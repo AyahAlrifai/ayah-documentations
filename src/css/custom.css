@@ -435,6 +435,18 @@ html[data-theme='dark'] {
   }
 }
 
+/*
+ * z-index fix: Docusaurus 2.x sets NO z-index on .navbar-sidebar, but
+ * .navbar__inner has z-index:1. Inside the navbar's stacking context
+ * (position:sticky + z-index:999), an element with z-index:auto is painted
+ * BELOW an element with z-index:1 — so .navbar__inner was covering the
+ * sidebar panel and swallowing all click events (logo, close, dark-mode toggle).
+ * Setting z-index:2 on the sidebar lifts it above .navbar__inner.
+ */
+.navbar-sidebar {
+  z-index: 2;
+}
+
 /* Sidebar panel — dark mode */
 [data-theme='dark'] .navbar-sidebar {
   background: #080b12;

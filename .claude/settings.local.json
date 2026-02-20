@@ -1,7 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "Bash(start D:/ayah-documentations-master/static/img/logos-preview.html)"
+      "Bash(start D:/ayah-documentations-master/static/img/logos-preview.html)",
+      "Bash(while read f)",
+      "Bash(do grep -l \"navbar-sidebar\\\\|navbarSidebar\\\\|navbar_sidebar\" \"$f\")",
+      "Bash(done)"
     ]
   }
 }

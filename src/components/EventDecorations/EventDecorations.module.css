@@ -1,0 +1,340 @@
+/* ============================================================
+   EVENT DECORATIONS — CSS MODULE
+   Full-viewport seasonal overlay (Ramadan, Eid, New Year…)
+   ============================================================ */
+
+/* ── Container ──────────────────────────────────────────────── */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;          /* above page content, below navbar (999) */
+  pointer-events: none;  /* never blocks clicks */
+  overflow: hidden;
+}
+
+/* ── Stars (shared) ─────────────────────────────────────────── */
+.star {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--ev-primary);
+  box-shadow:
+    0 0 4px  var(--ev-primary),
+    0 0 10px var(--ev-glow);
+  animation: starTwinkle 2.8s ease-in-out infinite alternate;
+}
+
+.starSparkle {
+  position: absolute;
+  color: var(--ev-primary);
+  font-size: 14px;
+  line-height: 1;
+  text-shadow:
+    0 0 8px  var(--ev-primary),
+    0 0 18px var(--ev-glow);
+  animation: sparkleSpin 6s linear infinite, starTwinkle 3s ease-in-out infinite alternate;
+  transform-origin: center;
+}
+
+@keyframes starTwinkle {
+  0%   { opacity: 0.15; transform: scale(0.7);  }
+  40%  { opacity: 1;    transform: scale(1.35); }
+  70%  { opacity: 0.55; transform: scale(0.9);  }
+  100% { opacity: 0.95; transform: scale(1.25); }
+}
+
+@keyframes sparkleSpin {
+  from { transform: rotate(0deg);   }
+  to   { transform: rotate(360deg); }
+}
+
+/* ── Light-mode tweaks (shared) ─────────────────────────────── */
+:global([data-theme='light']) .star {
+  box-shadow:
+    0 0 5px  var(--ev-primary),
+    0 0 14px var(--ev-glow);
+  opacity: 0.85;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   RAMADAN
+   ══════════════════════════════════════════════════════════════ */
+
+.moonWrapper {
+  position: absolute;
+  top: 8%;
+  left: 50%;
+  width: clamp(80px, 9.5vw, 130px);
+  filter:
+    drop-shadow(0 0 14px var(--ev-glow))
+    drop-shadow(0 0 32px var(--ev-glow));
+  animation: moonFloat 7s ease-in-out infinite alternate;
+}
+
+.moonSvg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@keyframes moonFloat {
+  from { transform: translateX(-50%) translateY(0);     }
+  to   { transform: translateX(-50%) translateY(-16px); }
+}
+
+:global([data-theme='light']) .moonWrapper {
+  filter:
+    drop-shadow(0 0 18px var(--ev-glow))
+    drop-shadow(0 0 40px var(--ev-glow));
+}
+
+.fanoosWrap {
+  position: absolute;
+  top: var(--ifm-navbar-height, 3.75rem);
+  transform-origin: top center;
+  animation:
+    fanoosSway  4.5s ease-in-out infinite,
+    faNoosGlow  2.2s ease-in-out infinite alternate;
+}
+
+.fanoosSvg {
+  display: block;
+}
+
+@keyframes fanoosSway {
+  0%   { transform: rotate(-6deg); }
+  50%  { transform: rotate(6deg);  }
+  100% { transform: rotate(-6deg); }
+}
+
+@keyframes faNoosGlow {
+  from {
+    filter:
+      drop-shadow(0 6px  8px var(--ev-glow))
+      drop-shadow(0 0   10px var(--ev-glow));
+  }
+  to {
+    filter:
+      drop-shadow(0 6px 22px var(--ev-glow))
+      drop-shadow(0 0   36px var(--ev-glow))
+      drop-shadow(0 0   50px rgba(255, 200, 0, 0.18));
+  }
+}
+
+.innerGlow {
+  animation: innerGlowPulse 2.2s ease-in-out infinite alternate;
+}
+
+@keyframes innerGlowPulse {
+  from { opacity: 0.12; }
+  to   { opacity: 0.7;  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   EID AL-FITR
+   ══════════════════════════════════════════════════════════════ */
+
+/* Crescent + star — top-center, slightly larger than Ramadan moon */
+.eidMoonWrap {
+  position: absolute;
+  top: calc(var(--ifm-navbar-height, 3.75rem) + 10px);
+  left: 50%;
+  width: clamp(110px, 14vw, 170px);
+  filter:
+    drop-shadow(0 0 14px var(--ev-glow))
+    drop-shadow(0 0 32px var(--ev-glow));
+  animation: eidMoonFloat 7s ease-in-out infinite alternate;
+}
+
+.eidMoonSvg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@keyframes eidMoonFloat {
+  from { transform: translateX(-50%) translateY(0);     }
+  to   { transform: translateX(-50%) translateY(-14px); }
+}
+
+/* Colorful string lights */
+.stringRow {
+  position: absolute;
+  top: var(--ifm-navbar-height, 3.75rem);
+  left: 0;
+  right: 0;
+  height: 52px;
+}
+
+/* The rope */
+.stringRow::before {
+  content: '';
+  position: absolute;
+  top: 1px;
+  left: 0;
+  right: 0;
+  height: 1.5px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(200, 168, 75, 0.4) 3%,
+    rgba(200, 168, 75, 0.4) 97%,
+    transparent 100%
+  );
+}
+
+.bulbPost {
+  position: absolute;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bulbWire {
+  width: 1px;
+  height: 16px;
+  background: rgba(200, 168, 75, 0.4);
+}
+
+.bulb {
+  width: 11px;
+  height: 15px;
+  border-radius: 50% 50% 45% 45%;
+  animation: bulbPulse 1.8s ease-in-out infinite alternate;
+}
+
+@keyframes bulbPulse {
+  from { opacity: 0.5;  filter: brightness(0.85); }
+  to   { opacity: 1;    filter: brightness(1.4);  }
+}
+
+/* Floating geometric stars (✦) */
+.geomStar {
+  position: absolute;
+  color: var(--ev-primary);
+  text-shadow:
+    0 0 8px  var(--ev-primary),
+    0 0 18px var(--ev-glow);
+  animation: geomStarFloat 4s ease-in-out infinite alternate;
+}
+
+@keyframes geomStarFloat {
+  0%   { transform: translateY(0)     rotate(0deg);   opacity: 0.25; }
+  50%  { transform: translateY(-10px) rotate(12deg);  opacity: 0.9;  }
+  100% { transform: translateY(5px)   rotate(-10deg); opacity: 0.4;  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   EID AL-ADHA
+   ══════════════════════════════════════════════════════════════ */
+
+/* Sun */
+.sunWrap {
+  position: absolute;
+  top: calc(var(--ifm-navbar-height, 3.75rem) + 18px);
+  left: 7%;
+  width: clamp(48px, 5.5vw, 76px);
+  animation: sunPulse 5s ease-in-out infinite alternate;
+}
+
+.sunSvg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@keyframes sunPulse {
+  from {
+    filter:
+      drop-shadow(0 0 10px rgba(255, 210, 0, 0.55))
+      drop-shadow(0 0 22px rgba(255, 210, 0, 0.28));
+  }
+  to {
+    filter:
+      drop-shadow(0 0 22px rgba(255, 210, 0, 0.75))
+      drop-shadow(0 0 50px rgba(255, 210, 0, 0.38));
+  }
+}
+
+/* Sheep */
+.sheepWrap {
+  position: absolute;
+  animation: sheepFloat 4s ease-in-out infinite alternate;
+}
+
+.sheepSvg {
+  display: block;
+}
+
+@keyframes sheepFloat {
+  from { transform: translateY(0);     }
+  to   { transform: translateY(-12px); }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   NEW YEAR
+   ══════════════════════════════════════════════════════════════ */
+
+/* Falling snowflakes */
+.snowflake {
+  position: absolute;
+  top: -5vh;
+  color: rgba(210, 235, 255, 0.9);
+  text-shadow:
+    0 0 6px  rgba(200, 225, 255, 0.6),
+    0 0 16px rgba(180, 215, 255, 0.3);
+  animation: snowFall linear infinite;
+  user-select: none;
+}
+
+@keyframes snowFall {
+  0% {
+    transform: translateY(-8vh) rotate(0deg);
+    opacity: 0;
+  }
+  8%  { opacity: 1; }
+  90% { opacity: 0.75; }
+  100% {
+    transform: translateY(108vh) rotate(540deg);
+    opacity: 0;
+  }
+}
+
+/* Firework CSS burst — 8 particles via box-shadow */
+.firework {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--fw-color, #FFD700);
+  animation: fireworkBurst ease-out infinite;
+}
+
+@keyframes fireworkBurst {
+  0% {
+    box-shadow:
+      0 0 0 0px var(--fw-color, #FFD700),
+      0 0 0 0px var(--fw-color, #FFD700),
+      0 0 0 0px var(--fw-color, #FFD700),
+      0 0 0 0px var(--fw-color, #FFD700),
+      0 0 0 0px var(--fw-color, #FFD700),
+      0 0 0 0px var(--fw-color, #FFD700),
+      0 0 0 0px var(--fw-color, #FFD700),
+      0 0 0 0px var(--fw-color, #FFD700);
+    opacity: 1;
+    transform: scale(1.6);
+  }
+  100% {
+    box-shadow:
+        0px -50px 0 2px var(--fw-color, #FFD700),
+       35px -35px 0 2px var(--fw-color, #FFD700),
+       50px   0px 0 2px var(--fw-color, #FFD700),
+       35px  35px 0 2px var(--fw-color, #FFD700),
+        0px  50px 0 2px var(--fw-color, #FFD700),
+      -35px  35px 0 2px var(--fw-color, #FFD700),
+      -50px   0px 0 2px var(--fw-color, #FFD700),
+      -35px -35px 0 2px var(--fw-color, #FFD700);
+    opacity: 0;
+    transform: scale(1);
+  }
+}

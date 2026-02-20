@@ -3,6 +3,7 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import HomepageFeatures from '@site/src/components/HomepageFeatures';
 import HomepageHeader from '@site/src/components/HomepageHeader';
+import EventDecorations from '@site/src/components/EventDecorations';
 
 /**
  * 
@@ -14,6 +15,7 @@ export default function Home() {
     <Layout
       title={`${siteConfig.title}`}
       description="Description will go into a meta tag in <head />">
+      <EventDecorations />
       <HomepageHeader siteConfig={siteConfig} />
       <main>
         <HomepageFeatures />
