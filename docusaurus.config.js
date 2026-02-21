@@ -90,6 +90,10 @@ const config = {
             to: 'trains',
             position: 'left',
             label: 'Trains',
+          }, {
+            to: 'number-guessing',
+            position: 'left',
+            label: 'Number Guessing',
           }
           // , {
           //   to: 'rest-adapter',
