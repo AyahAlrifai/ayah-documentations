@@ -74,6 +74,22 @@ const config = {
             to: 'apiDocumentationGenerator',
             position: 'left',
             label: 'API Doc Generator',
+          }, {
+            to: 'tic-tac-toe',
+            position: 'left',
+            label: 'Tic Tac Toe',
+          }, {
+            to: 'eight-puzzle',
+            position: 'left',
+            label: '8 Puzzle',
+          }, {
+            to: 'dots-and-boxes',
+            position: 'left',
+            label: 'Dots and Boxes',
+          }, {
+            to: 'trains',
+            position: 'left',
+            label: 'Trains',
           }
           // , {
           //   to: 'rest-adapter',

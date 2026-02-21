@@ -5,7 +5,7 @@ const features = [
   {
     icon: '📚',
     gradient: 'linear-gradient(135deg, rgba(82,141,255,0.18), rgba(82,141,255,0.06))',
-    accent: '#528dff',
+    accent: '#fc7dc7',
     title: 'Rich Documentation',
     description:
       '11+ technology topics — Angular, SQL, Java/Spring, RabbitMQ, Redis, AOP, Camunda, Swagger, and more — all structured and searchable.',
@@ -18,14 +18,14 @@ const features = [
     description:
       'JSON Formatter, Markdown Editor with live preview, and an API Documentation Generator — powerful utilities that run entirely in your browser.',
   },
-  {
-    icon: '🤖',
-    gradient: 'linear-gradient(135deg, rgba(156,2,92,0.18), rgba(156,2,92,0.06))',
-    accent: '#fc7dc7',
-    title: 'AI-Powered REST Adapter',
-    description:
-      'Smart REST Adapter backed by N8N workflow automation — format, map, and test your API requests with the help of an AI agent.',
-  },
+  // {
+  //   icon: '🤖',
+  //   gradient: 'linear-gradient(135deg, rgba(156,2,92,0.18), rgba(156,2,92,0.06))',
+  //   accent: '#fc7dc7',
+  //   title: 'AI-Powered REST Adapter',
+  //   description:
+  //     'Smart REST Adapter backed by N8N workflow automation — format, map, and test your API requests with the help of an AI agent.',
+  // },
   {
     icon: '⚡',
     gradient: 'linear-gradient(135deg, rgba(214,196,1,0.18), rgba(214,196,1,0.06))',
@@ -38,7 +38,7 @@ const features = [
 
 const stats = [
   { end: 11, suffix: '+', label: 'Technology Topics' },
-  { end: 4,  suffix: '',  label: 'Developer Tools' },
+  { end: 4, suffix: '', label: 'Developer Tools' },
   { end: 100, suffix: '%', label: 'Free to Use' },
   { special: '∞', label: 'Things to Learn' },
 ];
