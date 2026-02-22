@@ -3,7 +3,7 @@ import Layout from '@theme/Layout';
 
 // ─── WebSocket ────────────────────────────────────────────────────────────────
 const WS_SERVER = 'ws://localhost:3001';
-function uid(len = 8) { return Math.random().toString(36).slice(2, 2 + len).toUpperCase(); }
+function uid(len = 8) { return 'D' + Math.random().toString(36).slice(2, 2 + len).toUpperCase(); }
 
 // ─── Board Constants ──────────────────────────────────────────────────────────
 const DOTS  = 5;
@@ -136,24 +136,14 @@ function DotsAndBoxesGame() {
   const [shareUrl, setShareUrl] = useState('');
   const [copied, setCopied] = useState(false);
   const wsRef = useRef(null);
+  const didAutoConnectRef = useRef(false);
 
-  // ── Detect game ID in URL on mount ──────────────────────────────────────────
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const gId = new URLSearchParams(window.location.search).get('game');
-    if (gId && !gId.startsWith('T')) {
-      setGameId(gId);
-      setMode('online');
-      setShareUrl(`${window.location.origin}${window.location.pathname}?game=${gId}`);
-    }
-  }, []);
-
-  // ── WebSocket connection ─────────────────────────────────────────────────────
-  useEffect(() => {
-    if (mode !== 'online' || !gameId) return;
+  // ── WebSocket connect function (called explicitly to avoid Strict Mode double-connect) ──
+  function connectWS(gId) {
+    wsRef.current?.close();
     setConn('connecting');
     const playerId = uid(12);
-    const ws = new WebSocket(`${WS_SERVER}?game=${gameId}&player=${playerId}`);
+    const ws = new WebSocket(`${WS_SERVER}?game=${gId}&player=${playerId}`);
     wsRef.current = ws;
 
     ws.onmessage = ({ data }) => {
@@ -175,11 +165,24 @@ function DotsAndBoxesGame() {
         default: break;
       }
     };
-
     ws.onclose = () => setConn(p => (p === 'playing' || p === 'waiting') ? 'disconnected' : p);
     ws.onerror = () => setConn('error');
-    return () => { ws.close(); wsRef.current = null; };
-  }, [mode, gameId]);
+  }
+
+  // ── Detect game ID in URL on mount ──────────────────────────────────────────
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const gId = new URLSearchParams(window.location.search).get('game');
+    if (gId && gId.startsWith('D')) {
+      setGameId(gId);
+      setMode('online');
+      setShareUrl(`${window.location.origin}${window.location.pathname}?game=${gId}`);
+      if (!didAutoConnectRef.current) {
+        didAutoConnectRef.current = true;
+        connectWS(gId);
+      }
+    }
+  }, []);
 
   // ── AI move ──────────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -224,6 +227,7 @@ function DotsAndBoxesGame() {
         window.history.pushState({}, '', u.toString());
         setShareUrl(`${window.location.origin}${window.location.pathname}?game=${gId}`);
       }
+      connectWS(gId);
     } else {
       setGameId(null);
       if (typeof window !== 'undefined') {

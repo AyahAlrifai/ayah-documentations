@@ -3,7 +3,16 @@ const WebSocket = require('ws');
 const PORT = process.env.PORT || 3001;
 const wss  = new WebSocket.Server({ port: PORT });
 
-// games[gameId] = { players: [{ ws, playerId, playerNumber }] }
+// ── Game type from ID prefix ──────────────────────────────────────────────────
+// X* → Tic-Tac-Toe   |   D* → Dots and Boxes   |   T* → Trains (Three Stones)
+function getGameType(gameId) {
+  if (gameId.startsWith('X')) return 'tic-tac-toe';
+  if (gameId.startsWith('D')) return 'dots-and-boxes';
+  if (gameId.startsWith('T')) return 'trains';
+  return 'game';
+}
+
+// games[gameId] = { players: [{ ws, playerId, playerNumber }], type: string }
 const games = new Map();
 
 // ── Cleanup empty rooms every 5 minutes ──────────────────────────────────────
@@ -30,8 +39,10 @@ wss.on('connection', (ws, req) => {
 
   if (!gameId || !playerId) { ws.close(); return; }
 
+  const gameType = getGameType(gameId);
+
   // Get or create game room
-  if (!games.has(gameId)) games.set(gameId, { players: [] });
+  if (!games.has(gameId)) games.set(gameId, { players: [], type: gameType });
   const game = games.get(gameId);
 
   // Remove stale connections
@@ -51,13 +62,13 @@ wss.on('connection', (ws, req) => {
   if (game.players.length === 1) {
     // First player – wait for opponent
     send(ws, { type: 'waiting', playerNumber: 1 });
-    console.log(`[${gameId}] Player 1 joined – waiting for Player 2`);
+    console.log(`[${gameType}] [${gameId}] Player 1 joined – waiting for Player 2`);
   } else {
     // Second player joined – start game for both
     game.players.forEach(p => {
       send(p.ws, { type: 'start', playerNumber: p.playerNumber });
     });
-    console.log(`[${gameId}] Player 2 joined – game started`);
+    console.log(`[${gameType}] [${gameId}] Player 2 joined – game started`);
   }
 
   // ── Messages from client ──────────────────────────────────────────────────
@@ -65,23 +76,23 @@ wss.on('connection', (ws, req) => {
     let msg;
     try { msg = JSON.parse(data); } catch { return; }
 
+    // All three games (tic-tac-toe, dots-and-boxes, trains) use 'move' and
+    // 'reset' message types. The server relays them as-is to both players;
+    // each client applies the move to its own local game state.
     if (msg.type === 'move') {
-      // Broadcast the full message to ALL players (including sender) so every
-      // client applies it from the same server-confirmed payload.
-      // This works for any game (dots-and-boxes, trains, etc.)
       broadcast(game, msg);
     }
 
     if (msg.type === 'reset') {
       broadcast(game, msg);
-      console.log(`[${gameId}] Game reset`);
+      console.log(`[${gameType}] [${gameId}] Game reset`);
     }
   });
 
   // ── Disconnect ────────────────────────────────────────────────────────────
   ws.on('close', () => {
     game.players = game.players.filter(p => p.ws !== ws);
-    console.log(`[${gameId}] Player ${playerNumber} disconnected`);
+    console.log(`[${gameType}] [${gameId}] Player ${playerNumber} disconnected`);
 
     // Notify remaining player
     game.players.forEach(p => {
@@ -93,4 +104,7 @@ wss.on('connection', (ws, req) => {
   });
 });
 
-console.log(`✅ Dots and Boxes WebSocket server running on ws://localhost:${PORT}`);
+console.log(`✅ WebSocket game server running on ws://localhost:${PORT}`);
+console.log(`   Tic-Tac-Toe  →  game IDs start with X`);
+console.log(`   Dots & Boxes →  game IDs start with D`);
+console.log(`   Trains       →  game IDs start with T`);

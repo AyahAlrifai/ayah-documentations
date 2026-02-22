@@ -3,7 +3,7 @@ import Layout from '@theme/Layout';
 
 // ─── WebSocket ────────────────────────────────────────────────────────────────
 const WS_SERVER = 'ws://localhost:3001';
-function uid(n = 8) { return Math.random().toString(36).slice(2, 2 + n).toUpperCase(); }
+function uid(n = 8) { return 'X' + Math.random().toString(36).slice(2, 2 + n).toUpperCase(); }
 
 // ─── Game Logic ───────────────────────────────────────────────────────────────
 const WIN_LINES = [
@@ -143,26 +143,16 @@ function TicTacToeGame() {
   const [shareUrl, setShareUrl] = useState('');
   const [copied, setCopied] = useState(false);
   const wsRef = useRef(null);
+  const didAutoConnectRef = useRef(false);
   // nextStarterRef: stores xTurn value for the NEXT game (false = O starts, true = X starts)
   const nextStarterRef = useRef(false);
 
-  // ── Detect game ID in URL on mount ──────────────────────────────────────────
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const gId = new URLSearchParams(window.location.search).get('game');
-    if (gId && !gId.startsWith('T')) {
-      setGameId(gId);
-      setMode('online');
-      setShareUrl(`${window.location.origin}${window.location.pathname}?game=${gId}`);
-    }
-  }, []);
-
-  // ── WebSocket connection ─────────────────────────────────────────────────────
-  useEffect(() => {
-    if (mode !== 'online' || !gameId) return;
+  // ── WebSocket connect function (called explicitly to avoid Strict Mode double-connect) ──
+  function connectWS(gId) {
+    wsRef.current?.close();
     setConn('connecting');
     const pid = uid(12);
-    const ws = new WebSocket(`${WS_SERVER}?game=${gameId}&player=${pid}`);
+    const ws = new WebSocket(`${WS_SERVER}?game=${gId}&player=${pid}`);
     wsRef.current = ws;
 
     ws.onmessage = ({ data }) => {
@@ -180,11 +170,24 @@ function TicTacToeGame() {
         dispatch({ type: 'RESET', xTurn: xStarts });
       }
     };
-
     ws.onclose = () => setConn(p => (p === 'playing' || p === 'waiting') ? 'disconnected' : p);
     ws.onerror = () => setConn('error');
-    return () => { ws.close(); wsRef.current = null; };
-  }, [mode, gameId]);
+  }
+
+  // ── Detect game ID in URL on mount ──────────────────────────────────────────
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const gId = new URLSearchParams(window.location.search).get('game');
+    if (gId && gId.startsWith('X')) {
+      setGameId(gId);
+      setMode('online');
+      setShareUrl(`${window.location.origin}${window.location.pathname}?game=${gId}`);
+      if (!didAutoConnectRef.current) {
+        didAutoConnectRef.current = true;
+        connectWS(gId);
+      }
+    }
+  }, []);
 
   // ── Computer AI ──────────────────────────────────────────────────────────────
   const aiTurn = mode === 'computer' && game.xTurn && !game.result;
@@ -230,6 +233,7 @@ function TicTacToeGame() {
         window.history.pushState({}, '', u.toString());
         setShareUrl(`${window.location.origin}${window.location.pathname}?game=${gId}`);
       }
+      connectWS(gId);
     } else {
       setGameId(null);
       if (typeof window !== 'undefined') {

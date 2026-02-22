@@ -231,25 +231,14 @@ function ThreeStonesGame() {
   const [shareUrl, setShareUrl] = useState('');
   const [copied, setCopied] = useState(false);
   const wsRef = useRef(null);
+  const didAutoConnectRef = useRef(false);
 
-  // ── Detect game ID in URL on mount ──────────────────────────────────────────
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const gId = new URLSearchParams(window.location.search).get('game');
-    if (gId && gId.startsWith('T')) {
-      setGameId(gId);
-      setMode('online');
-      setShareUrl(`${window.location.origin}${window.location.pathname}?game=${gId}`);
-    }
-  }, []);
-
-  // ── WebSocket connection ─────────────────────────────────────────────────────
-  useEffect(() => {
-    if (mode !== 'online' || !gameId) return;
+  // ── WebSocket connect function (called explicitly to avoid Strict Mode double-connect) ──
+  function connectWS(gId) {
+    wsRef.current?.close();
     setConn('connecting');
-
     const pid = uid(12);
-    const ws = new WebSocket(`${WS_SERVER}?game=${gameId}&player=${pid}`);
+    const ws = new WebSocket(`${WS_SERVER}?game=${gId}&player=${pid}`);
     wsRef.current = ws;
 
     ws.onmessage = ({ data }) => {
@@ -268,11 +257,24 @@ function ThreeStonesGame() {
         else dispatch({ type: 'MOVE_DIRECT', from: msg.from, to: msg.to });
       }
     };
-
     ws.onclose = () => setConn(p => (p === 'playing' || p === 'waiting') ? 'disconnected' : p);
     ws.onerror = () => setConn('error');
-    return () => { ws.close(); wsRef.current = null; };
-  }, [mode, gameId]);
+  }
+
+  // ── Detect game ID in URL on mount ──────────────────────────────────────────
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const gId = new URLSearchParams(window.location.search).get('game');
+    if (gId && gId.startsWith('T')) {
+      setGameId(gId);
+      setMode('online');
+      setShareUrl(`${window.location.origin}${window.location.pathname}?game=${gId}`);
+      if (!didAutoConnectRef.current) {
+        didAutoConnectRef.current = true;
+        connectWS(gId);
+      }
+    }
+  }, []);
 
   // ── Computer AI ──────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -320,6 +322,7 @@ function ThreeStonesGame() {
         window.history.pushState({}, '', u.toString());
         setShareUrl(`${window.location.origin}${window.location.pathname}?game=${gId}`);
       }
+      connectWS(gId);
     } else {
       setGameId(null);
       if (typeof window !== 'undefined') {
