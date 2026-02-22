@@ -4,8 +4,9 @@ sidebar_position: 1
 
 # MultiExecPro
 
-![alt text](img/multiExecPro1.png)
-![alt text](img/multiExecPro2.png)
+![alt text](img/multiExecPro4.png)
+![alt text](img/multiExecPro3.png)
+![alt text](img/multiExecPro5.png)
 
 **🔗 Access the Tool: [GitHub Repository](https://github.com/AyahAlrifai/MultiExecPro)**
 
