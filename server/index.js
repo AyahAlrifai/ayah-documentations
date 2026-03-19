@@ -1,7 +1,7 @@
 const WebSocket = require('ws');
 
 const PORT = process.env.PORT || 3001;
-const wss  = new WebSocket.Server({ port: PORT });
+const wss = new WebSocket.Server({ port: PORT });
 
 // ── Game type from ID prefix ──────────────────────────────────────────────────
 // X* → Tic-Tac-Toe   |   D* → Dots and Boxes   |   T* → Trains (Three Stones)
@@ -33,8 +33,8 @@ function broadcast(game, obj) {
 
 // ── New connection ────────────────────────────────────────────────────────────
 wss.on('connection', (ws, req) => {
-  const url      = new URL(req.url, `ws://localhost:${PORT}`);
-  const gameId   = url.searchParams.get('game');
+  const url = new URL(req.url, `wss://canvas-eye-416011.web.app`);
+  const gameId = url.searchParams.get('game');
   const playerId = url.searchParams.get('player');
 
   if (!gameId || !playerId) { ws.close(); return; }
@@ -104,7 +104,7 @@ wss.on('connection', (ws, req) => {
   });
 });
 
-console.log(`✅ WebSocket game server running on ws://localhost:${PORT}`);
+console.log(`✅ WebSocket game server running on wss://canvas-eye-416011.web.app`);
 console.log(`   Tic-Tac-Toe  →  game IDs start with X`);
 console.log(`   Dots & Boxes →  game IDs start with D`);
 console.log(`   Trains       →  game IDs start with T`);

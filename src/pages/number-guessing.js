@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Layout from '@theme/Layout';
 
 // ─── WebSocket ────────────────────────────────────────────────────────────────
-const WS_SERVER = 'ws://localhost:3001';
+const WS_SERVER = 'wss://canvas-eye-416011.web.app';
 function uid(n = 8) { return Math.random().toString(36).slice(2, 2 + n).toUpperCase(); }
 
 // ─── Game Helpers ─────────────────────────────────────────────────────────────
@@ -71,7 +71,7 @@ function NumberGuessingGame() {
   const [secretDigits, setSecretDigits] = useState(['', '', '']);
   const sRef0 = useRef(null); const sRef1 = useRef(null); const sRef2 = useRef(null);
   const sRefs = [sRef0, sRef1, sRef2];
-  const [guessInput,  setGuessInput]  = useState('');
+  const [guessInput, setGuessInput] = useState('');
   const [error, setError] = useState('');
   const [thinking, setThinking] = useState(false);
 
@@ -79,15 +79,15 @@ function NumberGuessingGame() {
   const candidatesRef = useRef(Array.from({ length: 900 }, (_, i) => String(i + 100)));
 
   // ── Online state ──────────────────────────────────────────────────────────
-  const [conn, setConn]       = useState('idle');
-  const [me, setMe]           = useState(null);
-  const meRef                 = useRef(null);
-  const turnRef               = useRef(1);
-  const [gameId, setGameId]   = useState(null);
+  const [conn, setConn] = useState('idle');
+  const [me, setMe] = useState(null);
+  const meRef = useRef(null);
+  const turnRef = useRef(1);
+  const [gameId, setGameId] = useState(null);
   const [shareUrl, setShareUrl] = useState('');
-  const [copied, setCopied]   = useState(false);
-  const wsRef                 = useRef(null);
-  const tempSecretRef         = useRef(''); // holds secret until WS assigns player number
+  const [copied, setCopied] = useState(false);
+  const wsRef = useRef(null);
+  const tempSecretRef = useRef(''); // holds secret until WS assigns player number
 
   // ── URL detection ─────────────────────────────────────────────────────────
   useEffect(() => {
@@ -148,13 +148,13 @@ function NumberGuessingGame() {
         const n = msg.playerNumber;
         meRef.current = n; setMe(n);
         if (n === 1) saveP1(tempSecretRef.current);
-        else         saveP2(tempSecretRef.current);
+        else saveP2(tempSecretRef.current);
         setConn('playing');
         turnRef.current = 1; setTurn(1);
         setPhase('game');
-      } else if (msg.type === 'full')       { setConn('full'); }
-      else if (msg.type === 'disconnect')   { setConn('disconnected'); }
-      else if (msg.type === 'move')         { handleWsMove(msg); }
+      } else if (msg.type === 'full') { setConn('full'); }
+      else if (msg.type === 'disconnect') { setConn('disconnected'); }
+      else if (msg.type === 'move') { handleWsMove(msg); }
       else if (msg.type === 'reset') {
         // Keep secrets, restart board
         setP1Guesses([]); setP2Guesses([]);
@@ -264,9 +264,9 @@ function NumberGuessingGame() {
 
     // Local modes: auto-calculate
     const opSecret = turn === 1 ? p2Ref.current : p1Ref.current;
-    const correct  = countCorrect(opSecret, guess);
+    const correct = countCorrect(opSecret, guess);
     if (turn === 1) setP1Guesses(prev => [...prev, { guess, correct }]);
-    else            setP2Guesses(prev => [...prev, { guess, correct }]);
+    else setP2Guesses(prev => [...prev, { guess, correct }]);
 
     if (correct === 3) { setWinner(turn); setPhase('over'); }
     else { const n = 3 - turn; turnRef.current = n; setTurn(n); }
@@ -278,7 +278,7 @@ function NumberGuessingGame() {
     setThinking(true);
     const id = setTimeout(() => {
       const cands = candidatesRef.current;
-      const guess  = cands[Math.floor(Math.random() * cands.length)];
+      const guess = cands[Math.floor(Math.random() * cands.length)];
       const correct = countCorrect(p1Ref.current, guess);
       candidatesRef.current = cands.filter(c => countCorrect(c, guess) === correct);
       setP2Guesses(prev => [...prev, { guess, correct }]);
@@ -307,38 +307,38 @@ function NumberGuessingGame() {
   }
 
   // ── Colours ───────────────────────────────────────────────────────────────
-  const bg      = dark ? '#0f0f1a' : '#f0f4ff';
+  const bg = dark ? '#0f0f1a' : '#f0f4ff';
   const surface = dark ? '#1a1a30' : '#ffffff';
-  const text    = dark ? '#e0e0f0' : '#1a1a2e';
-  const sub     = dark ? 'rgba(224,224,240,.5)' : 'rgba(26,26,46,.5)';
-  const accent  = '#6c63ff';
+  const text = dark ? '#e0e0f0' : '#1a1a2e';
+  const sub = dark ? 'rgba(224,224,240,.5)' : 'rgba(26,26,46,.5)';
+  const accent = '#6c63ff';
   const borderC = dark ? '#3a3a6a' : '#c5caff';
-  const shadow  = dark ? '0 8px 32px rgba(0,0,0,.6)' : '0 8px 32px rgba(108,99,255,.12)';
+  const shadow = dark ? '0 8px 32px rgba(0,0,0,.6)' : '0 8px 32px rgba(108,99,255,.12)';
   const panelBg = dark ? '#12122a' : '#f8f9ff';
-  const P1C     = '#6c63ff';
-  const P2C     = '#f472b6';
+  const P1C = '#6c63ff';
+  const P2C = '#f472b6';
 
   // ── Derived ───────────────────────────────────────────────────────────────
-  const isOnline  = mode === 'online';
+  const isOnline = mode === 'online';
   // "viewAs": whose perspective to show in my panel
-  const viewAs    = isOnline ? (me ?? 1) : (mode === 'friend' ? turn : 1);
+  const viewAs = isOnline ? (me ?? 1) : (mode === 'friend' ? turn : 1);
   const myGuesses = viewAs === 1 ? p1Guesses : p2Guesses;
   const opGuesses = viewAs === 1 ? p2Guesses : p1Guesses;
   const myDisplaySecret = viewAs === 1 ? p1Secret : p2Secret;
-  const myLabel   = isOnline ? 'You' : (mode === 'computer' ? 'You' : `Player ${viewAs}`);
-  const opLabel   = isOnline ? 'Opponent' : (mode === 'computer' ? 'Computer' : `Player ${3 - viewAs}`);
-  const myColor   = viewAs === 1 ? P1C : P2C;
-  const opColor   = viewAs === 1 ? P2C : P1C;
+  const myLabel = isOnline ? 'You' : (mode === 'computer' ? 'You' : `Player ${viewAs}`);
+  const opLabel = isOnline ? 'Opponent' : (mode === 'computer' ? 'Computer' : `Player ${3 - viewAs}`);
+  const myColor = viewAs === 1 ? P1C : P2C;
+  const opColor = viewAs === 1 ? P2C : P1C;
 
   const showGuessInput = phase === 'game' && !winner && !thinking && (
-    isOnline   ? (conn === 'playing' && turn === me) :
-    mode === 'computer' ? turn === 1 : true
+    isOnline ? (conn === 'playing' && turn === me) :
+      mode === 'computer' ? turn === 1 : true
   );
 
   const turnLabel = thinking ? 'Computer is thinking…'
-    : isOnline    ? (turn === me ? '🟢 Your Turn' : '⏳ Opponent\'s Turn')
-    : mode === 'computer' ? (turn === 1 ? 'Your Turn' : 'Computer\'s Turn')
-    : `Player ${turn}'s Turn`;
+    : isOnline ? (turn === me ? '🟢 Your Turn' : '⏳ Opponent\'s Turn')
+      : mode === 'computer' ? (turn === 1 ? 'Your Turn' : 'Computer\'s Turn')
+        : `Player ${turn}'s Turn`;
 
   function tabStyle(m) {
     const active = mode === m;
@@ -395,10 +395,10 @@ function NumberGuessingGame() {
       {showOverlay && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
           <div style={{ background: surface, borderRadius: 20, padding: '2.5rem 2rem', maxWidth: 400, width: '90%', boxShadow: shadow, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
-            {conn === 'connecting'   && <><div style={{ fontSize: '2.5rem' }}>⏳</div><h2 style={{ margin: 0, color: accent }}>Connecting…</h2><p style={{ color: sub, margin: 0 }}>Setting up your game room</p></>}
-            {conn === 'full'         && <><div style={{ fontSize: '2.5rem' }}>🚫</div><h2 style={{ margin: 0, color: P2C }}>Game is Full</h2><p style={{ color: sub, margin: 0 }}>This game already has two players.</p></>}
+            {conn === 'connecting' && <><div style={{ fontSize: '2.5rem' }}>⏳</div><h2 style={{ margin: 0, color: accent }}>Connecting…</h2><p style={{ color: sub, margin: 0 }}>Setting up your game room</p></>}
+            {conn === 'full' && <><div style={{ fontSize: '2.5rem' }}>🚫</div><h2 style={{ margin: 0, color: P2C }}>Game is Full</h2><p style={{ color: sub, margin: 0 }}>This game already has two players.</p></>}
             {conn === 'disconnected' && <><div style={{ fontSize: '2.5rem' }}>🔌</div><h2 style={{ margin: 0 }}>Opponent Disconnected</h2><button onClick={() => window.location.reload()} style={btnPrimary}>New Game</button></>}
-            {conn === 'error'        && <><div style={{ fontSize: '2.5rem' }}>⚠️</div><h2 style={{ margin: 0 }}>Connection Error</h2><button onClick={() => window.location.reload()} style={btnPrimary}>Try Again</button></>}
+            {conn === 'error' && <><div style={{ fontSize: '2.5rem' }}>⚠️</div><h2 style={{ margin: 0 }}>Connection Error</h2><button onClick={() => window.location.reload()} style={btnPrimary}>Try Again</button></>}
           </div>
         </div>
       )}
@@ -415,8 +415,8 @@ function NumberGuessingGame() {
         {phase !== 'game' && phase !== 'over' && (
           <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.4rem' }}>
             <button style={tabStyle('computer')} onClick={() => changeMode('computer')}>vs Computer</button>
-            <button style={tabStyle('friend')}   onClick={() => changeMode('friend')}>vs Friend</button>
-            <button style={tabStyle('online')}   onClick={() => changeMode('online')}>Online</button>
+            <button style={tabStyle('friend')} onClick={() => changeMode('friend')}>vs Friend</button>
+            <button style={tabStyle('online')} onClick={() => changeMode('online')}>Online</button>
           </div>
         )}
 
@@ -500,8 +500,8 @@ function NumberGuessingGame() {
             {/* Mode + round info */}
             <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.2rem' }}>
               <button style={tabStyle('computer')} onClick={() => changeMode('computer')}>vs Computer</button>
-              <button style={tabStyle('friend')}   onClick={() => changeMode('friend')}>vs Friend</button>
-              <button style={tabStyle('online')}   onClick={() => changeMode('online')}>Online</button>
+              <button style={tabStyle('friend')} onClick={() => changeMode('friend')}>vs Friend</button>
+              <button style={tabStyle('online')} onClick={() => changeMode('online')}>Online</button>
             </div>
 
             {/* Two-panel layout */}
@@ -527,8 +527,8 @@ function NumberGuessingGame() {
                 {myGuesses.length === 0
                   ? <p style={{ color: sub, fontSize: '0.82rem', margin: '0 0 0.8rem' }}>No guesses yet</p>
                   : <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', maxHeight: 170, overflowY: 'auto', marginBottom: '0.8rem' }}>
-                      {myGuesses.map((g, i) => <GuessRow key={i} g={g} color={myColor} dark={dark} borderC={borderC} text={text} sub={sub} />)}
-                    </div>
+                    {myGuesses.map((g, i) => <GuessRow key={i} g={g} color={myColor} dark={dark} borderC={borderC} text={text} sub={sub} />)}
+                  </div>
                 }
 
               </div>
@@ -540,8 +540,8 @@ function NumberGuessingGame() {
                 {opGuesses.length === 0
                   ? <p style={{ color: sub, fontSize: '0.82rem', margin: 0 }}>No guesses yet</p>
                   : <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', maxHeight: 260, overflowY: 'auto' }}>
-                      {opGuesses.map((g, i) => <GuessRow key={i} g={g} color={opColor} dark={dark} borderC={borderC} text={text} sub={sub} />)}
-                    </div>
+                    {opGuesses.map((g, i) => <GuessRow key={i} g={g} color={opColor} dark={dark} borderC={borderC} text={text} sub={sub} />)}
+                  </div>
                 }
               </div>
             </div>

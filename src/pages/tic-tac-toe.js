@@ -2,20 +2,20 @@ import React, { useState, useEffect, useReducer, useRef } from 'react';
 import Layout from '@theme/Layout';
 
 // ─── WebSocket ────────────────────────────────────────────────────────────────
-const WS_SERVER = 'ws://localhost:3001';
+const WS_SERVER = 'wss://canvas-eye-416011.web.app';
 function uid(n = 8) { return 'X' + Math.random().toString(36).slice(2, 2 + n).toUpperCase(); }
 
 // ─── Game Logic ───────────────────────────────────────────────────────────────
 const WIN_LINES = [
-  [0,1,2],[3,4,5],[6,7,8],
-  [0,3,6],[1,4,7],[2,5,8],
-  [0,4,8],[2,4,6],
+  [0, 1, 2], [3, 4, 5], [6, 7, 8],
+  [0, 3, 6], [1, 4, 7], [2, 5, 8],
+  [0, 4, 8], [2, 4, 6],
 ];
 
 function getWinner(board) {
-  for (const [a,b,c] of WIN_LINES) {
+  for (const [a, b, c] of WIN_LINES) {
     if (board[a] && board[a] === board[b] && board[a] === board[c])
-      return { symbol: board[a], line: [a,b,c] };
+      return { symbol: board[a], line: [a, b, c] };
   }
   return null;
 }
@@ -24,7 +24,7 @@ function isBoardFull(board) { return board.every(c => c !== null); }
 
 function countOpenLines(board, mine, opp) {
   let count = 0;
-  for (const [a,b,c] of WIN_LINES) {
+  for (const [a, b, c] of WIN_LINES) {
     const row = [board[a], board[b], board[c]];
     if (row.includes(mine) && !row.includes(opp)) count++;
   }
@@ -35,7 +35,7 @@ function score(board) {
   const w = getWinner(board);
   if (w?.symbol === 'X') return 100;
   if (w?.symbol === 'O') return -100;
-  return countOpenLines(board,'X','O') - countOpenLines(board,'O','X');
+  return countOpenLines(board, 'X', 'O') - countOpenLines(board, 'O', 'X');
 }
 
 function minimax(board, isMax, depth) {
@@ -271,22 +271,22 @@ function TicTacToeGame() {
   }
 
   // ── Colours ──────────────────────────────────────────────────────────────────
-  const bg      = dark ? '#0f0f1a' : '#f0f4ff';
+  const bg = dark ? '#0f0f1a' : '#f0f4ff';
   const surface = dark ? '#1a1a30' : '#ffffff';
-  const text    = dark ? '#e0e0f0' : '#1a1a2e';
-  const sub     = dark ? 'rgba(224,224,240,0.5)' : 'rgba(26,26,46,0.5)';
-  const accent  = '#6c63ff';
-  const cellBg  = dark ? '#252545' : '#e8ecff';
+  const text = dark ? '#e0e0f0' : '#1a1a2e';
+  const sub = dark ? 'rgba(224,224,240,0.5)' : 'rgba(26,26,46,0.5)';
+  const accent = '#6c63ff';
+  const cellBg = dark ? '#252545' : '#e8ecff';
   const borderC = dark ? '#3a3a6a' : '#c5caff';
-  const shadow  = dark ? '0 8px 32px rgba(0,0,0,0.6)' : '0 8px 32px rgba(108,99,255,0.12)';
+  const shadow = dark ? '0 8px 32px rgba(0,0,0,0.6)' : '0 8px 32px rgba(108,99,255,0.12)';
   const panelBg = dark ? '#12122a' : '#f8f9ff';
 
-  const isOver    = game.result !== null;
-  const winData   = isOver && game.result !== 'draw' ? game.result : null;
+  const isOver = game.result !== null;
+  const winData = isOver && game.result !== 'draw' ? game.result : null;
   const activeSym = !isOver ? (game.xTurn ? 'X' : 'O') : null;
 
   const xLabel = mode === 'computer' ? 'Computer' : mode === 'online' ? (me === 1 ? 'You' : 'Opponent') : 'Player X';
-  const oLabel = mode === 'computer' ? 'You'      : mode === 'online' ? (me === 2 ? 'You' : 'Opponent') : 'Player O';
+  const oLabel = mode === 'computer' ? 'You' : mode === 'online' ? (me === 2 ? 'You' : 'Opponent') : 'Player O';
 
   const myTurnOnline = mode === 'online' && conn === 'playing' && !isOver && (me === 1 ? game.xTurn : !game.xTurn);
 
@@ -296,20 +296,20 @@ function TicTacToeGame() {
     if (mode === 'online' && conn === 'waiting') statusText = 'Waiting for opponent to join…';
     else if (mode === 'online' && conn === 'playing') statusText = myTurnOnline ? '🟢 Your turn' : '⏳ Opponent\'s turn';
     else if (aiTurn || thinking) statusText = 'Computer is thinking…';
-    else if (mode === 'computer')  statusText = 'Your turn (O)';
-    else                           statusText = `Player ${game.xTurn ? 'X' : 'O'}'s turn`;
+    else if (mode === 'computer') statusText = 'Your turn (O)';
+    else statusText = `Player ${game.xTurn ? 'X' : 'O'}'s turn`;
   } else if (game.result === 'draw') {
     statusText = "It's a draw!  · Starting next game…";
   } else {
     const w = winData.symbol;
-    if (mode === 'computer')  statusText = w === 'X' ? 'Computer wins!  · Starting next game…' : 'You win! 🎉  · Starting next game…';
+    if (mode === 'computer') statusText = w === 'X' ? 'Computer wins!  · Starting next game…' : 'You win! 🎉  · Starting next game…';
     else if (mode === 'online') statusText = (w === 'X' ? me === 1 : me === 2) ? 'You win! 🎉  · Starting next game…' : 'Opponent wins!  · Starting next game…';
-    else                        statusText = `Player ${w} wins! 🎉  · Starting next game…`;
+    else statusText = `Player ${w} wins! 🎉  · Starting next game…`;
   }
 
   function cellStyle(i) {
     const isWin = !!winData?.line?.includes(i);
-    const sym   = game.board[i];
+    const sym = game.board[i];
     return {
       width: 100, height: 100, borderRadius: 14,
       display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -326,7 +326,7 @@ function TicTacToeGame() {
 
   function scoreSlotStyle(sym) {
     const isActive = activeSym === sym;
-    const color    = sym === 'X' ? X_COLOR : O_COLOR;
+    const color = sym === 'X' ? X_COLOR : O_COLOR;
     return {
       flex: 1, display: 'flex', flexDirection: 'column',
       alignItems: 'center', gap: '0.15rem',

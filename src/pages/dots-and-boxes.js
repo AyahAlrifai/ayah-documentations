@@ -2,15 +2,15 @@ import React, { useState, useEffect, useReducer, useRef } from 'react';
 import Layout from '@theme/Layout';
 
 // ─── WebSocket ────────────────────────────────────────────────────────────────
-const WS_SERVER = 'ws://localhost:3001';
+const WS_SERVER = 'wss://canvas-eye-416011.web.app';
 function uid(len = 8) { return 'D' + Math.random().toString(36).slice(2, 2 + len).toUpperCase(); }
 
 // ─── Board Constants ──────────────────────────────────────────────────────────
-const DOTS  = 5;
+const DOTS = 5;
 const CELLS = DOTS - 1;
-const CELL  = 75;
+const CELL = 75;
 const DOT_R = 6;
-const PAD   = 35;
+const PAD = 35;
 const SVG_SZ = CELLS * CELL + 2 * PAD;
 
 const P1 = '#6c63ff';
@@ -18,24 +18,24 @@ const P2 = '#f472b6';
 const pColor = p => p === 1 ? P1 : P2;
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
-const mkH  = () => Array.from({ length: DOTS  }, () => Array(CELLS).fill(null));
-const mkV  = () => Array.from({ length: CELLS }, () => Array(DOTS).fill(null));
+const mkH = () => Array.from({ length: DOTS }, () => Array(CELLS).fill(null));
+const mkV = () => Array.from({ length: CELLS }, () => Array(DOTS).fill(null));
 const mkSq = () => Array.from({ length: CELLS }, () => Array(CELLS).fill(null));
 
 // ─── AI ───────────────────────────────────────────────────────────────────────
 function sidesOf(nh, nv, r, c) {
   let n = 0;
-  if (nh[r][c]   !== null) n++;
-  if (nh[r+1][c] !== null) n++;
-  if (nv[r][c]   !== null) n++;
-  if (nv[r][c+1] !== null) n++;
+  if (nh[r][c] !== null) n++;
+  if (nh[r + 1][c] !== null) n++;
+  if (nv[r][c] !== null) n++;
+  if (nv[r][c + 1] !== null) n++;
   return n;
 }
 
 function getAIMove(hLines, vLines, squares) {
   const moves = [];
-  for (let r = 0; r < DOTS;  r++) for (let c = 0; c < CELLS; c++) if (hLines[r][c] === null) moves.push({ lineType: 'h', r, c });
-  for (let r = 0; r < CELLS; r++) for (let c = 0; c < DOTS;  c++) if (vLines[r][c] === null)  moves.push({ lineType: 'v', r, c });
+  for (let r = 0; r < DOTS; r++) for (let c = 0; c < CELLS; c++) if (hLines[r][c] === null) moves.push({ lineType: 'h', r, c });
+  for (let r = 0; r < CELLS; r++) for (let c = 0; c < DOTS; c++) if (vLines[r][c] === null) moves.push({ lineType: 'v', r, c });
   if (!moves.length) return null;
 
   function afterMove(m) {
@@ -71,8 +71,10 @@ const INIT_STATE = {
 
 function gameReducer(state, action) {
   if (action.type === 'RESET') {
-    return { hLines: mkH(), vLines: mkV(), squares: mkSq(),
-             turn: action.startTurn ?? 1, scores: { 1: 0, 2: 0 }, over: false };
+    return {
+      hLines: mkH(), vLines: mkV(), squares: mkSq(),
+      turn: action.startTurn ?? 1, scores: { 1: 0, 2: 0 }, over: false
+    };
   }
   if (action.type === 'RESET_ALL') return { ...INIT_STATE };
   if (action.type !== 'MOVE' || state.over) return state;
@@ -82,16 +84,16 @@ function gameReducer(state, action) {
   const nv = state.vLines.map(row => [...row]);
 
   if (lineType === 'h') { if (nh[r][c] !== null) return state; nh[r][c] = state.turn; }
-  else                  { if (nv[r][c] !== null) return state; nv[r][c] = state.turn; }
+  else { if (nv[r][c] !== null) return state; nv[r][c] = state.turn; }
 
   const ns = state.squares.map(row => [...row]);
   let owned = 0;
   for (let row = 0; row < CELLS; row++) {
     for (let col = 0; col < CELLS; col++) {
       if (ns[row][col] === null &&
-          nh[row][col] !== null && nh[row+1][col] !== null &&
-          nv[row][col] !== null && nv[row][col+1] !== null) {
-        const sides = [nh[row][col], nh[row+1][col], nv[row][col], nv[row][col+1]];
+        nh[row][col] !== null && nh[row + 1][col] !== null &&
+        nv[row][col] !== null && nv[row][col + 1] !== null) {
+        const sides = [nh[row][col], nh[row + 1][col], nv[row][col], nv[row][col + 1]];
         ns[row][col] = sides.every(s => s === sides[0]) ? sides[0] : 'mixed';
         if (ns[row][col] === state.turn) owned++;
       }
@@ -149,9 +151,9 @@ function DotsAndBoxesGame() {
     ws.onmessage = ({ data }) => {
       const msg = JSON.parse(data);
       switch (msg.type) {
-        case 'waiting':    setMyPlayer(1); setConn('waiting'); break;
-        case 'start':      setMyPlayer(msg.playerNumber); setConn('playing'); break;
-        case 'full':       setConn('full'); break;
+        case 'waiting': setMyPlayer(1); setConn('waiting'); break;
+        case 'start': setMyPlayer(msg.playerNumber); setConn('playing'); break;
+        case 'full': setConn('full'); break;
         case 'disconnect': setConn('disconnected'); break;
         case 'move':
           dispatch({ type: 'MOVE', lineType: msg.lineType, r: msg.row, c: msg.col });
@@ -261,24 +263,24 @@ function DotsAndBoxesGame() {
   }
 
   // ── Colours ──────────────────────────────────────────────────────────────────
-  const bg        = dark ? '#0f0f1a' : '#f0f4ff';
-  const surface   = dark ? '#1a1a30' : '#ffffff';
-  const text      = dark ? '#e0e0f0' : '#1a1a2e';
-  const sub       = dark ? 'rgba(224,224,240,.5)' : 'rgba(26,26,46,.5)';
-  const accent    = '#6c63ff';
-  const borderC   = dark ? '#3a3a6a' : '#c5caff';
-  const shadow    = dark ? '0 8px 32px rgba(0,0,0,.6)' : '0 8px 32px rgba(108,99,255,.12)';
+  const bg = dark ? '#0f0f1a' : '#f0f4ff';
+  const surface = dark ? '#1a1a30' : '#ffffff';
+  const text = dark ? '#e0e0f0' : '#1a1a2e';
+  const sub = dark ? 'rgba(224,224,240,.5)' : 'rgba(26,26,46,.5)';
+  const accent = '#6c63ff';
+  const borderC = dark ? '#3a3a6a' : '#c5caff';
+  const shadow = dark ? '0 8px 32px rgba(0,0,0,.6)' : '0 8px 32px rgba(108,99,255,.12)';
   const emptyLine = dark ? '#2a2a50' : '#dde1ff';
-  const dotFill   = dark ? '#e0e0f0' : '#1a1a2e';
-  const panelBg   = dark ? '#12122a' : '#f8f9ff';
+  const dotFill = dark ? '#e0e0f0' : '#1a1a2e';
+  const panelBg = dark ? '#12122a' : '#f8f9ff';
 
-  const isHov  = (type, r, c) => hover?.type === type && hover.r === r && hover.c === c;
+  const isHov = (type, r, c) => hover?.type === type && hover.r === r && hover.c === c;
   const myTurn = mode === 'online'
     ? conn === 'playing' && !game.over && game.turn === myPlayer
     : !game.over && !(mode === 'computer' && game.turn === 2);
 
   // Labels
-  const p1Label = mode === 'computer' ? 'You'      : mode === 'online' ? (myPlayer === 1 ? 'You' : 'Opponent') : 'Player 1';
+  const p1Label = mode === 'computer' ? 'You' : mode === 'online' ? (myPlayer === 1 ? 'You' : 'Opponent') : 'Player 1';
   const p2Label = mode === 'computer' ? 'Computer' : mode === 'online' ? (myPlayer === 2 ? 'You' : 'Opponent') : 'Player 2';
 
   // Winner of current game
@@ -396,7 +398,7 @@ function DotsAndBoxesGame() {
             {Array.from({ length: DOTS }, (_, r) =>
               Array.from({ length: CELLS }, (_, c) => {
                 const drawn = game.hLines[r][c];
-                const hov   = isHov('h', r, c);
+                const hov = isHov('h', r, c);
                 const x1 = PAD + c * CELL, x2 = PAD + (c + 1) * CELL, y = PAD + r * CELL;
                 return (
                   <g key={`h${r}${c}`}>
@@ -422,7 +424,7 @@ function DotsAndBoxesGame() {
             {Array.from({ length: CELLS }, (_, r) =>
               Array.from({ length: DOTS }, (_, c) => {
                 const drawn = game.vLines[r][c];
-                const hov   = isHov('v', r, c);
+                const hov = isHov('v', r, c);
                 const x = PAD + c * CELL, y1 = PAD + r * CELL, y2 = PAD + (r + 1) * CELL;
                 return (
                   <g key={`v${r}${c}`}>
