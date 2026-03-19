@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useReducer, useRef } from 'react';
 import Layout from '@theme/Layout';
-
-// ─── WebSocket ────────────────────────────────────────────────────────────────
-const WS_SERVER = 'wss://ayah-game-server.onrender.com';
+import { connectGame } from '../utils/gameChannel';
 
 // ─── Colors (same palette as Tic-Tac-Toe) ────────────────────────────────────
 const P1 = '#6c63ff';   // blue
@@ -233,16 +231,14 @@ function ThreeStonesGame() {
   const wsRef = useRef(null);
   const didAutoConnectRef = useRef(false);
 
-  // ── WebSocket connect function (called explicitly to avoid Strict Mode double-connect) ──
+  // ── Firebase channel connect (called explicitly to avoid Strict Mode double-connect) ──
   function connectWS(gId) {
     wsRef.current?.close();
     setConn('connecting');
-    const pid = uid(12);
-    const ws = new WebSocket(`${WS_SERVER}?game=${gId}&player=${pid}`);
-    wsRef.current = ws;
-
-    ws.onmessage = ({ data }) => {
-      const msg = JSON.parse(data);
+    let cancelled = false;
+    wsRef.current = { close() { cancelled = true; } };
+    connectGame(gId, (msg) => {
+      if (cancelled) return;
       if (msg.type === 'waiting') { setMe(1); setConn('waiting'); }
       else if (msg.type === 'start') { setMe(msg.playerNumber); setConn('playing'); }
       else if (msg.type === 'full') { setConn('full'); }
@@ -256,9 +252,10 @@ function ThreeStonesGame() {
         if (msg.action === 'place') dispatch({ type: 'PLACE', i: msg.pos });
         else dispatch({ type: 'MOVE_DIRECT', from: msg.from, to: msg.to });
       }
-    };
-    ws.onclose = () => setConn(p => (p === 'playing' || p === 'waiting') ? 'disconnected' : p);
-    ws.onerror = () => setConn('error');
+    }).then(channel => {
+      if (cancelled) { channel.close(); return; }
+      wsRef.current = channel;
+    }).catch(() => { if (!cancelled) setConn('error'); });
   }
 
   // ── Detect game ID in URL on mount ──────────────────────────────────────────
@@ -436,7 +433,7 @@ function ThreeStonesGame() {
     statusText = `Player ${game.turn}'s turn`;
   }
 
-  const showOverlay = mode === 'online' && ['connecting', 'full', 'disconnected', 'error'].includes(conn);
+  const showOverlay = mode === 'online' && ['full', 'disconnected', 'error'].includes(conn);
 
   return (
     <>
@@ -474,7 +471,8 @@ function ThreeStonesGame() {
         </div>
 
         {/* Share link panel */}
-        {mode === 'online' && conn === 'waiting' && (
+        {/* Share link panel (show immediately so user can copy the link) */}
+        {mode === 'online' && (conn === 'connecting' || conn === 'waiting') && (
           <div style={{ background: panelBg, border: `2px solid ${borderC}`, borderRadius: 16, padding: '1.1rem 1.4rem', marginBottom: '1.4rem', width: '100%', maxWidth: 440, display: 'flex', flexDirection: 'column', gap: '0.7rem' }}>
             <p style={{ margin: 0, fontWeight: 700, fontSize: '1rem', color: text }}>🎮 Share this link with your friend to start playing!</p>
             <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
@@ -486,7 +484,9 @@ function ThreeStonesGame() {
                 {copied ? '✓ Copied!' : 'Copy Link'}
               </button>
             </div>
-            <p style={{ margin: 0, color: sub, fontSize: '0.82rem' }}>⏳ Waiting for your friend to join…</p>
+            <p style={{ margin: 0, color: sub, fontSize: '0.82rem' }}>
+              {conn === 'connecting' ? '⏳ Setting up game room…' : '⏳ Waiting for your friend to join…'}
+            </p>
           </div>
         )}
 
@@ -508,7 +508,7 @@ function ThreeStonesGame() {
         </div>
 
         {/* ── SVG Board: nodes + connecting lines ── */}
-        <div style={{ background: surface, borderRadius: 24, padding: 16, boxShadow: shadow, marginBottom: '1.2rem', opacity: mode === 'online' && conn === 'waiting' ? 0.4 : 1, transition: 'opacity 0.3s' }}>
+        <div style={{ background: surface, borderRadius: 24, padding: 16, boxShadow: shadow, marginBottom: '1.2rem', opacity: mode === 'online' && (conn === 'connecting' || conn === 'waiting') ? 0.4 : 1, transition: 'opacity 0.3s' }}>
           <svg width={SZ} height={SZ} style={{ display: 'block', userSelect: 'none' }}>
 
             {/* ── Edges (lines between adjacent nodes) ── */}

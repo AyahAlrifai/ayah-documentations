@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Layout from '@theme/Layout';
+import { connectGame } from '../utils/gameChannel';
 
-// ─── WebSocket ────────────────────────────────────────────────────────────────
-const WS_SERVER = 'wss://ayah-game-server.onrender.com';
+// ─── ID helpers ───────────────────────────────────────────────────────────────
 function uid(n = 8) { return Math.random().toString(36).slice(2, 2 + n).toUpperCase(); }
 
 // ─── Game Helpers ─────────────────────────────────────────────────────────────
@@ -131,15 +131,14 @@ function NumberGuessingGame() {
     }
   }
 
-  // ── WS connection ─────────────────────────────────────────────────────────
+  // ── Firebase channel connect ───────────────────────────────────────────────
   function connectWS(gId) {
+    wsRef.current?.close();
     setConn('connecting');
-    const pid = uid(12);
-    const ws = new WebSocket(`${WS_SERVER}?game=${gId}&player=${pid}`);
-    wsRef.current = ws;
-
-    ws.onmessage = ({ data }) => {
-      const msg = JSON.parse(data);
+    let cancelled = false;
+    wsRef.current = { close() { cancelled = true; } };
+    connectGame(gId, (msg) => {
+      if (cancelled) return;
       if (msg.type === 'waiting') {
         meRef.current = 1; setMe(1);
         saveP1(tempSecretRef.current);
@@ -156,16 +155,16 @@ function NumberGuessingGame() {
       else if (msg.type === 'disconnect') { setConn('disconnected'); }
       else if (msg.type === 'move') { handleWsMove(msg); }
       else if (msg.type === 'reset') {
-        // Keep secrets, restart board
         setP1Guesses([]); setP2Guesses([]);
         setRevealMine(false);
         turnRef.current = 1; setTurn(1);
         setWinner(null); setGuessInput(''); setError('');
         setPhase('game');
       }
-    };
-    ws.onclose = () => setConn(p => (p === 'playing' || p === 'waiting') ? 'disconnected' : p);
-    ws.onerror = () => setConn('error');
+    }).then(channel => {
+      if (cancelled) { channel.close(); return; }
+      wsRef.current = channel;
+    }).catch(() => { if (!cancelled) setConn('error'); });
   }
 
   // ── Full reset ────────────────────────────────────────────────────────────
