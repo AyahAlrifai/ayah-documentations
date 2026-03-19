@@ -183,3 +183,8 @@ Firebase project ID: `canvas-eye-416011`
 **Ayah Al-Rifai**
 - [GitHub](https://github.com/AyahAlrifai)
 - [LinkedIn](https://www.linkedin.com/in/ayah-al-rifai/)
+
+
+## run server
+cd server                 
+node index.js     

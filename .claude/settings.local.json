@@ -20,7 +20,13 @@
       "Bash(taskkill:*)",
       "Bash(echo:*)",
       "Bash(powershell -Command:*)",
-      "Bash(xargs:*)"
+      "Bash(xargs:*)",
+      "WebSearch",
+      "WebFetch(domain:en.wikipedia.org)",
+      "WebFetch(domain:coffee-dictionary.com)",
+      "WebFetch(domain:grokipedia.com)",
+      "WebFetch(domain:handwiki.org)",
+      "WebFetch(domain:www.british-museum.org)"
     ]
   }
 }

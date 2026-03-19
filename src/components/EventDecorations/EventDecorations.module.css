@@ -133,27 +133,42 @@
    EID AL-FITR
    ══════════════════════════════════════════════════════════════ */
 
-/* Crescent + star — top-center, slightly larger than Ramadan moon */
-.eidMoonWrap {
+/* Arabic coffee pot + cup — bottom-right corner */
+.dallahWrap {
   position: absolute;
-  top: calc(var(--ifm-navbar-height, 3.75rem) + 10px);
-  left: 50%;
-  width: clamp(110px, 14vw, 170px);
+  bottom: 24px;
+  right: 24px;
+  width: clamp(180px, 22vw, 260px);
   filter:
     drop-shadow(0 0 14px var(--ev-glow))
     drop-shadow(0 0 32px var(--ev-glow));
-  animation: eidMoonFloat 7s ease-in-out infinite alternate;
+  animation: dallahFloat 7s ease-in-out infinite alternate;
 }
 
-.eidMoonSvg {
+.dallahSvg {
   display: block;
   width: 100%;
   height: auto;
 }
 
-@keyframes eidMoonFloat {
-  from { transform: translateX(-50%) translateY(0);     }
-  to   { transform: translateX(-50%) translateY(-14px); }
+@keyframes dallahFloat {
+  from { transform: translateY(0);      }
+  to   { transform: translateY(-12px);  }
+}
+
+/* Steam wisps */
+.steam1, .steam2, .steam3 {
+  opacity: 0;
+  animation: steamFade 2.8s ease-in-out infinite;
+}
+.steam2 { animation-delay: 0.9s;  }
+.steam3 { animation-delay: 1.8s; }
+
+@keyframes steamFade {
+  0%   { opacity: 0;    }
+  20%  { opacity: 0.65; }
+  65%  { opacity: 0.35; }
+  100% { opacity: 0;    }
 }
 
 /* Colorful string lights */

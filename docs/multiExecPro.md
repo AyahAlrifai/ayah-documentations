@@ -4,665 +4,205 @@ sidebar_position: 1
 
 # MultiExecPro
 
+A PowerShell CLI tool that lets you run any command across multiple project folders at once — interactively, with a beautiful terminal UI.
+
+Built by **Eng. Ayah Refai**.
+
 ![alt text](img/multiExecPro4.png)
 ![alt text](img/multiExecPro3.png)
 ![alt text](img/multiExecPro5.png)
 
-**🔗 Access the Tool: [GitHub Repository](https://github.com/AyahAlrifai/MultiExecPro)**
+---
 
-# 1. Overview
+## ✨ Features
 
-This PowerShell script provides an **interactive terminal menu** that allows users to:
-
-* Select one or multiple project directories
-* Execute commands on selected projects
-* Save and restore selections
-* Navigate using keyboard shortcuts
-* Run batch commands separated by `&&`
-
-The script is designed for developers who manage **multiple repositories or microservices** and need to run commands such as:
-
-* `git pull`
-* `mvn clean install`
-* `npm install`
-* `docker build`
-* `gradle build`
+- 🗂️ Auto-detects all subfolders in your current directory as "projects"
+- ☑️ Interactive multi-select menu — pick one, many, or all projects
+- ⚡ Run any command (or chain multiple with `&&`) across all selected projects
+- 📋 Per-project live output with success/failure status
+- 📊 Summary report at the end showing passed, failed, and elapsed time
+- 🕘 Command history — reuse recent commands quickly
+- 💾 Save & restore project selections within a session
+- 🌗 Auto-detects Windows dark/light mode for theme
 
 ---
 
-# 2. Features
+## 📋 Requirements
 
-## 2.1 Interactive Project Selection
+- **PowerShell 5.1** or higher (Windows PowerShell or PowerShell 7+)
+- **Windows / Linux / macOS**
+- Internet connection (for installation only)
 
-The script automatically detects project folders:
+---
+
+## 🚀 Installation
+
+Open a terminal and run **one command**:
+
+### Windows (PowerShell)
 
 ```powershell
-$projects = Get-ChildItem -Directory -Exclude .* | ForEach-Object { $_.Name }
+irm https://raw.githubusercontent.com/AyahAlrifai/MultiExecPro/main/install.ps1 | iex
 ```
 
-It:
+### Linux / macOS
 
-* Reads all directories
-* Ignores hidden folders (starting with ".")
-* Displays them as selectable options
+```bash
+pwsh -c "irm https://raw.githubusercontent.com/AyahAlrifai/MultiExecPro/main/install.ps1 | iex"
+```
+
+> **Note for Linux/macOS:** PowerShell (`pwsh`) must be installed first.
+> - Ubuntu/Debian: `sudo apt-get install -y powershell`
+> - macOS: `brew install --cask powershell`
+
+The installer will automatically:
+
+| Step | What happens |
+|------|-------------|
+| 📁 Create folder | `~/.multiexecpro` (Linux/Mac) or `%USERPROFILE%\.multiexecpro` (Windows) |
+| ⬇️ Download script | Latest version from GitHub |
+| 🛣️ Add to PATH | So you can run it from anywhere |
+| ⚙️ Register command | Adds `multiExecPro` to your shell profile |
+| 🔓 Fix permissions | Sets execution policy on Windows automatically |
+
+After installation, **open a new terminal window** and you're ready.
 
 ---
 
-## 2.2 Multi-Selection Menu
+## 📖 Usage
 
-The menu allows:
+### Step 1 — Navigate to your projects folder
 
-* Selecting multiple projects
-* Selecting all projects
-* Deselecting all
-* Saving selection
-* Restoring selection
-
-Example:
-
-```
-(X) project-A
-( ) project-B
-(X) project-C
+```powershell
+cd D:\my-projects
 ```
 
----
+Your folder structure should look like this:
 
-## 2.3 Batch Command Execution
+```
+my-projects/
+├── project-a/
+├── project-b/
+└── project-c/
+```
 
-Users enter commands like:
+### Step 2 — Run the tool
 
+```powershell
+multiExecPro
+```
+
+### Step 3 — Enter a command
+
+Type any shell command you want to run. Use `&&` to chain multiple commands:
+
+```
+mvn clean install
+```
 ```
 git pull && mvn clean install
 ```
-
-The script splits commands:
-
-```powershell
-$commands = $userCommands -split "&&"
-```
-
-Each command runs sequentially.
-
----
-
-# 3. Script Flow
-
-## Step 1 — Start Script
-
-```
-Start_Script
-```
-
-The script:
-
-1. Displays banner
-2. Asks user for commands
-3. Opens project selection menu
-
----
-
-## Step 2 — Enter Commands
-
-Example input:
-
-```
-git pull && mvn clean install
-```
-
-Supported:
-
 ```
 npm install && npm run build
 ```
 
+### Step 4 — Select projects
+
+An interactive menu appears showing all subfolders. Use the keyboard to select which projects to run the command on:
+
+| Key | Action |
+|-----|--------|
+| `↑` / `↓` | Move cursor up/down |
+| `Space` | Select / deselect project |
+| `A` | Select all projects |
+| `D` | Clear all selections |
+| `S` | Save current selection for later |
+| `Z` | Restore previously saved selection |
+| `Enter` | Run command on selected projects |
+| `Esc` | Go back / exit menu |
+
+### Step 5 — View results
+
+The tool runs your command inside each selected project folder, shows live output, then displays a summary:
+
 ```
-git fetch && git reset --hard origin/main
+✔  project-a                            00:12
+✔  project-b                            00:08
+✘  project-c                            00:03
+
+  3 passed, 1 failed
 ```
+
+### Step 6 — Run again or exit
+
+After execution, press any key to run another command, or `Ctrl+C` to exit.
 
 ---
 
-## Step 3 — Select Projects
+## 💡 Examples
 
-Menu appears:
-
-```
-(X) service-auth
-( ) service-user
-(X) service-payment
-```
-
----
-
-## Step 4 — Execute Commands
-
-Script enters each project folder:
-
-```
-cd ./service-auth
-```
-
-Runs commands:
-
-```
-git pull
-mvn clean install
-```
-
-Returns:
-
-```
-cd ../
-```
-
----
-
-## Step 5 — Continue or Exit
-
-User prompt:
-
-```
-Do you want to continue? [N] No
-```
-
-* Press `N` → Exit
-* Press anything else → Restart
-
----
-
-# 4. Keyboard Controls
-
-## Navigation
-
-| Key   | Action            |
-| ----- | ----------------- |
-| ↑     | Move Up           |
-| ↓     | Move Down         |
-| Space | Select / Deselect |
-| Enter | Execute           |
-
----
-
-## Selection Shortcuts
-
-| Key | Action            |
-| --- | ----------------- |
-| A   | Select All        |
-| D   | Deselect All      |
-| S   | Save Selection    |
-| Z   | Restore Selection |
-
----
-
-## Command History
-
-| Key | Action            |
-| --- | ----------------- |
-| ↑ ↓ | Previous commands |
-
----
-
-# 5. User Guide
-
-## Step 1 — Open PowerShell
-
-Navigate to your workspace folder:
-
-Example:
-
-```powershell
-cd D:\workspaces
-```
-
----
-
-## Step 2 — Run Script
-
-```
-.\multiExecPro.ps1
-```
-
----
-
-## Step 3 — Enter Commands
-
-Example:
-
-```
-git pull && mvn clean install
-```
-
-Press Enter.
-
----
-
-## Step 4 — Select Projects
-
-Use:
-
-* Arrow keys
-* Space
-
-Example:
-
-```
-(X) auth-service
-(X) user-service
-( ) payment-service
-```
-
-Press Enter.
-
----
-
-## Step 5 — Watch Execution
-
-Example output:
-
-```
-~~~~~~~~~~~~~~~~~~~~~~~~
-auth-service
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-cd ./auth-service
-git pull
-mvn clean install
-
-cd ../
-```
-
----
-
-# 6. Functions Documentation
-
-# 6.1 Start_Script()
-
-## Purpose
-
-Main script controller.
-
-## Responsibilities
-
-* Show header
-* Read user commands
-* Call menu
-* Execute commands
-* Repeat execution
-
-## Workflow
-
-```
-User Input → Project Selection → Command Execution → Repeat
-```
-
----
-
-# 6.2 Show-Menu()
-
-## Purpose
-
-Interactive project selector.
-
-## Input
-
-```
-[string[]] Options
-```
-
-Example:
-
-```
-project1
-project2
-project3
-```
-
-## Output
-
-Returns:
-
-```
-array of selected indexes
-```
-
-Example:
-
-```
-0
-2
-3
-```
-
----
-
-## Internal Variables
-
-### selectedOption
-
-Current cursor position.
-
-Example:
-
-```
-selectedOption = 2
-```
-
----
-
-### selectedItems
-
-Hashtable of selected projects.
-
-Example:
-
-```
-{
- 0 = projectA
- 2 = projectC
-}
-```
-
----
-
-### list
-
-Array of selected indexes.
-
-Example:
-
-```
-0,2
-```
-
----
-
-# 6.3 Write-ColorText()
-
-## Purpose
-
-Print colored text.
-
-## Example
-
-```
-Write-ColorText "Hello" -Color 77
-```
-
----
-
-## Uses ANSI colors
-
-```
-ESC[38;5;COLORm
-```
-
----
-
-# 6.4 Write-ColorTextBackground()
-
-## Purpose
-
-Print colored text with background.
-
-## Example
-
-```
-Write-ColorTextBackground "Selected" -ForegroundColor 0 -BackgroundColor 215
-```
-
----
-
-# 7. Visual Interface
-
-## Banner
-
-```
- __    __     __  __     __         ______
-...
-```
-
-Shows:
-
-```
-Eng. Ayah Refai
-```
-
----
-
-## Menu Example
-
-```
-(X) service-auth
-( ) service-user
-(X) service-payment
-```
-
-Legend:
-
-```
-(X) Selected
-( ) Not Selected
-```
-
----
-
-# 8. Color Configuration
-
-Colors:
-
-```
-$primaryColor = 77
-$secondaryColor = 215
-$thirdColor = 209
-$whiteBlackColor = 255
-```
-
-Meaning:
-
-| Variable        | Usage                    |
-| --------------- | ------------------------ |
-| primaryColor    | Headers                  |
-| secondaryColor  | Selected item background |
-| thirdColor      | Selected text            |
-| whiteBlackColor | Normal text              |
-
----
-
-# 9. Folder Structure Example
-
-Example workspace:
-
-```
-workspace/
- ├── service-auth/
- ├── service-user/
- ├── service-payment/
- └── script.ps1
-```
-
-Script automatically detects:
-
-```
-service-auth
-service-user
-service-payment
-```
-
----
-
-# 10. Example Use Cases
-
-## 10.1 Git Pull All Services
-
+**Pull latest changes in all projects:**
 ```
 git pull
 ```
 
-Press:
-
+**Build all Maven projects:**
 ```
-A → Enter
-```
-
----
-
-## 10.2 Build Selected Services
-
-```
-mvn clean install
+mvn clean install -DskipTests
 ```
 
-Select:
-
-```
-service-auth
-service-payment
-```
-
----
-
-## 10.3 Install Node Packages
-
+**Install dependencies and build all Node projects:**
 ```
 npm install && npm run build
 ```
 
----
-
-# 11. Error Handling
-
-Script uses:
-
+**Run multiple git operations:**
 ```
-try/catch
-```
-
-Example:
-
-```
-catch
-{
-    Write-Host "Script terminated."
-}
-```
-
-Prevents crashes.
-
----
-
-# 12. Limitations
-
-### 1. No command validation
-
-Invalid commands will fail.
-
-Example:
-
-```
-git pulll
+git fetch && git pull && git status
 ```
 
 ---
 
-### 2. Commands run sequentially
+## 🔄 Update
 
-No parallel execution.
+To get the latest version, simply run the installer again:
 
----
-
-### 3. Requires ANSI support
-
-Modern PowerShell only.
-
----
-
-# 13. Requirements
-
-## Required Software
-
-* PowerShell 5+ or PowerShell 7+
-
-Check version:
-
-```
-$PSVersionTable.PSVersion
+```powershell
+irm https://raw.githubusercontent.com/AyahAlrifai/MultiExecPro/main/install.ps1 | iex
 ```
 
 ---
 
-# 14. Security Warning
+## 🗑️ Uninstall
 
-Script uses:
-
+### Windows
+```powershell
+Remove-Item -Recurse -Force "$env:USERPROFILE\.multiexecpro"
 ```
-Invoke-Expression
-```
-
-Example:
-
-```
-Invoke-Expression -Command $trimmedCommand
+Then remove the `multiExecPro` function line from your PowerShell profile:
+```powershell
+notepad $PROFILE
 ```
 
-This executes **raw commands**.
-
-⚠ Only use trusted commands.
+### Linux / macOS
+```bash
+rm -rf ~/.multiexecpro
+```
+Then remove the `MultiExecPro` lines from `~/.zshrc` or `~/.bashrc`.
 
 ---
 
-# 15. Best Practices
+## 🐛 Troubleshooting
 
-Recommended commands:
-
-```
-git pull
-```
-
-```
-mvn clean install
-```
-
-```
-docker compose build
-```
-
-Avoid:
-
-```
-Remove-Item -Recurse *
-```
+| Problem | Solution |
+|---------|----------|
+| `command not found: multiExecPro` | Open a **new** terminal after installation |
+| `running scripts is disabled` | Run `Set-ExecutionPolicy RemoteSigned -Scope CurrentUser` as Admin |
+| `No subdirectories found` | Make sure you `cd` into a folder that **contains** project subfolders |
+| `pwsh: command not found` | Install PowerShell first (see Requirements above) |
 
 ---
 
-# 16. Advanced Usage
+## 📁 Repository
 
-## Save Selection
-
-Press:
-
-```
-S
-```
-
-Selection stored in memory.
-
----
-
-## Restore Selection
-
-Press:
-
-```
-Z
-```
-
-Previous selection restored.
-
----
-
-## How does it work?
-
-1. Download and Setup: Start by downloading the `multiExecPro.ps1` file and placing it in the directory containing all the microservices or folders you wish to manage.
-
-
-2. Permissions: Open PowerShell and run `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` to ensure smooth execution.
+[https://github.com/AyahAlrifai/MultiExecPro](https://github.com/AyahAlrifai/MultiExecPro)

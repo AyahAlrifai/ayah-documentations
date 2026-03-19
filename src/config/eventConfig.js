@@ -24,8 +24,8 @@
  */
 
 // ── Uncomment ONE event, comment out the rest ─────────────────
-import ActiveEvent from '../components/EventDecorations/events/Ramadan';
-// import ActiveEvent from '../components/EventDecorations/events/EidAlFitr';
+// import ActiveEvent from '../components/EventDecorations/events/Ramadan';
+import ActiveEvent from '../components/EventDecorations/events/EidAlFitr';
 // import ActiveEvent from '../components/EventDecorations/events/EidAlAdha';
 // import ActiveEvent from '../components/EventDecorations/events/NewYear';
 
