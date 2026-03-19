@@ -2,7 +2,7 @@ import React, { useState, useEffect, useReducer, useRef } from 'react';
 import Layout from '@theme/Layout';
 
 // ─── WebSocket ────────────────────────────────────────────────────────────────
-const WS_SERVER = 'wss://canvas-eye-416011.web.app';
+const WS_SERVER = 'wss://ayah-game-server.onrender.com';
 function uid(len = 8) { return 'D' + Math.random().toString(36).slice(2, 2 + len).toUpperCase(); }
 
 // ─── Board Constants ──────────────────────────────────────────────────────────

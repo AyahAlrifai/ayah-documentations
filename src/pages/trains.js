@@ -2,7 +2,7 @@ import React, { useState, useEffect, useReducer, useRef } from 'react';
 import Layout from '@theme/Layout';
 
 // ─── WebSocket ────────────────────────────────────────────────────────────────
-const WS_SERVER = 'wss://canvas-eye-416011.web.app';
+const WS_SERVER = 'wss://ayah-game-server.onrender.com';
 
 // ─── Colors (same palette as Tic-Tac-Toe) ────────────────────────────────────
 const P1 = '#6c63ff';   // blue
