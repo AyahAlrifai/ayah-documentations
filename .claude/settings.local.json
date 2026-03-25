@@ -29,7 +29,8 @@
       "WebFetch(domain:www.british-museum.org)",
       "Bash(grep -r ca-pub- /d/ayah-documentations-master --include=*.js --include=*.jsx --include=*.ts --include=*.tsx)",
       "Bash(node:*)",
-      "Bash(git:*)"
+      "Bash(git:*)",
+      "Bash(node -e \"require\\(''''./src/pages/http-status-codes.js''''\\)\")"
     ]
   }
 }

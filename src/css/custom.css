@@ -525,6 +525,7 @@ html[data-theme='dark'] {
 .nav-icon-spring::before,
 .nav-icon-jwt::before,
 .nav-icon-regex::before,
+.nav-icon-http::before,
 .nav-icon-tictactoe::before,
 .nav-icon-puzzle::before,
 .nav-icon-dots::before,
@@ -556,6 +557,7 @@ html[data-theme='dark'] {
 .nav-icon-number::before    { background-image: url('/img/icons/number.svg'); }
 .nav-icon-jwt::before       { background-image: url('/img/icons/jwt.svg'); }
 .nav-icon-regex::before     { background-image: url('/img/icons/regex.svg'); }
+.nav-icon-http::before      { background-image: url('/img/icons/http.svg'); }
 
 /* ── Smooth scroll ── */
 html {

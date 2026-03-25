@@ -144,12 +144,36 @@ const featuredTools = [
     bg: 'rgba(82,141,255,0.08)',
   },
   {
+    icon: '/img/icons/jwt.svg',
+    title: 'JWT Decoder',
+    description: 'Decode and inspect JWT tokens instantly in your browser. Supports HS256, RS256, ES256 and all standard JWT formats.',
+    to: '/jwt-decoder',
+    color: '#c77dff',
+    bg: 'rgba(199,125,255,0.08)',
+  },
+  {
+    icon: '/img/icons/regex.svg',
+    title: 'Regex Tester',
+    description: 'Test and debug regular expressions live with match highlighting, group capture display, and flag controls.',
+    to: '/regex-tester',
+    color: '#f97316',
+    bg: 'rgba(249,115,22,0.08)',
+  },
+  {
     icon: '/img/icons/json.svg',
     title: 'JSON Formatter',
     description: 'Format, minify, and diff JSON instantly in your browser. Built-in Monaco editor with syntax highlighting.',
     to: '/json-formatter',
     color: '#44bb08',
     bg: 'rgba(68,187,8,0.08)',
+  },
+  {
+    icon: '/img/icons/markdown.svg',
+    title: 'Markdown Editor',
+    description: 'Write Markdown with a live side-by-side preview. Export to HTML or copy the rendered output directly.',
+    to: '/create-new-document',
+    color: '#06b6d4',
+    bg: 'rgba(6,182,212,0.08)',
   },
   {
     icon: '/img/icons/sql.svg',
@@ -167,6 +191,14 @@ const featuredTools = [
     color: '#fc7dc7',
     bg: 'rgba(252,125,199,0.08)',
   },
+  {
+    icon: '/img/icons/http.svg',
+    title: 'HTTP Status Codes',
+    description: '60 status codes across all 5 classes — searchable, filterable reference with descriptions and tags for every code.',
+    to: '/http-status-codes',
+    color: '#ef4444',
+    bg: 'rgba(239,68,68,0.08)',
+  },
 ];
 
 function FeaturedToolCard({ icon, title, description, to, color, bg }) {
@@ -178,6 +210,7 @@ function FeaturedToolCard({ icon, title, description, to, color, bg }) {
         padding: '1.5rem', borderRadius: '16px', textDecoration: 'none',
         background: bg, border: `1px solid ${color}30`,
         transition: 'transform 0.2s, box-shadow 0.2s',
+        height: '100%',
       }}
       onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = `0 12px 32px ${color}25`; }}
       onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = ''; }}
@@ -187,6 +220,113 @@ function FeaturedToolCard({ icon, title, description, to, color, bg }) {
       <p style={{ margin: 0, fontSize: '0.9rem', lineHeight: 1.65, opacity: 0.75 }}>{description}</p>
       <span style={{ fontSize: '0.82rem', color, fontWeight: 600 }}>Open tool →</span>
     </a>
+  );
+}
+
+const VISIBLE = 4;
+const TOTAL_PAGES = Math.ceil(featuredTools.length / VISIBLE);
+
+function ToolsCarousel() {
+  const [page, setPage] = useState(0);
+  const trackRef = useRef(null);
+
+  const scrollToPage = (p) => {
+    const clamped = Math.max(0, Math.min(p, TOTAL_PAGES - 1));
+    setPage(clamped);
+    if (trackRef.current) {
+      const cardW = trackRef.current.scrollWidth / featuredTools.length;
+      trackRef.current.scrollTo({ left: clamped * VISIBLE * cardW, behavior: 'smooth' });
+    }
+  };
+
+  // sync dot indicator when user swipes manually
+  const onScroll = () => {
+    if (!trackRef.current) return;
+    const cardW = trackRef.current.scrollWidth / featuredTools.length;
+    const newPage = Math.round(trackRef.current.scrollLeft / (VISIBLE * cardW));
+    setPage(Math.max(0, Math.min(newPage, TOTAL_PAGES - 1)));
+  };
+
+  return (
+    <div style={{ position: 'relative', maxWidth: '1080px', margin: '0 auto' }}>
+
+      {/* ── Arrow: prev ── */}
+      <button
+        onClick={() => scrollToPage(page - 1)}
+        disabled={page === 0}
+        aria-label="Previous"
+        style={{
+          position: 'absolute', left: -48, top: '50%', transform: 'translateY(-50%)',
+          zIndex: 2, width: 36, height: 36, borderRadius: '50%',
+          border: '1.5px solid rgba(82,141,255,0.35)',
+          background: 'rgba(82,141,255,0.1)',
+          color: page === 0 ? 'rgba(82,141,255,0.25)' : '#528dff',
+          cursor: page === 0 ? 'default' : 'pointer',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontSize: '1rem', transition: 'all 0.15s',
+          borderColor: page === 0 ? 'rgba(82,141,255,0.15)' : 'rgba(82,141,255,0.35)',
+        }}
+      >‹</button>
+
+      {/* ── Arrow: next ── */}
+      <button
+        onClick={() => scrollToPage(page + 1)}
+        disabled={page === TOTAL_PAGES - 1}
+        aria-label="Next"
+        style={{
+          position: 'absolute', right: -48, top: '50%', transform: 'translateY(-50%)',
+          zIndex: 2, width: 36, height: 36, borderRadius: '50%',
+          border: '1.5px solid rgba(82,141,255,0.35)',
+          background: 'rgba(82,141,255,0.1)',
+          color: page === TOTAL_PAGES - 1 ? 'rgba(82,141,255,0.25)' : '#528dff',
+          cursor: page === TOTAL_PAGES - 1 ? 'default' : 'pointer',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontSize: '1rem', transition: 'all 0.15s',
+          borderColor: page === TOTAL_PAGES - 1 ? 'rgba(82,141,255,0.15)' : 'rgba(82,141,255,0.35)',
+        }}
+      >›</button>
+
+      {/* ── Track ── */}
+      <div
+        ref={trackRef}
+        onScroll={onScroll}
+        style={{
+          display: 'flex', gap: '1.25rem',
+          overflowX: 'auto', scrollSnapType: 'x mandatory',
+          WebkitOverflowScrolling: 'touch',
+          msOverflowStyle: 'none', scrollbarWidth: 'none',
+          paddingBottom: '0.25rem',
+        }}
+      >
+        {featuredTools.map((t, i) => (
+          <div key={i} style={{
+            scrollSnapAlign: 'start',
+            flex: '0 0 calc(25% - 0.94rem)',
+            minWidth: 0,
+          }}>
+            <FeaturedToolCard {...t} />
+          </div>
+        ))}
+      </div>
+
+      {/* ── Dot indicators ── */}
+      <div style={{ display: 'flex', justifyContent: 'center', gap: '0.45rem', marginTop: '1.25rem' }}>
+        {Array.from({ length: TOTAL_PAGES }).map((_, i) => (
+          <button
+            key={i}
+            onClick={() => scrollToPage(i)}
+            aria-label={`Go to page ${i + 1}`}
+            style={{
+              width: i === page ? 20 : 8, height: 8,
+              borderRadius: 999, border: 'none', padding: 0,
+              cursor: 'pointer', transition: 'all 0.2s',
+              background: i === page ? '#528dff' : 'rgba(82,141,255,0.25)',
+            }}
+          />
+        ))}
+      </div>
+
+    </div>
   );
 }
 
@@ -214,9 +354,7 @@ export default function HomepageFeatures() {
           <span className={styles.sectionLabel}>Try Now</span>
           <h2 className={styles.sectionTitle}>Featured Tools</h2>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.25rem', maxWidth: '1080px', margin: '0 auto' }}>
-          {featuredTools.map((t, i) => <FeaturedToolCard key={i} {...t} />)}
-        </div>
+        <ToolsCarousel />
       </div>
 
       <div className={styles.statsRow}>
