@@ -10,7 +10,7 @@ import EventDecorations from '@site/src/components/EventDecorations';
  * @returns this is home page you can change the contant of it
  */
 export default function Home() {
-  const {siteConfig} = useDocusaurusContext();
+  const { siteConfig } = useDocusaurusContext();
   return (
     <Layout
       title={`${siteConfig.title}`}

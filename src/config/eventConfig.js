@@ -28,11 +28,13 @@
 // import ActiveEvent from '../components/EventDecorations/events/EidAlFitr';
 // import ActiveEvent from '../components/EventDecorations/events/EidAlAdha';
 // import ActiveEvent from '../components/EventDecorations/events/NewYear';
+// import ActiveEvent from '../components/EventDecorations/events/JordanIndependenceDay';
+import ActiveEvent from '../components/EventDecorations/events/StarField';
 
 const eventConfig = {
   /** ← Swap the variable name here to match your import above, or set null */
-  // activeEvent: ActiveEvent,
-  activeEvent: null,   // ← uncomment this (and comment the line above) to disable
+  activeEvent: ActiveEvent,
+  // activeEvent: null,   // ← uncomment this (and comment the line above) to disable
 };
 
 export default eventConfig;

@@ -163,6 +163,18 @@ function SqlFormatterContent() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [formatSQL]);
 
+  // Suppress the benign "ResizeObserver loop" error that Monaco triggers
+  // when its container is resized — it is not a real error.
+  useEffect(() => {
+    const suppress = (e) => {
+      if (e.message === 'ResizeObserver loop completed with undelivered notifications.') {
+        e.stopImmediatePropagation();
+      }
+    };
+    window.addEventListener('error', suppress);
+    return () => window.removeEventListener('error', suppress);
+  }, []);
+
   const editorTheme = colorMode === 'dark' ? 'site-dark' : 'site-light';
 
   const sharedOptions = {
@@ -174,6 +186,7 @@ function SqlFormatterContent() {
     padding: { top: 12, bottom: 12 },
     renderLineHighlight: 'gutter',
     smoothScrolling: true,
+    automaticLayout: true,
   };
 
   return (

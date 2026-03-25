@@ -40,16 +40,16 @@ const features = [
 
 const stats = [
   { end: 11, suffix: '+', label: 'Technology Topics' },
-  { end: 4, suffix: '', label: 'Developer Tools' },
+  { end: 5, suffix: '', label: 'Developer Tools' },
   { end: 100, suffix: '%', label: 'Free to Use' },
   { special: '∞', label: 'Things to Learn' },
 ];
 
 function VisitorCount() {
   const [target, setTarget] = useState(null);
-  const [count, setCount]   = useState(0);
-  const animated            = useRef(false);
-  const spanRef             = useRef(null);
+  const [count, setCount] = useState(0);
+  const animated = useRef(false);
+  const spanRef = useRef(null);
 
   useEffect(() => {
     const counterRef = ref(db, 'visits');
@@ -164,8 +164,8 @@ const featuredTools = [
     title: 'Spring Boot Annotations',
     description: '52 annotations across 7 categories — searchable, filterable cheat sheet you can use as a daily reference.',
     to: '/spring-boot-annotations',
-    color: '#f87171',
-    bg: 'rgba(248,113,113,0.08)',
+    color: '#fc7dc7',
+    bg: 'rgba(252,125,199,0.08)',
   },
 ];
 
@@ -193,7 +193,7 @@ function FeaturedToolCard({ icon, title, description, to, color, bg }) {
 export default function HomepageFeatures() {
   return (
     <section className={styles.featuresSection}>
-      <div className={styles.sectionHeader}>
+      {/* <div className={styles.sectionHeader}>
         <span className={styles.sectionLabel}>What We Offer</span>
         <h2 className={styles.sectionTitle}>Everything you need to level&nbsp;up</h2>
         <p className={styles.sectionSubtitle}>
@@ -206,10 +206,10 @@ export default function HomepageFeatures() {
         {features.map((f, i) => (
           <FeatureCard key={i} {...f} />
         ))}
-      </div>
+      </div> */}
 
       {/* Featured Tools */}
-      <div style={{ marginTop: '4rem' }}>
+      <div>
         <div className={styles.sectionHeader} style={{ marginBottom: '2rem' }}>
           <span className={styles.sectionLabel}>Try Now</span>
           <h2 className={styles.sectionTitle}>Featured Tools</h2>
