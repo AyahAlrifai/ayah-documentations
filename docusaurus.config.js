@@ -80,6 +80,7 @@ const config = {
             items: [
               { to: 'apiDocumentationGenerator', label: 'API Doc Generator', className: 'nav-icon-api' },
               { to: 'jwt-decoder', label: 'JWT Decoder', className: 'nav-icon-jwt' },
+              { to: 'regex-tester', label: 'Regex Tester', className: 'nav-icon-regex' },
               { to: 'json-formatter', label: 'JSON Formatter', className: 'nav-icon-json' },
               { to: 'create-new-document', label: 'Markdown Editor', className: 'nav-icon-markdown' },
               { to: 'sql-formatter', label: 'SQL Formatter', className: 'nav-icon-sql' },

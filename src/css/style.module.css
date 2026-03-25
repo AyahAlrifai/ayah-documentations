@@ -1252,3 +1252,42 @@ body {
   justify-content: center;
   gap: 0.75rem;
 }
+
+/* ============================================================
+   REGEX TESTER — MATCH HIGHLIGHTS
+   ============================================================ */
+.regexHL :global(mark) {
+  border-radius: 3px;
+  padding: 0 1px;
+  cursor: pointer;
+  transition: background 0.12s;
+  outline: none;
+}
+
+:global([data-theme='dark']) .regexHL :global(mark) {
+  background: rgba(245, 158, 11, 0.35);
+  color: #e6edf3;
+}
+
+:global([data-theme='light']) .regexHL :global(mark) {
+  background: #fde68a;
+  color: #1f2937;
+}
+
+:global([data-theme='dark']) .regexHL :global(mark:hover) {
+  background: rgba(245, 158, 11, 0.52);
+}
+
+:global([data-theme='light']) .regexHL :global(mark:hover) {
+  background: #fcd34d;
+}
+
+:global([data-theme='dark']) .regexHL :global(mark.active) {
+  background: #b45309;
+  color: #fff8e7;
+}
+
+:global([data-theme='light']) .regexHL :global(mark.active) {
+  background: #f59e0b;
+  color: #ffffff;
+}

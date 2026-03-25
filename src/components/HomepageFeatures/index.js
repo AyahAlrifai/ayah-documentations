@@ -136,7 +136,7 @@ function FeatureCard({ icon, gradient, accent, title, description }) {
 
 const featuredTools = [
   {
-    icon: '⚡',
+    icon: '/img/icons/api.svg',
     title: 'API Doc Generator',
     description: 'Paste Spring Boot annotations and get a complete, structured API documentation — ready to copy as Markdown or HTML.',
     to: '/apiDocumentationGenerator',
@@ -144,7 +144,7 @@ const featuredTools = [
     bg: 'rgba(82,141,255,0.08)',
   },
   {
-    icon: '{ }',
+    icon: '/img/icons/json.svg',
     title: 'JSON Formatter',
     description: 'Format, minify, and diff JSON instantly in your browser. Built-in Monaco editor with syntax highlighting.',
     to: '/json-formatter',
@@ -152,7 +152,7 @@ const featuredTools = [
     bg: 'rgba(68,187,8,0.08)',
   },
   {
-    icon: '🗄️',
+    icon: '/img/icons/sql.svg',
     title: 'SQL Formatter',
     description: 'Beautify raw SQL queries with proper indentation and uppercase keywords — supports all major SQL dialects.',
     to: '/sql-formatter',
@@ -160,7 +160,7 @@ const featuredTools = [
     bg: 'rgba(232,194,70,0.08)',
   },
   {
-    icon: '📋',
+    icon: '/img/icons/spring.svg',
     title: 'Spring Boot Annotations',
     description: '52 annotations across 7 categories — searchable, filterable cheat sheet you can use as a daily reference.',
     to: '/spring-boot-annotations',
@@ -182,7 +182,7 @@ function FeaturedToolCard({ icon, title, description, to, color, bg }) {
       onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = `0 12px 32px ${color}25`; }}
       onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = ''; }}
     >
-      <span style={{ fontSize: '1.8rem' }}>{icon}</span>
+      <img src={icon} alt={title} style={{ width: 36, height: 36 }} />
       <strong style={{ fontSize: '1.05rem', color }}>{title}</strong>
       <p style={{ margin: 0, fontSize: '0.9rem', lineHeight: 1.65, opacity: 0.75 }}>{description}</p>
       <span style={{ fontSize: '0.82rem', color, fontWeight: 600 }}>Open tool →</span>
