@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styles from '../../css/style.module.css';
+import { db } from '../../config/firebase';
+import { ref, runTransaction, onValue } from 'firebase/database';
 
 const features = [
   {
@@ -42,6 +44,20 @@ const stats = [
   { end: 100, suffix: '%', label: 'Free to Use' },
   { special: '∞', label: 'Things to Learn' },
 ];
+
+function VisitorCount() {
+  const [count, setCount] = useState(null);
+
+  useEffect(() => {
+    const counterRef = ref(db, 'visits');
+    runTransaction(counterRef, (current) => (current ?? 0) + 1)
+      .then(() => onValue(counterRef, (snap) => setCount(snap.val()), { onlyOnce: true }))
+      .catch(() => setCount(null));
+  }, []);
+
+  if (count === null) return <span className={styles.statNumber}>—</span>;
+  return <span className={styles.statNumber}>{count.toLocaleString()}</span>;
+}
 
 function CountUp({ end, suffix }) {
   const [count, setCount] = useState(0);
@@ -125,6 +141,10 @@ export default function HomepageFeatures() {
             <span className={styles.statLabel}>{s.label}</span>
           </div>
         ))}
+        <div className={styles.statItem}>
+          <VisitorCount />
+          <span className={styles.statLabel}>Total Visits</span>
+        </div>
       </div>
     </section>
   );

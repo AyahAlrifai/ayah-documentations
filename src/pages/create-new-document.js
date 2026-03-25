@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Layout from '@theme/Layout';
 import Editor from '@monaco-editor/react';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { useColorMode } from '@docusaurus/theme-common';
 import styles from '../css/style.module.css';
 
@@ -103,7 +104,7 @@ function MarkdownEditorContent() {
             <span>◉</span> preview
           </div>
           <div className={styles.mdPreview}>
-            <ReactMarkdown>{value}</ReactMarkdown>
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{value}</ReactMarkdown>
           </div>
         </div>
       </div>

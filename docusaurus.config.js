@@ -17,7 +17,16 @@ const config = {
   onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
   customFields: {
-    "REACT_APP_N8N_API_URL": n8nApiUrl
+    "REACT_APP_N8N_API_URL": n8nApiUrl,
+    firebaseConfig: {
+      apiKey:            process.env.FIREBASE_API_KEY,
+      authDomain:        process.env.FIREBASE_AUTH_DOMAIN,
+      databaseURL:       process.env.FIREBASE_DATABASE_URL,
+      projectId:         process.env.FIREBASE_PROJECT_ID,
+      storageBucket:     process.env.FIREBASE_STORAGE_BUCKET,
+      messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+      appId:             process.env.FIREBASE_APP_ID,
+    },
   },
   // i18n: {
   //   defaultLocale: 'en',
