@@ -40,7 +40,7 @@ const features = [
 
 const stats = [
   { end: 11, suffix: '+', label: 'Technology Topics' },
-  { end: 5, suffix: '', label: 'Developer Tools' },
+  { end: 6, suffix: '', label: 'Developer Tools' },
   { end: 100, suffix: '%', label: 'Free to Use' },
   { special: '∞', label: 'Things to Learn' },
 ];

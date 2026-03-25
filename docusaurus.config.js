@@ -79,8 +79,9 @@ const config = {
             className: 'nav-icon-tools',
             items: [
               { to: 'apiDocumentationGenerator', label: 'API Doc Generator', className: 'nav-icon-api' },
-              { to: 'create-new-document', label: 'Markdown Editor', className: 'nav-icon-markdown' },
+              { to: 'jwt-decoder', label: 'JWT Decoder', className: 'nav-icon-jwt' },
               { to: 'json-formatter', label: 'JSON Formatter', className: 'nav-icon-json' },
+              { to: 'create-new-document', label: 'Markdown Editor', className: 'nav-icon-markdown' },
               { to: 'sql-formatter', label: 'SQL Formatter', className: 'nav-icon-sql' },
               { to: 'spring-boot-annotations', label: 'Spring Boot Annotations', className: 'nav-icon-spring' },
             ],
