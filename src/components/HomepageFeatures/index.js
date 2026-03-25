@@ -46,17 +46,41 @@ const stats = [
 ];
 
 function VisitorCount() {
-  const [count, setCount] = useState(null);
+  const [target, setTarget] = useState(null);
+  const [count, setCount]   = useState(0);
+  const animated            = useRef(false);
+  const spanRef             = useRef(null);
 
   useEffect(() => {
     const counterRef = ref(db, 'visits');
     runTransaction(counterRef, (current) => (current ?? 0) + 1)
-      .then(() => onValue(counterRef, (snap) => setCount(snap.val()), { onlyOnce: true }))
-      .catch(() => setCount(null));
+      .then(() => onValue(counterRef, (snap) => setTarget(snap.val()), { onlyOnce: true }))
+      .catch(() => setTarget(0));
   }, []);
 
-  if (count === null) return <span className={styles.statNumber}>—</span>;
-  return <span className={styles.statNumber}>{count.toLocaleString()}</span>;
+  useEffect(() => {
+    if (target === null || animated.current) return;
+    const el = spanRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        animated.current = true;
+        const duration = 1600;
+        const start = performance.now();
+        const step = (now) => {
+          const progress = Math.min((now - start) / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          setCount(Math.round(eased * target));
+          if (progress < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+      }
+    }, { threshold: 0.4 });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [target]);
+
+  return <span ref={spanRef} className={styles.statNumber}>{count.toLocaleString()}</span>;
 }
 
 function CountUp({ end, suffix }) {
@@ -110,6 +134,62 @@ function FeatureCard({ icon, gradient, accent, title, description }) {
   );
 }
 
+const featuredTools = [
+  {
+    icon: '⚡',
+    title: 'API Doc Generator',
+    description: 'Paste Spring Boot annotations and get a complete, structured API documentation — ready to copy as Markdown or HTML.',
+    to: '/apiDocumentationGenerator',
+    color: '#528dff',
+    bg: 'rgba(82,141,255,0.08)',
+  },
+  {
+    icon: '{ }',
+    title: 'JSON Formatter',
+    description: 'Format, minify, and diff JSON instantly in your browser. Built-in Monaco editor with syntax highlighting.',
+    to: '/json-formatter',
+    color: '#44bb08',
+    bg: 'rgba(68,187,8,0.08)',
+  },
+  {
+    icon: '🗄️',
+    title: 'SQL Formatter',
+    description: 'Beautify raw SQL queries with proper indentation and uppercase keywords — supports all major SQL dialects.',
+    to: '/sql-formatter',
+    color: '#e8c246',
+    bg: 'rgba(232,194,70,0.08)',
+  },
+  {
+    icon: '📋',
+    title: 'Spring Boot Annotations',
+    description: '52 annotations across 7 categories — searchable, filterable cheat sheet you can use as a daily reference.',
+    to: '/spring-boot-annotations',
+    color: '#f87171',
+    bg: 'rgba(248,113,113,0.08)',
+  },
+];
+
+function FeaturedToolCard({ icon, title, description, to, color, bg }) {
+  return (
+    <a
+      href={to}
+      style={{
+        display: 'flex', flexDirection: 'column', gap: '0.75rem',
+        padding: '1.5rem', borderRadius: '16px', textDecoration: 'none',
+        background: bg, border: `1px solid ${color}30`,
+        transition: 'transform 0.2s, box-shadow 0.2s',
+      }}
+      onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = `0 12px 32px ${color}25`; }}
+      onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = ''; }}
+    >
+      <span style={{ fontSize: '1.8rem' }}>{icon}</span>
+      <strong style={{ fontSize: '1.05rem', color }}>{title}</strong>
+      <p style={{ margin: 0, fontSize: '0.9rem', lineHeight: 1.65, opacity: 0.75 }}>{description}</p>
+      <span style={{ fontSize: '0.82rem', color, fontWeight: 600 }}>Open tool →</span>
+    </a>
+  );
+}
+
 export default function HomepageFeatures() {
   return (
     <section className={styles.featuresSection}>
@@ -126,6 +206,17 @@ export default function HomepageFeatures() {
         {features.map((f, i) => (
           <FeatureCard key={i} {...f} />
         ))}
+      </div>
+
+      {/* Featured Tools */}
+      <div style={{ marginTop: '4rem' }}>
+        <div className={styles.sectionHeader} style={{ marginBottom: '2rem' }}>
+          <span className={styles.sectionLabel}>Try Now</span>
+          <h2 className={styles.sectionTitle}>Featured Tools</h2>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.25rem', maxWidth: '1080px', margin: '0 auto' }}>
+          {featuredTools.map((t, i) => <FeaturedToolCard key={i} {...t} />)}
+        </div>
       </div>
 
       <div className={styles.statsRow}>

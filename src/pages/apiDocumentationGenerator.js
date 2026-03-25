@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Layout from '@theme/Layout';
 import { useColorMode } from '@docusaurus/theme-common';
 import Editor from '@monaco-editor/react';
@@ -489,12 +489,25 @@ function buildHTML(data) {
 /* ── Page component ── */
 function ApiDocContent() {
   const { colorMode } = useColorMode();
+
   const [apiInput, setApiInput] = useState(INITIAL_INPUT);
   const [docData, setDocData] = useState(null);
   const [copied, setCopied] = useState(null); // 'md' | 'html' | null
   const docRef = useRef(null);
 
   const generate = () => setDocData(buildDoc(apiInput));
+
+  // Feature 1: Ctrl+Enter keyboard shortcut
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.ctrlKey && e.key === 'Enter') {
+        e.preventDefault();
+        generate();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [apiInput]);
 
   const copyAs = async (type) => {
     if (!docData) return;
@@ -507,6 +520,7 @@ function ApiDocContent() {
       alert('Copy failed — try selecting the text manually.');
     }
   };
+
 
   return (
     <div className={styles.toolPage}>
@@ -530,9 +544,8 @@ function ApiDocContent() {
         >
           {copied === 'html' ? '✓ Copied!' : '⎘ Copy as HTML'}
         </button>
-
         <div className={styles.toolBarDivider} />
-        {/* <span className={styles.toolBarMeta}>Paste Spring annotations · click Generate</span> */}
+        {/* <span className={styles.toolBarMeta}>Ctrl+Enter to generate</span> */}
       </div>
 
       {/* Split pane */}

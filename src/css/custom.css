@@ -502,3 +502,29 @@ html[data-theme='dark'] {
   background: rgba(8, 89, 252, 0.08);
 }
 
+
+/* ── Smooth scroll ── */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ── Print styles (PDF export) ── */
+@media print {
+  .navbar, .footer, [class*="toolBar"], [class*="paneHeader"], button {
+    display: none !important;
+  }
+  [class*="toolPage"] {
+    height: auto !important;
+    padding: 0 !important;
+  }
+  [class*="splitPane"] {
+    flex-direction: column !important;
+  }
+  [class*="pane"] {
+    border: none !important;
+    box-shadow: none !important;
+  }
+  [class*="apiDocOutput"] {
+    padding: 1rem !important;
+  }
+}

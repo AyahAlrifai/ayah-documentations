@@ -93,9 +93,8 @@ function gameReducer(state, action) {
       if (ns[row][col] === null &&
         nh[row][col] !== null && nh[row + 1][col] !== null &&
         nv[row][col] !== null && nv[row][col + 1] !== null) {
-        const sides = [nh[row][col], nh[row + 1][col], nv[row][col], nv[row][col + 1]];
-        ns[row][col] = sides.every(s => s === sides[0]) ? sides[0] : 'mixed';
-        if (ns[row][col] === state.turn) owned++;
+        ns[row][col] = state.turn;
+        owned++;
       }
     }
   }

@@ -39,8 +39,9 @@ const config = {
       ({
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
-          editUrl:
-            'https://github.com/AyahAlrifai/ayah-documentations/blob/edit',
+          editUrl: 'https://github.com/AyahAlrifai/ayah-documentations/blob/edit',
+          showLastUpdateTime: true,
+          showLastUpdateAuthor: true,
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -70,45 +71,30 @@ const config = {
             type: 'doc',
             docId: 'multiExecPro',
             position: 'left',
-            label: 'Documentation',
-          }, {
-            to: 'create-new-document',
+            label: '📚 Documentation',
+          },
+          {
+            label: '🛠️ Tools',
             position: 'left',
-            label: 'Markdown Editor',
-          }, {
-            to: 'json-formatter',
+            items: [
+              { to: 'create-new-document',       label: '✏️ Markdown Editor' },
+              { to: 'json-formatter',             label: '{ } JSON Formatter' },
+              { to: 'sql-formatter',              label: '🗄️ SQL Formatter' },
+              { to: 'apiDocumentationGenerator',  label: '⚡ API Doc Generator' },
+              { to: 'spring-boot-annotations',    label: '🍃 Spring Boot Annotations' },
+            ],
+          },
+          {
+            label: '🎮 Games',
             position: 'left',
-            label: 'JSON Formatter',
-          }, {
-            to: 'apiDocumentationGenerator',
-            position: 'left',
-            label: 'API Doc Generator',
-          }, {
-            to: 'tic-tac-toe',
-            position: 'left',
-            label: 'Tic Tac Toe',
-          }, {
-            to: 'eight-puzzle',
-            position: 'left',
-            label: '8 Puzzle',
-          }, {
-            to: 'dots-and-boxes',
-            position: 'left',
-            label: 'Dots and Boxes',
-          }, {
-            to: 'trains',
-            position: 'left',
-            label: 'Trains',
-          }, {
-            to: 'number-guessing',
-            position: 'left',
-            label: 'Number Guessing',
-          }
-          // , {
-          //   to: 'rest-adapter',
-          //   position: 'left',
-          //   label: 'REST Adapter',
-          // }
+            items: [
+              { to: 'tic-tac-toe',      label: '⭕ Tic Tac Toe' },
+              { to: 'eight-puzzle',     label: '🧩 8 Puzzle' },
+              { to: 'dots-and-boxes',   label: '⬛ Dots and Boxes' },
+              { to: 'trains',           label: '🚂 Trains' },
+              { to: 'number-guessing',  label: '🔢 Number Guessing' },
+            ],
+          },
         ],
       },
       footer: {
