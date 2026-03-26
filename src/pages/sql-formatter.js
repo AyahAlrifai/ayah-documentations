@@ -210,7 +210,11 @@ function SqlFormatterContent() {
         <button
           className={`${styles.tBtn} ${diffMode ? styles.tBtnDanger : styles.tBtnGhost}`}
           onClick={() => {
-            if (!diffMode) { setLeftSQL(input); setRightSQL(''); }
+            if (!diffMode) {
+              const formatted = (() => { try { return format(input, { language: 'sql', tabWidth: 2, keywordCase: 'upper' }); } catch { return input; } })();
+              setLeftSQL(formatted);
+              setRightSQL('');
+            }
             setDiffMode(m => !m);
           }}
         >
@@ -234,14 +238,26 @@ function SqlFormatterContent() {
         <div style={{ display: 'flex', flexDirection: 'column', flex: 1, gap: '0.75rem', minHeight: 0 }}>
           <div className={styles.splitPane} style={{ flex: '1 1 0' }}>
             <div className={styles.pane}>
-              <div className={styles.paneHeader}><span style={{ color: '#f87171' }}>●</span> left (original)</div>
+              <div className={styles.paneHeader}>
+                <span style={{ color: '#f87171' }}>●</span> left (original)
+                <button className={`${styles.tBtn} ${styles.tBtnPrimary}`} style={{ marginLeft: 'auto', padding: '1px 8px', fontSize: '0.72rem' }}
+                  onClick={() => { try { setLeftSQL(format(leftSQL, { language: 'sql', tabWidth: 2, keywordCase: 'upper' })); } catch { toast.error('Invalid SQL in left editor.'); } }}>
+                  ⚡ Format
+                </button>
+              </div>
               <div className={styles.paneBody}>
                 <Editor language="sql" value={leftSQL} theme={editorTheme} beforeMount={defineEditorThemes}
                   onChange={(v) => setLeftSQL(v ?? '')} options={sharedOptions} />
               </div>
             </div>
             <div className={styles.pane}>
-              <div className={styles.paneHeader}><span style={{ color: '#4ade80' }}>●</span> right (changed)</div>
+              <div className={styles.paneHeader}>
+                <span style={{ color: '#4ade80' }}>●</span> right (changed)
+                <button className={`${styles.tBtn} ${styles.tBtnPrimary}`} style={{ marginLeft: 'auto', padding: '1px 8px', fontSize: '0.72rem' }}
+                  onClick={() => { try { setRightSQL(format(rightSQL, { language: 'sql', tabWidth: 2, keywordCase: 'upper' })); } catch { toast.error('Invalid SQL in right editor.'); } }}>
+                  ⚡ Format
+                </button>
+              </div>
               <div className={styles.paneBody}>
                 <Editor language="sql" value={rightSQL} theme={editorTheme} beforeMount={defineEditorThemes}
                   onChange={(v) => setRightSQL(v ?? '')} options={sharedOptions} />
