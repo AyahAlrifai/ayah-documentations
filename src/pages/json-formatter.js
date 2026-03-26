@@ -181,7 +181,11 @@ function JsonFormatterContent() {
         <button
           className={`${styles.tBtn} ${diffMode ? styles.tBtnDanger : styles.tBtnGhost}`}
           onClick={() => {
-            if (!diffMode) setLeftInput(input);
+            if (!diffMode) {
+              const formatted = (() => { try { return JSON.stringify(JSON.parse(input), null, 2); } catch { return input; } })();
+              setLeftInput(formatted);
+              setRightInput('');
+            }
             setDiffMode(m => !m);
           }}
         >
@@ -205,14 +209,26 @@ function JsonFormatterContent() {
         <div style={{ display: 'flex', flexDirection: 'column', flex: 1, gap: '0.75rem', minHeight: 0 }}>
           <div className={styles.splitPane} style={{ flex: '1 1 0' }}>
             <div className={styles.pane}>
-              <div className={styles.paneHeader}><span style={{ color: '#f87171' }}>●</span> left (original)</div>
+              <div className={styles.paneHeader}>
+                <span style={{ color: '#f87171' }}>●</span> left (original)
+                <button className={`${styles.tBtn} ${styles.tBtnPrimary}`} style={{ marginLeft: 'auto', padding: '1px 8px', fontSize: '0.72rem' }}
+                  onClick={() => { try { setLeftInput(JSON.stringify(JSON.parse(leftInput), null, 2)); } catch { toast.error('Invalid JSON in left editor.'); } }}>
+                  ⇄ Format
+                </button>
+              </div>
               <div className={styles.paneBody}>
                 <Editor language="json" value={leftInput} theme={theme} beforeMount={defineEditorThemes}
                   onChange={(v) => setLeftInput(v ?? '')} options={editorOptions} />
               </div>
             </div>
             <div className={styles.pane}>
-              <div className={styles.paneHeader}><span style={{ color: '#4ade80' }}>●</span> right (changed)</div>
+              <div className={styles.paneHeader}>
+                <span style={{ color: '#4ade80' }}>●</span> right (changed)
+                <button className={`${styles.tBtn} ${styles.tBtnPrimary}`} style={{ marginLeft: 'auto', padding: '1px 8px', fontSize: '0.72rem' }}
+                  onClick={() => { try { setRightInput(JSON.stringify(JSON.parse(rightInput), null, 2)); } catch { toast.error('Invalid JSON in right editor.'); } }}>
+                  ⇄ Format
+                </button>
+              </div>
               <div className={styles.paneBody}>
                 <Editor language="json" value={rightInput} theme={theme} beforeMount={defineEditorThemes}
                   onChange={(v) => setRightInput(v ?? '')} options={editorOptions} />
