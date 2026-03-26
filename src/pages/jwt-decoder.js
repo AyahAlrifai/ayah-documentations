@@ -172,7 +172,7 @@ function JwtDecoderContent() {
       </div>
 
       {/* ── Token input ── */}
-      <div style={{ ...paneStyle, borderRadius: 14, flexShrink: 0 }}>
+      <div style={{ ...paneStyle, borderRadius: 14, flexShrink: 0, maxHeight: '45%', overflow: 'auto' }}>
         <div className={styles.paneHeader}>
           <span style={{ color: '#c77dff' }}>●</span> jwt token
         </div>
@@ -202,6 +202,7 @@ function JwtDecoderContent() {
               background: dark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)',
               border: `1px solid ${dark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'}`,
               wordBreak: 'break-all',
+              maxHeight: 80, overflow: 'hidden',
             }}>
               {rawParts.map((p, i) => (
                 <React.Fragment key={i}>
