@@ -216,7 +216,7 @@ function JwtDecoderContent() {
 
       {/* ── Decoded view ── */}
       {decoded?.ok && (
-        <>
+        <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, gap: '1rem' }}>
           {/* Info chips */}
           <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap', flexShrink: 0 }}>
             {INFO_FIELDS.map(f => {
@@ -234,7 +234,7 @@ function JwtDecoderContent() {
           </div>
 
           {/* Three decode panes */}
-          <div className={styles.splitPane} style={{ flex: 1 }}>
+          <div className={styles.splitPane}>
 
             {/* Header */}
             <div className={styles.pane}>
@@ -296,7 +296,7 @@ function JwtDecoderContent() {
             </div>
 
           </div>
-        </>
+        </div>
       )}
 
       {/* ── Empty state ── */}

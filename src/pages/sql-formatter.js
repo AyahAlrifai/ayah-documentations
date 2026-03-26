@@ -114,7 +114,7 @@ function SqlFormatterContent() {
   const [input, setInput]           = useState(INITIAL_SQL);
   const [copied, setCopied]         = useState(false);
   const [diffMode, setDiffMode]     = useState(false);
-  const [leftSQL, setLeftSQL]       = useState(INITIAL_SQL);
+  const [leftSQL, setLeftSQL]       = useState('');
   const [rightSQL, setRightSQL]     = useState('');
   const editorRef = useRef(null);
 
@@ -209,7 +209,10 @@ function SqlFormatterContent() {
 
         <button
           className={`${styles.tBtn} ${diffMode ? styles.tBtnDanger : styles.tBtnGhost}`}
-          onClick={() => setDiffMode(m => !m)}
+          onClick={() => {
+            if (!diffMode) { setLeftSQL(input); setRightSQL(''); }
+            setDiffMode(m => !m);
+          }}
         >
           {diffMode ? '✕ Close Diff' : '⇄ Diff'}
         </button>

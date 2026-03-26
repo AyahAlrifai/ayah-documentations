@@ -101,16 +101,13 @@ function DiffResult({ diffs }) {
   );
 }
 
-const SAMPLE_LEFT  = `{\n  "full_name": "Ayah Refai",\n  "email": "alrefayayah@gmail.com",\n  "role": "admin"\n}`;
-const SAMPLE_RIGHT = `{\n  "full_name": "Ayah Refai",\n  "email": "ayah@newdomain.com",\n  "role": "user",\n  "active": true\n}`;
-
 function JsonFormatterContent() {
   const { colorMode } = useColorMode();
-  const [input, setInput]         = useState(`{\n  "full_name": "Ayah Refai",\n  "email": "alrefayayah@gmail.com"\n}`);
-  const [copied, setCopied]       = useState(false);
-  const [diffMode, setDiffMode]   = useState(false);
-  const [leftInput, setLeftInput] = useState(SAMPLE_LEFT);
-  const [rightInput, setRightInput] = useState(SAMPLE_RIGHT);
+  const [input, setInput]           = useState(`{\n  "full_name": "Ayah Refai",\n  "email": "alrefayayah@gmail.com"\n}`);
+  const [copied, setCopied]         = useState(false);
+  const [diffMode, setDiffMode]     = useState(false);
+  const [leftInput, setLeftInput]   = useState('');
+  const [rightInput, setRightInput] = useState('');
 
   const lines = input ? input.split('\n').length : 0;
   const chars = input ? input.length : 0;
@@ -170,7 +167,10 @@ function JsonFormatterContent() {
 
         <button
           className={`${styles.tBtn} ${diffMode ? styles.tBtnDanger : styles.tBtnGhost}`}
-          onClick={() => setDiffMode(m => !m)}
+          onClick={() => {
+            if (!diffMode) setLeftInput(input);
+            setDiffMode(m => !m);
+          }}
         >
           {diffMode ? '✕ Close Diff' : '⇄ Diff'}
         </button>
