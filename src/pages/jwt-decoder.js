@@ -9,7 +9,7 @@ import styles from '../css/style.module.css';
 function b64urlDecode(str) {
   const b64 = str.replace(/-/g, '+').replace(/_/g, '/');
   const pad = b64.padEnd(b64.length + (4 - (b64.length % 4)) % 4, '=');
-  try   { return JSON.parse(atob(pad)); }
+  try { return JSON.parse(atob(pad)); }
   catch { return atob(pad); }
 }
 
@@ -19,7 +19,7 @@ function parseJWT(token) {
   if (parts.length !== 3)
     throw new Error('Invalid JWT — must have exactly 3 dot-separated parts');
   let header, payload;
-  try { header  = b64urlDecode(parts[0]); } catch { throw new Error('Header is not valid base64url'); }
+  try { header = b64urlDecode(parts[0]); } catch { throw new Error('Header is not valid base64url'); }
   try { payload = b64urlDecode(parts[1]); } catch { throw new Error('Payload is not valid base64url'); }
   return { header, payload, signature: parts[2], rawParts: parts };
 }
@@ -33,9 +33,9 @@ function fmtTime(ts) {
 function getExpStatus(exp) {
   if (!exp) return null;
   const diff = exp - Date.now() / 1000;
-  if (diff < 0)   return { label: 'Expired',      color: '#f87171', bg: 'rgba(248,113,113,0.12)' };
-  if (diff < 300) return { label: 'Expires soon', color: '#fbbf24', bg: 'rgba(251,191,36,0.12)'  };
-  return           { label: 'Valid',               color: '#4ade80', bg: 'rgba(74,222,128,0.12)'  };
+  if (diff < 0) return { label: 'Expired', color: '#f87171', bg: 'rgba(248,113,113,0.12)' };
+  if (diff < 300) return { label: 'Expires soon', color: '#fbbf24', bg: 'rgba(251,191,36,0.12)' };
+  return { label: 'Valid', color: '#4ade80', bg: 'rgba(74,222,128,0.12)' };
 }
 
 /* ── JSON syntax renderer ───────────────────────────────────── */
@@ -46,12 +46,12 @@ const KNOWN_CLAIMS = {
 
 function JsonValue({ v, dark, claimKey }) {
   const isTimestamp = ['exp', 'nbf', 'iat'].includes(claimKey) && typeof v === 'number';
-  const strColor  = dark ? '#86efac' : '#15803d';
-  const numColor  = dark ? '#fbbf24' : '#b45309';
+  const strColor = dark ? '#86efac' : '#15803d';
+  const numColor = dark ? '#fbbf24' : '#b45309';
   const boolColor = dark ? '#f9a8d4' : '#9d174d';
   const nullColor = dark ? '#94a3b8' : '#6b7280';
 
-  if (v === null)             return <span style={{ color: nullColor }}>null</span>;
+  if (v === null) return <span style={{ color: nullColor }}>null</span>;
   if (typeof v === 'boolean') return <span style={{ color: boolColor }}>{String(v)}</span>;
   if (typeof v === 'number') {
     return (
@@ -65,15 +65,15 @@ function JsonValue({ v, dark, claimKey }) {
       </span>
     );
   }
-  if (typeof v === 'string')  return <span style={{ color: strColor }}>"{v}"</span>;
-  if (Array.isArray(v))       return <span style={{ color: nullColor }}>[{v.length > 0 ? v.join(', ') : 'empty'}]</span>;
+  if (typeof v === 'string') return <span style={{ color: strColor }}>"{v}"</span>;
+  if (Array.isArray(v)) return <span style={{ color: nullColor }}>[{v.length > 0 ? v.join(', ') : 'empty'}]</span>;
   return <span style={{ color: nullColor }}>{'{...}'}</span>;
 }
 
 function JsonBlock({ obj, dark }) {
   if (!obj || typeof obj !== 'object') return <code>{String(obj)}</code>;
-  const keyColor  = dark ? '#93b4ff' : '#1d4ed8';
-  const divider   = dark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
+  const keyColor = dark ? '#93b4ff' : '#1d4ed8';
+  const divider = dark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
   const claimHint = dark ? 'rgba(255,255,255,0.28)' : '#9ca3af';
 
   return (
@@ -93,11 +93,11 @@ function JsonBlock({ obj, dark }) {
 
 /* ── Info chips ─────────────────────────────────────────────── */
 const INFO_FIELDS = [
-  { label: 'ALG',     get: d => d.header?.alg },
-  { label: 'TYPE',    get: d => d.header?.typ },
-  { label: 'ISSUER',  get: d => d.payload?.iss },
+  { label: 'ALG', get: d => d.header?.alg },
+  { label: 'TYPE', get: d => d.header?.typ },
+  { label: 'ISSUER', get: d => d.payload?.iss },
   { label: 'SUBJECT', get: d => d.payload?.sub },
-  { label: 'ISSUED',  get: d => fmtTime(d.payload?.iat) },
+  { label: 'ISSUED', get: d => fmtTime(d.payload?.iat) },
   { label: 'EXPIRES', get: d => fmtTime(d.payload?.exp) },
 ];
 
@@ -110,17 +110,17 @@ const PART_LABELS = ['header', 'payload', 'signature'];
 function JwtDecoderContent() {
   const { colorMode } = useColorMode();
   const dark = colorMode === 'dark';
-  const [token, setToken]               = useState(DEFAULT_TOKEN);
+  const [token, setToken] = useState(DEFAULT_TOKEN);
   const [copiedSection, setCopiedSection] = useState(null);
 
   const decoded = useMemo(() => {
     if (!token.trim()) return null;
-    try   { return { ok: true,  ...parseJWT(token) }; }
+    try { return { ok: true, ...parseJWT(token) }; }
     catch (e) { return { ok: false, error: e.message }; }
   }, [token]);
 
   const expStatus = decoded?.ok ? getExpStatus(decoded.payload?.exp) : null;
-  const rawParts  = token.trim() ? token.trim().split('.') : [];
+  const rawParts = token.trim() ? token.trim().split('.') : [];
 
   const copy = async (text, key) => {
     try {
@@ -137,7 +137,7 @@ function JwtDecoderContent() {
 
   const chipStyle = (color) => ({
     background: dark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.03)',
-    border:     `1px solid ${dark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)'}`,
+    border: `1px solid ${dark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)'}`,
     borderRadius: 10,
     padding: '0.45rem 0.85rem',
     display: 'flex',
@@ -153,9 +153,11 @@ function JwtDecoderContent() {
         <span className={styles.toolBarTitle}>JWT Decoder</span>
 
         {expStatus && (
-          <span style={{ fontSize: '0.77rem', fontWeight: 700, padding: '2px 10px',
+          <span style={{
+            fontSize: '0.77rem', fontWeight: 700, padding: '2px 10px',
             borderRadius: 999, background: expStatus.bg, color: expStatus.color,
-            border: `1px solid ${expStatus.color}35` }}>
+            border: `1px solid ${expStatus.color}35`
+          }}>
             ● {expStatus.label}
           </span>
         )}
@@ -172,7 +174,7 @@ function JwtDecoderContent() {
       </div>
 
       {/* ── Token input ── */}
-      <div style={{ ...paneStyle, borderRadius: 14, flexShrink: 0, maxHeight: '45%', overflow: 'auto' }}>
+      <div style={{ ...paneStyle, borderRadius: 14, flexShrink: 0, maxHeight: '65%', overflow: 'auto' }}>
         <div className={styles.paneHeader}>
           <span style={{ color: '#c77dff' }}>●</span> jwt token
         </div>
@@ -225,10 +227,14 @@ function JwtDecoderContent() {
               if (!val) return null;
               return (
                 <div key={f.label} style={chipStyle()}>
-                  <span style={{ fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.12em',
-                    textTransform: 'uppercase', color: '#528dff' }}>{f.label}</span>
-                  <span style={{ fontSize: '0.8rem', fontWeight: 600,
-                    color: dark ? 'rgba(255,255,255,0.85)' : '#1f2937' }}>{val}</span>
+                  <span style={{
+                    fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.12em',
+                    textTransform: 'uppercase', color: '#528dff'
+                  }}>{f.label}</span>
+                  <span style={{
+                    fontSize: '0.8rem', fontWeight: 600,
+                    color: dark ? 'rgba(255,255,255,0.85)' : '#1f2937'
+                  }}>{val}</span>
                 </div>
               );
             })}
