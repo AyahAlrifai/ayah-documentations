@@ -91,16 +91,6 @@ function JsonBlock({ obj, dark }) {
   );
 }
 
-/* ── Info chips ─────────────────────────────────────────────── */
-const INFO_FIELDS = [
-  { label: 'ALG', get: d => d.header?.alg },
-  { label: 'TYPE', get: d => d.header?.typ },
-  { label: 'ISSUER', get: d => d.payload?.iss },
-  { label: 'SUBJECT', get: d => d.payload?.sub },
-  { label: 'ISSUED', get: d => fmtTime(d.payload?.iat) },
-  { label: 'EXPIRES', get: d => fmtTime(d.payload?.exp) },
-];
-
 /* ── Main component ─────────────────────────────────────────── */
 const DEFAULT_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c3ItMTIzNDU2IiwibmFtZSI6IkF5YWggQWwtUmVmYWkiLCJlbWFpbCI6ImFscmVmYXlheWFoQGdtYWlsLmNvbSIsInJvbGVzIjpbIkRFVkVMT1BFUiIsIlRFQU1fTEVBRCJdLCJpYXQiOjE3NDMwMDAwMDAsImV4cCI6MTc0MzA4NjQwMH0.dummy_signature_for_testing';
 
@@ -152,20 +142,20 @@ function JwtDecoderContent() {
       <div className={styles.toolBar}>
         <span className={styles.toolBarTitle}>JWT Decoder</span>
 
-        {expStatus && (
+        {decoded?.ok && expStatus && (
           <span style={{
-            fontSize: '0.77rem', fontWeight: 700, padding: '2px 10px',
+            fontSize: '0.75rem', fontWeight: 700, padding: '2px 10px',
             borderRadius: 999, background: expStatus.bg, color: expStatus.color,
-            border: `1px solid ${expStatus.color}35`
-          }}>
-            ● {expStatus.label}
-          </span>
+            border: `1px solid ${expStatus.color}35`, flexShrink: 0,
+          }}>● {expStatus.label}</span>
         )}
         {decoded?.ok === false && (
           <span style={{ fontSize: '0.78rem', color: '#f87171', fontWeight: 600 }}>
             ⚠ {decoded.error}
           </span>
         )}
+
+        <div className={styles.toolBarDivider} />
 
         <button className={`${styles.tBtn} ${styles.tBtnGhost}`}
           onClick={() => setToken('')} disabled={!token}>
@@ -174,11 +164,26 @@ function JwtDecoderContent() {
       </div>
 
       {/* ── Token input ── */}
-      <div style={{ ...paneStyle, borderRadius: 14, flexShrink: 0, maxHeight: '65%', overflow: 'auto' }}>
+      <div style={{ ...paneStyle, borderRadius: 14, flexShrink: 0 }}>
         <div className={styles.paneHeader}>
           <span style={{ color: '#c77dff' }}>●</span> jwt token
+          {/* Color-coded breakdown inline in header */}
+          {rawParts.length === 3 && (
+            <div style={{
+              flex: 1, display: 'flex', flexWrap: 'nowrap', overflow: 'hidden',
+              fontFamily: 'Consolas, monospace', fontSize: '0.65rem',
+              marginLeft: '0.75rem', minWidth: 0, gap: 1,
+            }}>
+              {rawParts.map((p, i) => (
+                <React.Fragment key={i}>
+                  {i > 0 && <span style={{ color: dark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.2)', flexShrink: 0 }}>.</span>}
+                  <span style={{ color: PART_COLORS[i], overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p}</span>
+                </React.Fragment>
+              ))}
+            </div>
+          )}
         </div>
-        <div style={{ padding: '0.75rem 1rem', display: 'flex', flexDirection: 'column', gap: '0.55rem' }}>
+        <div style={{ padding: '0.65rem 1rem' }}>
           <textarea
             value={token}
             onChange={e => setToken(e.target.value)}
@@ -186,67 +191,50 @@ function JwtDecoderContent() {
             spellCheck={false}
             autoComplete="off"
             style={{
-              width: '100%', height: 78, resize: 'none', outline: 'none',
+              width: '100%', height: 68, resize: 'none', outline: 'none',
               fontFamily: 'Consolas, "Courier New", monospace', fontSize: '0.82rem',
-              lineHeight: 1.65, padding: '0.65rem 0.9rem', borderRadius: 8,
+              lineHeight: 1.65, padding: '0.55rem 0.9rem', borderRadius: 8,
               background: dark ? '#0d1117' : '#f8faff',
               color: dark ? 'rgba(255,255,255,0.82)' : '#1f2937',
               border: `1px solid ${dark ? 'rgba(255,255,255,0.09)' : 'rgba(0,0,0,0.1)'}`,
             }}
           />
-
-          {/* Color-coded token breakdown */}
-          {rawParts.length === 3 && (
-            <div style={{
-              display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 1,
-              fontFamily: 'Consolas, monospace', fontSize: '0.7rem', lineHeight: 1.5,
-              padding: '0.4rem 0.75rem', borderRadius: 8,
-              background: dark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)',
-              border: `1px solid ${dark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'}`,
-              wordBreak: 'break-all',
-              maxHeight: 80, overflow: 'hidden',
-            }}>
-              {rawParts.map((p, i) => (
-                <React.Fragment key={i}>
-                  {i > 0 && <span style={{ color: dark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.2)', margin: '0 1px' }}>.</span>}
-                  <span style={{ color: PART_COLORS[i] }}>{p}</span>
-                </React.Fragment>
-              ))}
-            </div>
-          )}
         </div>
       </div>
 
       {/* ── Decoded view ── */}
       {decoded?.ok && (
-        <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, gap: '1rem' }}>
-          {/* Info chips */}
-          <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap', flexShrink: 0 }}>
-            {INFO_FIELDS.map(f => {
-              const val = f.get(decoded);
-              if (!val) return null;
-              return (
-                <div key={f.label} style={chipStyle()}>
-                  <span style={{
-                    fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.12em',
-                    textTransform: 'uppercase', color: '#528dff'
-                  }}>{f.label}</span>
-                  <span style={{
-                    fontSize: '0.8rem', fontWeight: 600,
-                    color: dark ? 'rgba(255,255,255,0.85)' : '#1f2937'
-                  }}>{val}</span>
-                </div>
-              );
-            })}
+        <div style={{ display: 'flex', flex: 1, minHeight: 0, gap: '1rem' }}>
+
+          {/* ── Payload (left, dominant) ── */}
+          <div className={styles.pane} style={{ flex: 3 }}>
+            <div className={styles.paneHeader}>
+              <span style={{ color: PART_COLORS[1] }}>●</span> payload
+              <span style={{
+                marginLeft: '0.4rem', fontSize: '0.65rem', fontWeight: 600,
+                padding: '1px 6px', borderRadius: 999,
+                background: 'rgba(199,125,255,0.12)', color: '#c77dff',
+                border: '1px solid rgba(199,125,255,0.25)',
+              }}>primary</span>
+              <button
+                className={`${styles.tBtn} ${styles.tBtnGhost} ${copiedSection === 'pld' ? styles.tBtnSuccess : ''}`}
+                style={{ marginLeft: 'auto', padding: '1px 8px', fontSize: '0.7rem' }}
+                onClick={() => copy(JSON.stringify(decoded.payload, null, 2), 'pld')}>
+                {copiedSection === 'pld' ? '✓' : '⎘'}
+              </button>
+            </div>
+            <div className={styles.paneBody} style={{ padding: '0.75rem 1.1rem' }}>
+              <JsonBlock obj={decoded.payload} dark={dark} />
+            </div>
           </div>
 
-          {/* Three decode panes */}
-          <div className={styles.splitPane}>
+          {/* ── Right column: Header + Signature stacked ── */}
+          <div style={{ flex: 2, display: 'flex', flexDirection: 'column', gap: '1rem', minHeight: 0 }}>
 
             {/* Header */}
             <div className={styles.pane}>
               <div className={styles.paneHeader}>
-                <span style={{ color: PART_COLORS[0] }}>●</span> {PART_LABELS[0]}
+                <span style={{ color: PART_COLORS[0] }}>●</span> header
                 <button
                   className={`${styles.tBtn} ${styles.tBtnGhost} ${copiedSection === 'hdr' ? styles.tBtnSuccess : ''}`}
                   style={{ marginLeft: 'auto', padding: '1px 8px', fontSize: '0.7rem' }}
@@ -259,26 +247,10 @@ function JwtDecoderContent() {
               </div>
             </div>
 
-            {/* Payload */}
-            <div className={styles.pane} style={{ flex: 2 }}>
-              <div className={styles.paneHeader}>
-                <span style={{ color: PART_COLORS[1] }}>●</span> {PART_LABELS[1]}
-                <button
-                  className={`${styles.tBtn} ${styles.tBtnGhost} ${copiedSection === 'pld' ? styles.tBtnSuccess : ''}`}
-                  style={{ marginLeft: 'auto', padding: '1px 8px', fontSize: '0.7rem' }}
-                  onClick={() => copy(JSON.stringify(decoded.payload, null, 2), 'pld')}>
-                  {copiedSection === 'pld' ? '✓' : '⎘'}
-                </button>
-              </div>
-              <div className={styles.paneBody} style={{ padding: '0.6rem 1rem' }}>
-                <JsonBlock obj={decoded.payload} dark={dark} />
-              </div>
-            </div>
-
             {/* Signature */}
             <div className={styles.pane}>
               <div className={styles.paneHeader}>
-                <span style={{ color: PART_COLORS[2] }}>●</span> {PART_LABELS[2]}
+                <span style={{ color: PART_COLORS[2] }}>●</span> signature
                 <button
                   className={`${styles.tBtn} ${styles.tBtnGhost} ${copiedSection === 'sig' ? styles.tBtnSuccess : ''}`}
                   style={{ marginLeft: 'auto', padding: '1px 8px', fontSize: '0.7rem' }}
@@ -286,14 +258,13 @@ function JwtDecoderContent() {
                   {copiedSection === 'sig' ? '✓' : '⎘'}
                 </button>
               </div>
-              <div className={styles.paneBody} style={{ padding: '0.75rem 1rem', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+              <div className={styles.paneBody} style={{ padding: '0.75rem 1rem', display: 'flex', flexDirection: 'column', gap: '0.55rem' }}>
                 <p style={{ fontSize: '0.78rem', color: '#6b7280', margin: 0, lineHeight: 1.6 }}>
-                  The signature is used to verify the token hasn't been tampered with.
-                  It cannot be validated client-side without the secret key.
+                  Verifies the token hasn't been tampered with. Cannot be validated client-side without the secret key.
                 </p>
                 <code style={{
-                  display: 'block', wordBreak: 'break-all', fontSize: '0.76rem',
-                  padding: '0.7rem', borderRadius: 8, lineHeight: 1.65, color: '#6b7280',
+                  display: 'block', wordBreak: 'break-all', fontSize: '0.74rem',
+                  padding: '0.65rem', borderRadius: 8, lineHeight: 1.65, color: '#6b7280',
                   background: dark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)',
                   border: `1px solid ${dark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)'}`,
                 }}>
