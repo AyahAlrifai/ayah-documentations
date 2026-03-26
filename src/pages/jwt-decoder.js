@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Layout from '@theme/Layout';
 import { toast, ToastContainer } from 'react-toastify';
 import { useColorMode } from '@docusaurus/theme-common';
@@ -97,9 +97,21 @@ const DEFAULT_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c3ItMTIz
 const PART_COLORS = ['#4f80ff', '#c77dff', '#6b7280'];
 const PART_LABELS = ['header', 'payload', 'signature'];
 
+function useIsMobile(breakpoint = 768) {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= breakpoint);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, [breakpoint]);
+  return isMobile;
+}
+
 function JwtDecoderContent() {
   const { colorMode } = useColorMode();
   const dark = colorMode === 'dark';
+  const isMobile = useIsMobile();
   const [token, setToken] = useState(DEFAULT_TOKEN);
   const [copiedSection, setCopiedSection] = useState(null);
 
@@ -204,10 +216,10 @@ function JwtDecoderContent() {
 
       {/* ── Decoded view ── */}
       {decoded?.ok && (
-        <div style={{ display: 'flex', flex: 1, minHeight: 0, gap: '1rem' }}>
+        <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', flex: isMobile ? 'none' : 1, minHeight: 0, gap: '1rem' }}>
 
           {/* ── Payload (left, dominant) ── */}
-          <div className={styles.pane} style={{ flex: 3 }}>
+          <div className={styles.pane} style={{ flex: isMobile ? 'none' : 3, minHeight: isMobile ? 280 : 0 }}>
             <div className={styles.paneHeader}>
               <span style={{ color: PART_COLORS[1] }}>●</span> payload
               <span style={{
@@ -229,7 +241,7 @@ function JwtDecoderContent() {
           </div>
 
           {/* ── Right column: Header + Signature stacked ── */}
-          <div style={{ flex: 2, display: 'flex', flexDirection: 'column', gap: '1rem', minHeight: 0 }}>
+          <div style={{ flex: isMobile ? 'none' : 2, display: 'flex', flexDirection: 'column', gap: '1rem', minHeight: 0 }}>
 
             {/* Header */}
             <div className={styles.pane}>

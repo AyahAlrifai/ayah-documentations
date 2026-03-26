@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Layout from '@theme/Layout';
 import Editor from '@monaco-editor/react';
 import { toast, ToastContainer } from 'react-toastify';
@@ -141,10 +141,23 @@ function JsonFormatterContent() {
     } catch { toast.error('Copy failed — try selecting the text manually.'); }
   };
 
+  // Suppress the benign "ResizeObserver loop" error that Monaco triggers
+  // when its container is resized — it is not a real error.
+  useEffect(() => {
+    const suppress = (e) => {
+      if (e.message === 'ResizeObserver loop completed with undelivered notifications.') {
+        e.stopImmediatePropagation();
+      }
+    };
+    window.addEventListener('error', suppress);
+    return () => window.removeEventListener('error', suppress);
+  }, []);
+
   const editorOptions = {
     fontSize: 14, minimap: { enabled: false }, lineNumbers: 'on',
     scrollBeyondLastLine: false, wordWrap: 'on',
-    padding: { top: 12, bottom: 12 }, renderLineHighlight: 'gutter', smoothScrolling: true,
+    padding: { top: 12, bottom: 12 }, renderLineHighlight: 'gutter',
+    smoothScrolling: true, automaticLayout: true,
   };
 
   return (

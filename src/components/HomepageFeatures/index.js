@@ -221,7 +221,7 @@ function FeaturedToolCard({ icon, title, description, to, color, glow, tag, inde
       }} />
 
       {/* Card body */}
-      <div style={{ padding: '1.6rem 1.5rem 1.4rem', display: 'flex', flexDirection: 'column', gap: '1rem', flex: 1 }}>
+      <div style={{ padding: 'clamp(1rem, 4vw, 1.6rem) clamp(0.9rem, 4vw, 1.5rem) clamp(0.9rem, 4vw, 1.4rem)', display: 'flex', flexDirection: 'column', gap: '1rem', flex: 1 }}>
 
         {/* Icon row + number */}
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
@@ -283,10 +283,11 @@ function FeaturedToolsGrid() {
   return (
     <div style={{
       display: 'grid',
-      gridTemplateColumns: 'repeat(4, 1fr)',
+      gridTemplateColumns: 'repeat(auto-fill, minmax(min(220px, 100%), 1fr))',
       gap: '1.25rem',
       maxWidth: '1080px',
       margin: '0 auto',
+      width: '100%',
     }}>
       {featuredTools.map((t, i) => (
         <FeaturedToolCard key={i} {...t} index={i} />

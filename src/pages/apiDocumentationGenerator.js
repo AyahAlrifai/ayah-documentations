@@ -497,6 +497,17 @@ function ApiDocContent() {
 
   const generate = () => setDocData(buildDoc(apiInput));
 
+  // Suppress benign ResizeObserver loop error from Monaco
+  useEffect(() => {
+    const suppress = (e) => {
+      if (e.message === 'ResizeObserver loop completed with undelivered notifications.') {
+        e.stopImmediatePropagation();
+      }
+    };
+    window.addEventListener('error', suppress);
+    return () => window.removeEventListener('error', suppress);
+  }, []);
+
   // Feature 1: Ctrl+Enter keyboard shortcut
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -571,6 +582,7 @@ function ApiDocContent() {
                 padding: { top: 12, bottom: 12 },
                 renderLineHighlight: 'gutter',
                 smoothScrolling: true,
+                automaticLayout: true,
               }}
             />
           </div>

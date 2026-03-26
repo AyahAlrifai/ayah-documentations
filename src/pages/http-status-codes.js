@@ -354,7 +354,7 @@ function HttpStatusCodesContent() {
     <div style={{
       minHeight: 'calc(100vh - 60px)',
       background: pageBg,
-      padding: '1.5rem 1.75rem 3rem',
+      padding: 'clamp(0.75rem, 3vw, 1.75rem) clamp(0.75rem, 4vw, 1.75rem) 3rem',
       display: 'flex', flexDirection: 'column', gap: '1.25rem',
     }}>
 
@@ -399,7 +399,7 @@ function HttpStatusCodesContent() {
               padding: '0.42rem 0.85rem 0.42rem 2rem',
               borderRadius: '8px', border: `1px solid ${inputBor}`,
               background: inputBg, color: inputColor,
-              fontSize: '0.875rem', outline: 'none', width: '220px',
+              fontSize: '0.875rem', outline: 'none', width: 'clamp(140px, 30vw, 220px)',
               transition: 'border-color 0.2s ease', fontFamily: 'inherit',
             }}
             onFocus={(e) => { e.target.style.borderColor = '#528dff'; }}
@@ -503,7 +503,7 @@ function HttpStatusCodesContent() {
       ) : (
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(min(340px, 100%), 1fr))',
           gap: '1.1rem',
         }}>
           {filtered.map((item) => (

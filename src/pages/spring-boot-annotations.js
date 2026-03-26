@@ -887,7 +887,7 @@ function SpringBootAnnotationsContent() {
       style={{
         minHeight: 'calc(100vh - 60px)',
         background: pageBg,
-        padding: '1.5rem 1.75rem 3rem',
+        padding: 'clamp(0.75rem, 4vw, 1.75rem) clamp(0.75rem, 4vw, 1.75rem) 3rem',
         display: 'flex',
         flexDirection: 'column',
         gap: '1.25rem',
@@ -954,7 +954,7 @@ function SpringBootAnnotationsContent() {
               color: inputColor,
               fontSize: '0.875rem',
               outline: 'none',
-              width: '220px',
+              width: 'clamp(140px, 30vw, 220px)',
               transition: 'border-color 0.2s ease',
               fontFamily: 'inherit',
             }}
@@ -1100,7 +1100,7 @@ function SpringBootAnnotationsContent() {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(min(340px, 100%), 1fr))',
             gap: '1.1rem',
           }}
         >

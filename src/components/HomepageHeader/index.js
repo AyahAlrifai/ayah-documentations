@@ -58,12 +58,12 @@ export default function HomepageHeader({ siteConfig }) {
 
           <span className={styles.heroLabel}>
             <span className={styles.heroDot} aria-hidden="true" />
-            Developer Documentation &amp; Tools
+            Developer Reference &amp; Toolbox
           </span>
 
           <h1 className={styles.heroTitle}>
-            <span className={styles.heroTitleTop}>Learn Technology</span>
-            <span className={styles.heroTitleBottom}>Easily.</span>
+            <span className={styles.heroTitleTop}>Code smarter,</span>
+            <span className={styles.heroTitleBottom}>ship faster.</span>
           </h1>
 
           <p className={styles.heroSubtitle}>
@@ -80,7 +80,7 @@ export default function HomepageHeader({ siteConfig }) {
           </div> */}
 
           <div className={styles.heroTechRow}>
-            {['Angular', 'Java', 'Spring', 'SQL', 'Redis', 'RabbitMQ', 'Swagger', 'AOP'].map(t => (
+            {['API Doc', 'JWT Decoder', 'Regex Tester', 'SQL Formatter', 'JSON Formatter', 'Markdown Viwer'].map(t => (
               <span key={t} className={styles.heroTechTag}>{t}</span>
             ))}
           </div>

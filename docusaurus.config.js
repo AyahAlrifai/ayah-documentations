@@ -7,8 +7,8 @@ const n8nApiUrl = process.env.REACT_APP_N8N_API_URL;
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Learn Technology Easily', // show in home
-  tagline: 'Let’s Go on a Tech Journey Together', // show in home
+  title: ‘DevDocs — Developer Reference & Tools’,
+  tagline: ‘Structured docs, interactive tools, and real-world references for the modern developer stack.’,
   favicon: 'img/logo-3-orbit.svg',
   url: 'https://canvas-eye-416011.web.app/',
   baseUrl: '/',

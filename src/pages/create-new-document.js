@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from '@theme/Layout';
 import Editor from '@monaco-editor/react';
 import ReactMarkdown from 'react-markdown';
@@ -61,6 +61,17 @@ function MarkdownEditorContent() {
   const words = value ? value.trim().split(/\s+/).filter(Boolean).length : 0;
   const lines = value ? value.split('\n').length : 0;
 
+  // Suppress benign ResizeObserver loop error from Monaco
+  useEffect(() => {
+    const suppress = (e) => {
+      if (e.message === 'ResizeObserver loop completed with undelivered notifications.') {
+        e.stopImmediatePropagation();
+      }
+    };
+    window.addEventListener('error', suppress);
+    return () => window.removeEventListener('error', suppress);
+  }, []);
+
   return (
     <div className={styles.toolPage}>
       {/* Toolbar */}
@@ -93,6 +104,7 @@ function MarkdownEditorContent() {
                 padding: { top: 12, bottom: 12 },
                 renderLineHighlight: 'gutter',
                 smoothScrolling: true,
+                automaticLayout: true,
               }}
             />
           </div>

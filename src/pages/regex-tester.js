@@ -453,7 +453,7 @@ function RegexTesterContent() {
             <span style={{ fontSize: '0.75rem', color: text2C, transition: 'transform .2s', display: 'block', transform: presetsOpen ? 'none' : 'rotate(-90deg)' }}>▾</span>
           </div>
           {presetsOpen && (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '0.4rem', marginTop: '0.75rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(160px, 100%), 1fr))', gap: '0.4rem', marginTop: '0.75rem' }}>
               {PRESETS.map(p => (
                 <button key={p.name} onClick={() => applyPreset(p)}
                   style={{
@@ -481,7 +481,7 @@ function RegexTesterContent() {
             <span style={{ fontSize: '0.75rem', color: text2C, transition: 'transform .2s', display: 'block', transform: cheatOpen ? 'none' : 'rotate(-90deg)' }}>▾</span>
           </div>
           {cheatOpen && (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(190px, 1fr))', gap: '0.38rem', marginTop: '0.75rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(190px, 100%), 1fr))', gap: '0.38rem', marginTop: '0.75rem' }}>
               {CHEAT.map(([sym, desc]) => (
                 <div key={sym} style={{
                   display: 'flex', alignItems: 'flex-start', gap: '0.5rem',
