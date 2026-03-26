@@ -40,7 +40,7 @@ const features = [
 
 const stats = [
   { end: 11, suffix: '+', label: 'Technology Topics' },
-  { end: 6, suffix: '', label: 'Developer Tools' },
+  { end: 8, suffix: '', label: 'Developer Tools' },
   { end: 100, suffix: '%', label: 'Free to Use' },
   { special: '∞', label: 'Things to Learn' },
 ];
@@ -136,196 +136,161 @@ function FeatureCard({ icon, gradient, accent, title, description }) {
 
 const featuredTools = [
   {
-    icon: '/img/icons/api.svg',
-    title: 'API Doc Generator',
-    description: 'Paste Spring Boot annotations and get a complete, structured API documentation — ready to copy as Markdown or HTML.',
-    to: '/apiDocumentationGenerator',
+    icon: '/img/icons/http.svg',
+    title: 'HTTP Status Codes',
+    description: '60 codes across all 5 classes — searchable, filterable reference with descriptions and developer tags.',
+    to: '/http-status-codes',
     color: '#528dff',
-    bg: 'rgba(82,141,255,0.08)',
+    glow: 'rgba(82,141,255,0.18)',
+    tag: 'Reference',
   },
   {
     icon: '/img/icons/jwt.svg',
     title: 'JWT Decoder',
-    description: 'Decode and inspect JWT tokens instantly in your browser. Supports HS256, RS256, ES256 and all standard JWT formats.',
+    description: 'Decode and inspect JWT tokens instantly in your browser. Visualises header, payload, and signature separately.',
     to: '/jwt-decoder',
     color: '#c77dff',
-    bg: 'rgba(199,125,255,0.08)',
-  },
-  {
-    icon: '/img/icons/regex.svg',
-    title: 'Regex Tester',
-    description: 'Test and debug regular expressions live with match highlighting, group capture display, and flag controls.',
-    to: '/regex-tester',
-    color: '#f97316',
-    bg: 'rgba(249,115,22,0.08)',
-  },
-  {
-    icon: '/img/icons/json.svg',
-    title: 'JSON Formatter',
-    description: 'Format, minify, and diff JSON instantly in your browser. Built-in Monaco editor with syntax highlighting.',
-    to: '/json-formatter',
-    color: '#44bb08',
-    bg: 'rgba(68,187,8,0.08)',
-  },
-  {
-    icon: '/img/icons/markdown.svg',
-    title: 'Markdown Editor',
-    description: 'Write Markdown with a live side-by-side preview. Export to HTML or copy the rendered output directly.',
-    to: '/create-new-document',
-    color: '#06b6d4',
-    bg: 'rgba(6,182,212,0.08)',
-  },
-  {
-    icon: '/img/icons/sql.svg',
-    title: 'SQL Formatter',
-    description: 'Beautify raw SQL queries with proper indentation and uppercase keywords — supports all major SQL dialects.',
-    to: '/sql-formatter',
-    color: '#e8c246',
-    bg: 'rgba(232,194,70,0.08)',
+    glow: 'rgba(199,125,255,0.18)',
+    tag: 'Security',
   },
   {
     icon: '/img/icons/spring.svg',
     title: 'Spring Boot Annotations',
-    description: '52 annotations across 7 categories — searchable, filterable cheat sheet you can use as a daily reference.',
+    description: '52 annotations across 7 categories — searchable, filterable cheat sheet for your daily Spring Boot work.',
     to: '/spring-boot-annotations',
-    color: '#fc7dc7',
-    bg: 'rgba(252,125,199,0.08)',
+    color: '#528dff',
+    glow: 'rgba(82,141,255,0.18)',
+    tag: 'Cheat Sheet',
   },
   {
-    icon: '/img/icons/http.svg',
-    title: 'HTTP Status Codes',
-    description: '60 status codes across all 5 classes — searchable, filterable reference with descriptions and tags for every code.',
-    to: '/http-status-codes',
-    color: '#ef4444',
-    bg: 'rgba(239,68,68,0.08)',
+    icon: '/img/icons/api.svg',
+    title: 'API Doc Generator',
+    description: 'Paste Spring Boot controller code and get a complete, structured API doc ready to copy as Markdown or HTML.',
+    to: '/apiDocumentationGenerator',
+    color: '#c77dff',
+    glow: 'rgba(199,125,255,0.18)',
+    tag: 'Generator',
   },
 ];
 
-function FeaturedToolCard({ icon, title, description, to, color, bg }) {
+function FeaturedToolCard({ icon, title, description, to, color, glow, tag, index }) {
+  const cardRef = useRef(null);
+  const [visible, setVisible] = useState(false);
+  const [hovered, setHovered] = useState(false);
+
+  useEffect(() => {
+    const el = cardRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setVisible(true); },
+      { threshold: 0.15 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  const num = String(index + 1).padStart(2, '0');
+
   return (
     <a
+      ref={cardRef}
       href={to}
       style={{
-        display: 'flex', flexDirection: 'column', gap: '0.75rem',
-        padding: '1.5rem', borderRadius: '16px', textDecoration: 'none',
-        background: bg, border: `1px solid ${color}30`,
-        transition: 'transform 0.2s, box-shadow 0.2s',
-        height: '100%',
+        display: 'flex', flexDirection: 'column',
+        borderRadius: '20px', textDecoration: 'none', overflow: 'hidden',
+        border: `1px solid ${hovered ? color + '55' : 'rgba(255,255,255,0.07)'}`,
+        background: hovered
+          ? `linear-gradient(160deg, ${glow} 0%, transparent 55%)`
+          : 'rgba(255,255,255,0.03)',
+        boxShadow: hovered ? `0 20px 48px ${glow}, 0 0 0 1px ${color}22` : 'none',
+        transform: visible
+          ? (hovered ? 'translateY(-6px)' : 'translateY(0)')
+          : 'translateY(32px)',
+        opacity: visible ? 1 : 0,
+        transition: `opacity 0.55s ease ${index * 0.1}s, transform 0.55s ease ${index * 0.1}s, box-shadow 0.25s ease, border-color 0.25s ease, background 0.25s ease`,
       }}
-      onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = `0 12px 32px ${color}25`; }}
-      onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = ''; }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
-      <img src={icon} alt={title} style={{ width: 36, height: 36 }} />
-      <strong style={{ fontSize: '1.05rem', color }}>{title}</strong>
-      <p style={{ margin: 0, fontSize: '0.9rem', lineHeight: 1.65, opacity: 0.75 }}>{description}</p>
-      <span style={{ fontSize: '0.82rem', color, fontWeight: 600 }}>Open tool →</span>
+      {/* Top accent strip */}
+      <div style={{
+        height: 3,
+        background: `linear-gradient(90deg, ${color}, ${color}44)`,
+        opacity: hovered ? 1 : 0,
+        transition: 'opacity 0.25s ease',
+      }} />
+
+      {/* Card body */}
+      <div style={{ padding: '1.6rem 1.5rem 1.4rem', display: 'flex', flexDirection: 'column', gap: '1rem', flex: 1 }}>
+
+        {/* Icon row + number */}
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+          <div style={{
+            width: 48, height: 48, borderRadius: 14, display: 'flex',
+            alignItems: 'center', justifyContent: 'center',
+            background: glow,
+            border: `1px solid ${color}30`,
+            boxShadow: hovered ? `0 0 20px ${glow}` : 'none',
+            transition: 'box-shadow 0.25s ease',
+          }}>
+            <img src={icon} alt={title} style={{ width: 26, height: 26 }} />
+          </div>
+          <span style={{
+            fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.12em',
+            color: color, opacity: 0.6, fontFamily: 'Consolas, monospace',
+            paddingTop: '2px',
+          }}>{num}</span>
+        </div>
+
+        {/* Tag */}
+        <span style={{
+          alignSelf: 'flex-start',
+          fontSize: '0.66rem', fontWeight: 700, letterSpacing: '0.1em',
+          textTransform: 'uppercase', padding: '0.18rem 0.6rem', borderRadius: 999,
+          background: `${color}18`, color, border: `1px solid ${color}30`,
+        }}>{tag}</span>
+
+        {/* Text */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', flex: 1 }}>
+          <strong style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--ifm-font-color-base)', lineHeight: 1.3 }}>
+            {title}
+          </strong>
+          <p style={{ margin: 0, fontSize: '0.84rem', lineHeight: 1.7, color: 'var(--ifm-color-emphasis-600)' }}>
+            {description}
+          </p>
+        </div>
+
+        {/* CTA */}
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '0.35rem',
+          fontSize: '0.83rem', fontWeight: 700, color,
+          marginTop: 'auto',
+        }}>
+          Open tool
+          <span style={{
+            display: 'inline-block',
+            transform: hovered ? 'translateX(5px)' : 'translateX(0)',
+            transition: 'transform 0.22s ease',
+          }}>→</span>
+        </div>
+
+      </div>
     </a>
   );
 }
 
-const VISIBLE = 4;
-const TOTAL_PAGES = Math.ceil(featuredTools.length / VISIBLE);
-
-function ToolsCarousel() {
-  const [page, setPage] = useState(0);
-  const trackRef = useRef(null);
-
-  const scrollToPage = (p) => {
-    const clamped = Math.max(0, Math.min(p, TOTAL_PAGES - 1));
-    setPage(clamped);
-    if (trackRef.current) {
-      const cardW = trackRef.current.scrollWidth / featuredTools.length;
-      trackRef.current.scrollTo({ left: clamped * VISIBLE * cardW, behavior: 'smooth' });
-    }
-  };
-
-  // sync dot indicator when user swipes manually
-  const onScroll = () => {
-    if (!trackRef.current) return;
-    const cardW = trackRef.current.scrollWidth / featuredTools.length;
-    const newPage = Math.round(trackRef.current.scrollLeft / (VISIBLE * cardW));
-    setPage(Math.max(0, Math.min(newPage, TOTAL_PAGES - 1)));
-  };
-
+function FeaturedToolsGrid() {
   return (
-    <div style={{ position: 'relative', maxWidth: '1080px', margin: '0 auto' }}>
-
-      {/* ── Arrow: prev ── */}
-      <button
-        onClick={() => scrollToPage(page - 1)}
-        disabled={page === 0}
-        aria-label="Previous"
-        style={{
-          position: 'absolute', left: -48, top: '50%', transform: 'translateY(-50%)',
-          zIndex: 2, width: 36, height: 36, borderRadius: '50%',
-          border: '1.5px solid rgba(82,141,255,0.35)',
-          background: 'rgba(82,141,255,0.1)',
-          color: page === 0 ? 'rgba(82,141,255,0.25)' : '#528dff',
-          cursor: page === 0 ? 'default' : 'pointer',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: '1rem', transition: 'all 0.15s',
-          borderColor: page === 0 ? 'rgba(82,141,255,0.15)' : 'rgba(82,141,255,0.35)',
-        }}
-      >‹</button>
-
-      {/* ── Arrow: next ── */}
-      <button
-        onClick={() => scrollToPage(page + 1)}
-        disabled={page === TOTAL_PAGES - 1}
-        aria-label="Next"
-        style={{
-          position: 'absolute', right: -48, top: '50%', transform: 'translateY(-50%)',
-          zIndex: 2, width: 36, height: 36, borderRadius: '50%',
-          border: '1.5px solid rgba(82,141,255,0.35)',
-          background: 'rgba(82,141,255,0.1)',
-          color: page === TOTAL_PAGES - 1 ? 'rgba(82,141,255,0.25)' : '#528dff',
-          cursor: page === TOTAL_PAGES - 1 ? 'default' : 'pointer',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: '1rem', transition: 'all 0.15s',
-          borderColor: page === TOTAL_PAGES - 1 ? 'rgba(82,141,255,0.15)' : 'rgba(82,141,255,0.35)',
-        }}
-      >›</button>
-
-      {/* ── Track ── */}
-      <div
-        ref={trackRef}
-        onScroll={onScroll}
-        style={{
-          display: 'flex', gap: '1.25rem',
-          overflowX: 'auto', scrollSnapType: 'x mandatory',
-          WebkitOverflowScrolling: 'touch',
-          msOverflowStyle: 'none', scrollbarWidth: 'none',
-          paddingBottom: '0.25rem',
-        }}
-      >
-        {featuredTools.map((t, i) => (
-          <div key={i} style={{
-            scrollSnapAlign: 'start',
-            flex: '0 0 calc(25% - 0.94rem)',
-            minWidth: 0,
-          }}>
-            <FeaturedToolCard {...t} />
-          </div>
-        ))}
-      </div>
-
-      {/* ── Dot indicators ── */}
-      <div style={{ display: 'flex', justifyContent: 'center', gap: '0.45rem', marginTop: '1.25rem' }}>
-        {Array.from({ length: TOTAL_PAGES }).map((_, i) => (
-          <button
-            key={i}
-            onClick={() => scrollToPage(i)}
-            aria-label={`Go to page ${i + 1}`}
-            style={{
-              width: i === page ? 20 : 8, height: 8,
-              borderRadius: 999, border: 'none', padding: 0,
-              cursor: 'pointer', transition: 'all 0.2s',
-              background: i === page ? '#528dff' : 'rgba(82,141,255,0.25)',
-            }}
-          />
-        ))}
-      </div>
-
+    <div style={{
+      display: 'grid',
+      gridTemplateColumns: 'repeat(4, 1fr)',
+      gap: '1.25rem',
+      maxWidth: '1080px',
+      margin: '0 auto',
+    }}>
+      {featuredTools.map((t, i) => (
+        <FeaturedToolCard key={i} {...t} index={i} />
+      ))}
     </div>
   );
 }
@@ -354,7 +319,7 @@ export default function HomepageFeatures() {
           <span className={styles.sectionLabel}>Try Now</span>
           <h2 className={styles.sectionTitle}>Featured Tools</h2>
         </div>
-        <ToolsCarousel />
+        <FeaturedToolsGrid />
       </div>
 
       <div className={styles.statsRow}>
