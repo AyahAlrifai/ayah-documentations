@@ -30,7 +30,21 @@
       "Bash(grep -r ca-pub- /d/ayah-documentations-master --include=*.js --include=*.jsx --include=*.ts --include=*.tsx)",
       "Bash(node:*)",
       "Bash(git:*)",
-      "Bash(node -e \"require\\(''''./src/pages/http-status-codes.js''''\\)\")"
+      "Bash(node -e \"require\\(''''./src/pages/http-status-codes.js''''\\)\")",
+      "Bash(node_modules.bindocusaurus --version)",
+      "Bash(dir:*)",
+      "Bash(cmd.exe /c \"tasklist /FI \"\"IMAGENAME eq node.exe\"\" /V 2>&1\")",
+      "Bash(cmd.exe /c \"netstat -ano | findstr \"\"3000\"\"\")",
+      "Bash(cmd.exe /c \"tasklist /FI \"\"IMAGENAME eq node.exe\"\" /V\")",
+      "Bash(cmd.exe /c \"netstat -ano | findstr 3000\")",
+      "Bash(cmd.exe /c \"dir D:\\\\ayah-documentations-master\\\\\")",
+      "Bash(cmd.exe /c tasklist)",
+      "Bash(cmd.exe /c netstat -ano)",
+      "Bash(cmd.exe /c dir \"D:\\\\ayah-documentations-master\")",
+      "Bash(ss:*)",
+      "Bash(cmd.exe /c \"dir D:\\\\ayah-documentations-master\")",
+      "Bash(test:*)",
+      "Bash(cmd.exe /c \"if exist D:\\\\ayah-documentations-master\\\\node_modules \\(echo node_modules EXISTS\\) else \\(echo node_modules NOT FOUND\\)\")"
     ]
   }
 }
