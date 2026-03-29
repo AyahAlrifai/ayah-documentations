@@ -82,6 +82,7 @@ const config = {
               { to: 'jwt-decoder', label: 'JWT Decoder', className: 'nav-icon-jwt' },
               { to: 'regex-tester', label: 'Regex Tester', className: 'nav-icon-regex' },
               { to: 'json-formatter', label: 'JSON Formatter', className: 'nav-icon-json' },
+              { to: 'data-converter', label: 'Data Converter', className: 'nav-icon-converter' },
               { to: 'create-new-document', label: 'Markdown Editor', className: 'nav-icon-markdown' },
               { to: 'sql-formatter', label: 'SQL Formatter', className: 'nav-icon-sql' },
               { to: 'spring-boot-annotations', label: 'Spring Boot Annotations', className: 'nav-icon-spring' },
