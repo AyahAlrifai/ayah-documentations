@@ -7,6 +7,27 @@ import 'react-toastify/dist/ReactToastify.css';
 import styles from '../css/style.module.css';
 
 /* ─────────────────────────────────────────────
+   Suppress ResizeObserver noise at module load
+   (must run before webpack-dev-server overlay
+    registers its own error listener)
+───────────────────────────────────────────── */
+if (typeof window !== 'undefined') {
+  const _isROError = (msg) =>
+    typeof msg === 'string' && (
+      msg.includes('ResizeObserver loop completed') ||
+      msg.includes('ResizeObserver loop limit')
+    );
+  window.addEventListener('error', (e) => {
+    if (_isROError(e.message)) { e.stopImmediatePropagation(); e.preventDefault(); }
+  }, true);
+  const _prevOnerror = window.onerror;
+  window.onerror = (msg, ...rest) => {
+    if (_isROError(msg)) return true;
+    return _prevOnerror ? _prevOnerror(msg, ...rest) : false;
+  };
+}
+
+/* ─────────────────────────────────────────────
    Monaco theme helpers
 ───────────────────────────────────────────── */
 const defineEditorThemes = (monaco) => {
@@ -31,14 +52,15 @@ const defineEditorThemes = (monaco) => {
 /* ─────────────────────────────────────────────
    Format definitions
 ───────────────────────────────────────────── */
-const FORMATS = ['JSON', 'YAML', 'Properties', 'TOML', 'XML'];
+const FORMATS = ['JSON', 'YAML', 'Properties', 'TOML', 'XML', 'TOON'];
 
 const FORMAT_META = {
-  JSON:       { ext: 'json',       monaco: 'json',  label: 'JSON'        },
-  YAML:       { ext: 'yaml',       monaco: 'yaml',  label: 'YAML'        },
-  Properties: { ext: 'properties', monaco: 'ini',   label: '.properties' },
-  TOML:       { ext: 'toml',       monaco: 'ini',   label: 'TOML'        },
-  XML:        { ext: 'xml',        monaco: 'xml',   label: 'XML'         },
+  JSON:       { ext: 'json',       monaco: 'json',      label: 'JSON'        },
+  YAML:       { ext: 'yaml',       monaco: 'yaml',      label: 'YAML'        },
+  Properties: { ext: 'properties', monaco: 'ini',       label: '.properties' },
+  TOML:       { ext: 'toml',       monaco: 'ini',       label: 'TOML'        },
+  XML:        { ext: 'xml',        monaco: 'xml',       label: 'XML'         },
+  TOON:       { ext: 'toon',       monaco: 'plaintext', label: 'TOON'        },
 };
 
 /* ─────────────────────────────────────────────
@@ -347,6 +369,166 @@ function serializeTOMLValue(v) {
 }
 
 /* ─────────────────────────────────────────────
+   TOON  (Token-Oriented Object Notation)
+   Compact, AI-native — no unnecessary quotes or whitespace.
+   Rules:
+     Object   {key:val,key2:val2}
+     Array    [v1,v2,v3]
+     String   bare if /^[a-zA-Z0-9_./-]+$/ and not a keyword,
+              else "double-quoted" with \n \t \\ \" escapes
+     Number   bare digits / float
+     Boolean  true | false
+     Null     ~
+───────────────────────────────────────────── */
+function toonSafe(s) {
+  return /^[a-zA-Z0-9_.\-/]+$/.test(s) &&
+    s !== 'true' && s !== 'false' && s !== '~';
+}
+
+function toonEscapeString(s) {
+  return '"' + s.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n').replace(/\t/g, '\\t') + '"';
+}
+
+function serializeTOONValue(v, indent = 0) {
+  const pad  = '  '.repeat(indent);
+  const pad1 = '  '.repeat(indent + 1);
+
+  if (v === null || v === undefined) return '~';
+  if (typeof v === 'boolean') return String(v);
+  if (typeof v === 'number') return String(v);
+
+  if (Array.isArray(v)) {
+    if (v.length === 0) return '[]';
+    // Inline if all items are scalar
+    const allScalar = v.every(i => i === null || typeof i !== 'object');
+    if (allScalar) return '[' + v.map(i => serializeTOONValue(i, 0)).join(', ') + ']';
+    const items = v.map(i => pad1 + serializeTOONValue(i, indent + 1)).join(',\n');
+    return '[\n' + items + '\n' + pad + ']';
+  }
+
+  if (typeof v === 'object') {
+    const entries = Object.entries(v);
+    if (entries.length === 0) return '{}';
+    const pairs = entries.map(([k, val]) => {
+      const key = toonSafe(k) ? k : toonEscapeString(k);
+      const serialized = serializeTOONValue(val, indent + 1);
+      return pad1 + key + ': ' + serialized;
+    });
+    return '{\n' + pairs.join(',\n') + '\n' + pad + '}';
+  }
+
+  const s = String(v);
+  return toonSafe(s) ? s : toonEscapeString(s);
+}
+
+function serializeTOON(obj) {
+  return serializeTOONValue(obj, 0);
+}
+
+function parseTOON(text) {
+  const s = text.trim();
+  const [val] = toonExpr(s, 0);
+  return val;
+}
+
+function toonSkip(s, pos) {
+  while (pos < s.length && ' \t\r\n'.includes(s[pos])) pos++;
+  return pos;
+}
+
+function toonExpr(s, pos) {
+  pos = toonSkip(s, pos);
+  if (pos >= s.length) return [null, pos];
+  const ch = s[pos];
+  if (ch === '{') return toonObject(s, pos);
+  if (ch === '[') return toonArray(s, pos);
+  if (ch === '"') return toonQuoted(s, pos);
+  if (ch === '~') return [null, pos + 1];
+  return toonBare(s, pos);
+}
+
+function toonObject(s, pos) {
+  pos++; // skip {
+  const obj = {};
+  pos = toonSkip(s, pos);
+  while (pos < s.length && s[pos] !== '}') {
+    pos = toonSkip(s, pos);
+    if (s[pos] === '}') break;
+    let key;
+    if (s[pos] === '"') [key, pos] = toonQuoted(s, pos);
+    else                [key, pos] = toonKey(s, pos);
+    pos = toonSkip(s, pos);
+    if (s[pos] === ':') pos++;
+    pos = toonSkip(s, pos);
+    let val;
+    [val, pos] = toonExpr(s, pos);
+    obj[key] = val;
+    pos = toonSkip(s, pos);
+    if (pos < s.length && s[pos] === ',') pos++;
+    pos = toonSkip(s, pos);
+  }
+  if (pos < s.length && s[pos] === '}') pos++;
+  return [obj, pos];
+}
+
+function toonArray(s, pos) {
+  pos++; // skip [
+  const arr = [];
+  pos = toonSkip(s, pos);
+  while (pos < s.length && s[pos] !== ']') {
+    pos = toonSkip(s, pos);
+    if (s[pos] === ']') break;
+    let val;
+    [val, pos] = toonExpr(s, pos);
+    arr.push(val);
+    pos = toonSkip(s, pos);
+    if (pos < s.length && s[pos] === ',') pos++;
+    pos = toonSkip(s, pos);
+  }
+  if (pos < s.length && s[pos] === ']') pos++;
+  return [arr, pos];
+}
+
+function toonQuoted(s, pos) {
+  pos++; // skip "
+  let out = '';
+  while (pos < s.length && s[pos] !== '"') {
+    if (s[pos] === '\\') {
+      pos++;
+      if      (s[pos] === 'n') out += '\n';
+      else if (s[pos] === 't') out += '\t';
+      else                     out += s[pos];
+    } else {
+      out += s[pos];
+    }
+    pos++;
+  }
+  if (pos < s.length) pos++; // skip closing "
+  return [out, pos];
+}
+
+function toonKey(s, pos) {
+  let key = '';
+  while (pos < s.length && s[pos] !== ':' && s[pos] !== '}' && s[pos] !== ',' && !' \t\n\r'.includes(s[pos])) {
+    key += s[pos++];
+  }
+  return [key, pos];
+}
+
+function toonBare(s, pos) {
+  let raw = '';
+  while (pos < s.length && s[pos] !== ',' && s[pos] !== '}' && s[pos] !== ']' && !'\n\r'.includes(s[pos])) {
+    raw += s[pos++];
+  }
+  raw = raw.trim();
+  if (raw === 'true')  return [true, pos];
+  if (raw === 'false') return [false, pos];
+  if (raw === '~' || raw === 'null') return [null, pos];
+  if (raw !== '' && !isNaN(raw)) return [Number(raw), pos];
+  return [raw, pos];
+}
+
+/* ─────────────────────────────────────────────
    XML  (simple recursive)
 ───────────────────────────────────────────── */
 function parseXML(text) {
@@ -437,6 +619,7 @@ function parse(format, text) {
     case 'Properties': return parseProperties(text);
     case 'TOML':       return parseTOML(text);
     case 'XML':        return parseXML(text);
+    case 'TOON':       return parseTOON(text);
     default: throw new Error(`Unknown format: ${format}`);
   }
 }
@@ -448,6 +631,7 @@ function serialize(format, obj) {
     case 'Properties': return serializeProperties(obj);
     case 'TOML':       return serializeTOML(obj);
     case 'XML':        return buildXMLDoc(obj);
+    case 'TOON':       return serializeTOON(obj);
     default: throw new Error(`Unknown format: ${format}`);
   }
 }
@@ -476,6 +660,8 @@ function detectFormat(text) {
   if (!t) return 'JSON';
   // XML — starts with < tag or declaration
   if (t.startsWith('<')) return 'XML';
+  // TOON — { with unquoted key, compact {key: or formatted {\n  key:
+  if (t.startsWith('{') && /^\{\s*[a-zA-Z_][\w.\-/]*\s*:/.test(t)) return 'TOON';
   // JSON — starts with { or [
   if (t.startsWith('{') || t.startsWith('[')) return 'JSON';
   // YAML — check BEFORE Properties:
@@ -563,22 +749,6 @@ function DataConverterContent() {
   };
 
   const clearAll = () => { setInput(''); setOutput(''); setError(''); };
-
-  // Suppress ResizeObserver noise — both stopImmediatePropagation AND preventDefault
-  // to prevent webpack-dev-server overlay from catching it
-  useEffect(() => {
-    const suppress = (e) => {
-      if (
-        e.message === 'ResizeObserver loop completed with undelivered notifications.' ||
-        e.message === 'ResizeObserver loop limit exceeded'
-      ) {
-        e.stopImmediatePropagation();
-        e.preventDefault();
-      }
-    };
-    window.addEventListener('error', suppress, true);
-    return () => window.removeEventListener('error', suppress, true);
-  }, []);
 
   return (
     <div className={styles.toolPage}>
