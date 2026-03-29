@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from '@theme/Layout';
 import { toast, ToastContainer } from 'react-toastify';
 import { useColorMode } from '@docusaurus/theme-common';
@@ -34,11 +34,11 @@ const defineEditorThemes = (monaco) => {
 const FORMATS = ['JSON', 'YAML', 'Properties', 'TOML', 'XML'];
 
 const FORMAT_META = {
-  JSON:       { ext: 'json',       monaco: 'json',  label: 'JSON',       color: '#c77dff' },
-  YAML:       { ext: 'yaml',       monaco: 'yaml',  label: 'YAML',       color: '#4ade80' },
-  Properties: { ext: 'properties', monaco: 'ini',   label: '.properties',color: '#f59e42' },
-  TOML:       { ext: 'toml',       monaco: 'ini',   label: 'TOML',       color: '#f87171' },
-  XML:        { ext: 'xml',        monaco: 'xml',   label: 'XML',        color: '#38bdf8' },
+  JSON:       { ext: 'json',       monaco: 'json',  label: 'JSON'        },
+  YAML:       { ext: 'yaml',       monaco: 'yaml',  label: 'YAML'        },
+  Properties: { ext: 'properties', monaco: 'ini',   label: '.properties' },
+  TOML:       { ext: 'toml',       monaco: 'ini',   label: 'TOML'        },
+  XML:        { ext: 'xml',        monaco: 'xml',   label: 'XML'         },
 };
 
 /* ─────────────────────────────────────────────
@@ -470,15 +470,41 @@ const SAMPLE_JSON = `{
   "author": null
 }`;
 
+/* ── Auto-detect format from raw text ── */
+function detectFormat(text) {
+  const t = text.trim();
+  if (!t) return 'JSON';
+  // XML — starts with < tag or declaration
+  if (t.startsWith('<')) return 'XML';
+  // JSON — starts with { or [
+  if (t.startsWith('{') || t.startsWith('[')) return 'JSON';
+  // YAML — check BEFORE Properties:
+  //   starts with ---,  or has "key: value" (colon+space) pattern,
+  //   or has indented lines (sub-keys), or has "- item" list lines
+  if (
+    t.startsWith('---') ||
+    /^[a-zA-Z_][\w. -]*:\s+\S/.test(t) ||
+    /^[a-zA-Z_][\w. -]*:\s*$/.test(t) ||
+    /^\s{2,}[a-zA-Z_-]/.test(t) ||
+    /^- /.test(t)
+  ) return 'YAML';
+  // TOML — bare key = value with no colons at all
+  if (/^[a-zA-Z_][\w.-]*\s*=/.test(t) && !t.includes(':')) return 'TOML';
+  // Properties — key=value or key: value (flat, no indentation)
+  if (/^[^\s#!][^=\n]*=/.test(t)) return 'Properties';
+  return 'JSON';
+}
+
 function DataConverterContent() {
   const { colorMode } = useColorMode();
-  const [input, setInput]     = useState(SAMPLE_JSON);
-  const [output, setOutput]   = useState('');
-  const [fromFmt, setFromFmt] = useState('JSON');
-  const [toFmt, setToFmt]     = useState('YAML');
-  const [copied, setCopied]   = useState(false);
-  const [error, setError]     = useState('');
+  const [input, setInput]         = useState(SAMPLE_JSON);
+  const [output, setOutput]       = useState('');
+  const [toFmt, setToFmt]         = useState('YAML');
+  const [copiedIn, setCopiedIn]   = useState(false);
+  const [copiedOut, setCopiedOut] = useState(false);
+  const [error, setError]         = useState('');
 
+  const detectedFmt = detectFormat(input);
   const editorTheme = colorMode === 'dark' ? 'site-dark' : 'site-light';
 
   const editorOptions = {
@@ -493,150 +519,104 @@ function DataConverterContent() {
     automaticLayout: true,
   };
 
-  const convert = useCallback(() => {
-    if (!input.trim()) { toast.error('Input is empty.'); return; }
-    try {
-      const obj = parse(fromFmt, input.trim());
-      const result = serialize(toFmt, obj);
-      setOutput(result);
-      setError('');
-    } catch (e) {
-      setError(e.message);
-      toast.error(`Conversion failed: ${e.message}`);
+  // When input changes, reset the target format intelligently:
+  // JSON input → convert to YAML, anything else → convert to JSON
+  const prevInputRef = React.useRef(input);
+  useEffect(() => {
+    if (prevInputRef.current !== input) {
+      prevInputRef.current = input;
+      const srcFmt = detectFormat(input);
+      setToFmt(srcFmt === 'JSON' ? 'YAML' : 'JSON');
     }
-  }, [input, fromFmt, toFmt]);
+  }, [input]);
 
-  // Auto-convert when format or input changes
+  // Auto-convert whenever input or target format changes
   useEffect(() => {
     if (!input.trim()) { setOutput(''); setError(''); return; }
+    const srcFmt = detectFormat(input);
     try {
-      const obj = parse(fromFmt, input.trim());
-      const result = serialize(toFmt, obj);
-      setOutput(result);
+      const obj = parse(srcFmt, input.trim());
+      setOutput(serialize(toFmt, obj));
       setError('');
     } catch (e) {
       setError(e.message);
       setOutput('');
     }
-  }, [input, fromFmt, toFmt]);
+  }, [input, toFmt]);
 
-  // Initial sample conversion
-  useEffect(() => { convert(); }, []); // eslint-disable-line
-
-  const swap = () => {
-    setFromFmt(toFmt);
-    setToFmt(fromFmt);
-    setInput(output || input);
-    setOutput('');
+  const copyInput = async () => {
+    if (!input) return;
+    try {
+      await navigator.clipboard.writeText(input);
+      setCopiedIn(true);
+      setTimeout(() => setCopiedIn(false), 2000);
+    } catch { toast.error('Copy failed.'); }
   };
 
   const copyOutput = async () => {
     if (!output) return;
     try {
       await navigator.clipboard.writeText(output);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      setCopiedOut(true);
+      setTimeout(() => setCopiedOut(false), 2000);
     } catch { toast.error('Copy failed.'); }
   };
 
   const clearAll = () => { setInput(''); setOutput(''); setError(''); };
 
-  const downloadOutput = () => {
-    if (!output) return;
-    const ext = FORMAT_META[toFmt].ext;
-    const blob = new Blob([output], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `converted.${ext}`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
-  // Suppress ResizeObserver noise from Monaco
+  // Suppress ResizeObserver noise — both stopImmediatePropagation AND preventDefault
+  // to prevent webpack-dev-server overlay from catching it
   useEffect(() => {
     const suppress = (e) => {
-      if (e.message === 'ResizeObserver loop completed with undelivered notifications.') {
+      if (
+        e.message === 'ResizeObserver loop completed with undelivered notifications.' ||
+        e.message === 'ResizeObserver loop limit exceeded'
+      ) {
         e.stopImmediatePropagation();
+        e.preventDefault();
       }
     };
-    window.addEventListener('error', suppress);
-    return () => window.removeEventListener('error', suppress);
+    window.addEventListener('error', suppress, true);
+    return () => window.removeEventListener('error', suppress, true);
   }, []);
-
-  const inputMeta  = FORMAT_META[fromFmt];
-  const outputMeta = FORMAT_META[toFmt];
 
   return (
     <div className={styles.toolPage}>
       {/* ── Toolbar ── */}
       <div className={styles.toolBar}>
         <span className={styles.toolBarTitle}>Data Converter</span>
-
-        {/* From selector */}
-        <span className={styles.toolBarMeta} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-          <span style={{ opacity: 0.55, fontSize: '0.75rem' }}>from</span>
-          {FORMATS.map(f => (
-            <button
-              key={f}
-              className={`${styles.tBtn} ${fromFmt === f ? styles.tBtnPrimary : styles.tBtnGhost}`}
-              style={fromFmt === f ? { color: '#fff', background: inputMeta.color, borderColor: inputMeta.color } : {}}
-              onClick={() => { if (f !== toFmt) setFromFmt(f); }}
-              disabled={f === toFmt}
-            >
-              {FORMAT_META[f].label}
-            </button>
-          ))}
-        </span>
-
         <div className={styles.toolBarDivider} />
-
-        {/* Swap */}
-        <button className={`${styles.tBtn} ${styles.tBtnGhost}`} onClick={swap} title="Swap input ↔ output">
-          ⇄ Swap
-        </button>
-
-        <div className={styles.toolBarDivider} />
-
-        {/* To selector */}
-        <span className={styles.toolBarMeta} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-          <span style={{ opacity: 0.55, fontSize: '0.75rem' }}>to</span>
-          {FORMATS.map(f => (
-            <button
-              key={f}
-              className={`${styles.tBtn} ${toFmt === f ? styles.tBtnPrimary : styles.tBtnGhost}`}
-              style={toFmt === f ? { color: '#fff', background: outputMeta.color, borderColor: outputMeta.color } : {}}
-              onClick={() => { if (f !== fromFmt) setToFmt(f); }}
-              disabled={f === fromFmt}
-            >
-              {FORMAT_META[f].label}
-            </button>
-          ))}
-        </span>
-
-        <div className={styles.toolBarDivider} />
-
-        <button className={`${styles.tBtn} ${styles.tBtnGhost}`} onClick={clearAll}>✕ Clear</button>
-        <button className={`${styles.tBtn} ${styles.tBtnGhost} ${copied ? styles.tBtnSuccess : ''}`} onClick={copyOutput} disabled={!output}>
-          {copied ? '✓ Copied!' : '⎘ Copy'}
-        </button>
-        <button className={`${styles.tBtn} ${styles.tBtnGhost}`} onClick={downloadOutput} disabled={!output} title="Download output">
-          ↓ Download
+        <button className={`${styles.tBtn} ${styles.tBtnGhost}`} onClick={clearAll}>
+          ✕ Clear
         </button>
       </div>
 
       {/* ── Split pane ── */}
       <div className={styles.splitPane}>
-        {/* Input pane */}
+        {/* Input pane — format auto-detected from content */}
         <div className={styles.pane}>
           <div className={styles.paneHeader}>
-            <span style={{ color: inputMeta.color }}>●</span>
-            <span style={{ fontWeight: 700, color: inputMeta.color }}>{inputMeta.label}</span>
-            <span style={{ opacity: 0.5, fontSize: '0.72rem', marginLeft: '0.25rem' }}>input</span>
+            <span style={{ color: '#6fa3ff' }}>●</span>
+            <span>input</span>
+            <span style={{
+              padding: '1px 8px', borderRadius: '5px', fontSize: '0.7rem', fontWeight: 700,
+              background: 'rgba(111,163,255,0.13)', color: '#6fa3ff', letterSpacing: '0.04em',
+            }}>
+              {detectedFmt}
+            </span>
+            <span style={{ opacity: 0.35, fontSize: '0.68rem', fontStyle: 'italic' }}>auto-detected</span>
+            <button
+              className={`${styles.tBtn} ${styles.tBtnGhost} ${copiedIn ? styles.tBtnSuccess : ''}`}
+              style={{ marginLeft: 'auto', padding: '2px 10px', fontSize: '0.72rem' }}
+              onClick={copyInput}
+              disabled={!input}
+            >
+              {copiedIn ? '✓ Copied!' : '⎘ Copy'}
+            </button>
           </div>
           <div className={styles.paneBody}>
             <Editor
-              language={inputMeta.monaco}
+              language={FORMAT_META[detectedFmt].monaco}
               value={input}
               theme={editorTheme}
               beforeMount={defineEditorThemes}
@@ -646,25 +626,43 @@ function DataConverterContent() {
           </div>
         </div>
 
-        {/* Output pane */}
+        {/* Output pane — choose target format */}
         <div className={styles.pane}>
           <div className={styles.paneHeader}>
-            <span style={{ color: outputMeta.color }}>●</span>
-            <span style={{ fontWeight: 700, color: outputMeta.color }}>{outputMeta.label}</span>
-            <span style={{ opacity: 0.5, fontSize: '0.72rem', marginLeft: '0.25rem' }}>output</span>
-            {error && (
+            <span style={{ color: '#a78bfa' }}>●</span>
+            <span>convert to</span>
+            {FORMATS.filter(f => f !== detectedFmt).map(f => (
+              <button
+                key={f}
+                onClick={() => setToFmt(f)}
+                className={`${styles.tBtn} ${toFmt === f ? styles.tBtnPrimary : styles.tBtnGhost}`}
+                style={{ padding: '2px 10px', fontSize: '0.72rem', borderRadius: '6px' }}
+              >
+                {FORMAT_META[f].label}
+              </button>
+            ))}
+            {error ? (
               <span style={{
-                marginLeft: 'auto', fontSize: '0.72rem', color: '#b91c1c', fontWeight: 600,
-                background: 'rgba(239,68,68,0.1)', borderRadius: '4px', padding: '1px 6px',
-                maxWidth: '60%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'
+                marginLeft: 'auto', fontSize: '0.72rem', color: '#f87171', fontWeight: 600,
+                background: 'rgba(239,68,68,0.1)', borderRadius: '4px', padding: '1px 7px',
+                maxWidth: '30%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
               }} title={error}>
                 ✕ {error}
               </span>
+            ) : (
+              <button
+                className={`${styles.tBtn} ${styles.tBtnGhost} ${copiedOut ? styles.tBtnSuccess : ''}`}
+                style={{ marginLeft: 'auto', padding: '2px 10px', fontSize: '0.72rem' }}
+                onClick={copyOutput}
+                disabled={!output}
+              >
+                {copiedOut ? '✓ Copied!' : '⎘ Copy'}
+              </button>
             )}
           </div>
           <div className={styles.paneBody}>
             <Editor
-              language={outputMeta.monaco}
+              language={FORMAT_META[toFmt].monaco}
               value={output}
               theme={editorTheme}
               beforeMount={defineEditorThemes}
