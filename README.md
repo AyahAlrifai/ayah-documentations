@@ -2,7 +2,7 @@
 
 > *Let's Go on a Tech Journey Together*
 
-A comprehensive educational platform and interactive developer toolset built with Docusaurus and React, deployed on Firebase. Created by **Ayah Al-Rifai**.
+A comprehensive educational platform and interactive developer toolset built with Docusaurus and React, deployed on Firebase. Created by **Ayah Refai**.
 
 **Live Site**: [https://canvas-eye-416011.web.app/](https://canvas-eye-416011.web.app/)
 
@@ -180,7 +180,7 @@ Firebase project ID: `canvas-eye-416011`
 
 ## Author
 
-**Ayah Al-Rifai**
+**Ayah Refai**
 - [GitHub](https://github.com/AyahAlrifai)
 - [LinkedIn](https://www.linkedin.com/in/ayah-al-rifai/)
 

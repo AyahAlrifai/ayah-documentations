@@ -12,7 +12,7 @@ const config = {
   favicon: 'img/logo-3-orbit.svg',
   url: 'https://canvas-eye-416011.web.app/',
   baseUrl: '/',
-  organizationName: 'Ayah Al-Rifai',
+  organizationName: 'Ayah Refai',
   projectName: 'Orbit',
   onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
@@ -60,7 +60,7 @@ const config = {
         name: 'Orbit',
         url: 'https://canvas-eye-416011.web.app/',
         description: 'Developer tools, references, and interactive utilities — all in one place.',
-        author: { '@type': 'Person', name: 'Ayah Al-Rifai', url: 'https://github.com/AyahAlrifai' },
+        author: { '@type': 'Person', name: 'Ayah Refai', url: 'https://github.com/AyahAlrifai' },
         potentialAction: {
           '@type': 'SearchAction',
           target: 'https://canvas-eye-416011.web.app/search?q={search_term_string}',
@@ -90,7 +90,7 @@ const config = {
       metadata: [
         { name: 'description', content: 'Orbit — free online developer tools: JSON formatter, SQL formatter, JWT decoder, regex tester, data converter, API doc generator, HTTP status codes reference, and more.' },
         { name: 'keywords', content: 'JSON formatter, SQL formatter, JWT decoder, regex tester, data converter, YAML to JSON, JSON to YAML, TOML converter, XML converter, API documentation generator, Spring Boot annotations, HTTP status codes, markdown editor, developer tools, free online tools, Orbit' },
-        { name: 'author', content: 'Ayah Al-Rifai' },
+        { name: 'author', content: 'Ayah Refai' },
         { name: 'robots', content: 'index, follow' },
         { property: 'og:type', content: 'website' },
         { property: 'og:site_name', content: 'Orbit' },
@@ -158,21 +158,15 @@ const config = {
         style: 'dark',
         links: [
           {
-            title: 'Orbit',
             items: [
               { label: 'Tools', to: '/json-formatter' },
               { label: 'Documentation', to: '/docs/multiExecPro' },
-            ],
-          },
-          {
-            title: 'Author — Ayah Al-Rifai',
-            items: [
-              { label: 'LinkedIn', href: 'https://www.linkedin.com/in/ayah-alrefai-may1997/' },
               { label: 'GitHub', href: 'https://github.com/AyahAlrifai' },
+              { label: 'LinkedIn', href: 'https://www.linkedin.com/in/ayah-alrefai-may1997/' },
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} Ayah Al-Rifai · Orbit`,
+        copyright: `© ${new Date().getFullYear()} Orbit · Built by Ayah Refai`,
       },
       prism: {
         theme: lightCodeTheme,

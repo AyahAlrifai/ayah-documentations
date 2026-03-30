@@ -262,6 +262,38 @@
   border-top: 1px solid rgba(8, 89, 252, 0.1);
 }
 
+/* ── Footer — single horizontal row of links ── */
+.footer__links {
+  justify-content: center !important;
+  align-items: center;
+}
+
+.footer__col {
+  flex: 0 0 auto;
+}
+
+.footer__items {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap;
+  gap: 0.25rem 0;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer__item {
+  display: flex;
+  align-items: center;
+}
+
+/* Dot separator between links */
+.footer__item + .footer__item::before {
+  content: '·';
+  margin: 0 0.65rem;
+  opacity: 0.35;
+  font-size: 0.85rem;
+}
+
 /* ── Footer link hover ── */
 [data-theme='light'] .footer--dark a:hover {
   color: #0859fc;
