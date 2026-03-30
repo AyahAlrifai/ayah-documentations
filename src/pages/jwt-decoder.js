@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import Layout from '@theme/Layout';
 import { toast, ToastContainer } from 'react-toastify';
 import { useColorMode } from '@docusaurus/theme-common';
+import ShortcutHint from '../components/ShortcutHint';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from '../css/style.module.css';
 
@@ -169,10 +170,13 @@ function JwtDecoderContent() {
 
         <div className={styles.toolBarDivider} />
 
-        <button className={`${styles.tBtn} ${styles.tBtnGhost}`}
+        <button className={`${styles.tBtn} ${styles.tBtnDanger}`}
           onClick={() => setToken('')} disabled={!token}>
           ✕ Clear
         </button>
+        <ShortcutHint shortcuts={[
+          { note: 'Paste a JWT token — header, payload and signature are decoded automatically.' },
+        ]} />
       </div>
 
       {/* ── Token input ── */}

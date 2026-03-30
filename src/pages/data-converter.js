@@ -3,6 +3,7 @@ import Layout from '@theme/Layout';
 import { toast, ToastContainer } from 'react-toastify';
 import { useColorMode } from '@docusaurus/theme-common';
 import Editor from '@monaco-editor/react';
+import ShortcutHint from '../components/ShortcutHint';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from '../css/style.module.css';
 
@@ -756,9 +757,12 @@ function DataConverterContent() {
       <div className={styles.toolBar}>
         <span className={styles.toolBarTitle}>Data Converter</span>
         <div className={styles.toolBarDivider} />
-        <button className={`${styles.tBtn} ${styles.tBtnGhost}`} onClick={clearAll}>
+        <button className={`${styles.tBtn} ${styles.tBtnDanger}`} onClick={clearAll} disabled={!input}>
           ✕ Clear
         </button>
+        <ShortcutHint shortcuts={[
+          { note: 'Paste or type to auto-convert — format is detected automatically.' },
+        ]} />
       </div>
 
       {/* ── Split pane ── */}

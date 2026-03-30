@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Layout from '@theme/Layout';
 import { useColorMode } from '@docusaurus/theme-common';
 import Editor from '@monaco-editor/react';
+import ShortcutHint from '../components/ShortcutHint';
 import styles from '../css/style.module.css';
 
 const defineEditorThemes = (monaco) => {
@@ -556,7 +557,9 @@ function ApiDocContent() {
           {copied === 'html' ? '✓ Copied!' : '⎘ Copy as HTML'}
         </button>
         <div className={styles.toolBarDivider} />
-        {/* <span className={styles.toolBarMeta}>Ctrl+Enter to generate</span> */}
+        <ShortcutHint shortcuts={[
+          { keys: ['Ctrl', 'Enter'], label: 'Generate docs' },
+        ]} />
       </div>
 
       {/* Split pane */}

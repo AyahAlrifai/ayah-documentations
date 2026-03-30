@@ -858,6 +858,120 @@ body {
   transform: none !important;
 }
 
+/* ── ShortcutHint ─────────────────────────────────────────────── */
+.shortcutWrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.shortcutInfoBtn {
+  padding: 0.28rem 0.56rem !important;
+  border-radius: 50% !important;
+  font-size: 0.9rem !important;
+  line-height: 1 !important;
+  font-style: normal !important;
+}
+
+.shortcutPopover {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 1000;
+  min-width: 240px;
+  border-radius: 12px;
+  padding: 0.75rem 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.48rem;
+}
+
+.shortcutPopoverDark {
+  background: #161b22;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.45);
+}
+
+.shortcutPopoverLight {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.12);
+}
+
+.shortcutPopoverTitle {
+  font-size: 0.67rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  opacity: 0.4;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.15);
+  margin-bottom: 0.1rem;
+}
+
+.shortcutRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.shortcutLabel {
+  font-size: 0.82rem;
+}
+
+.shortcutLabelDark  { color: rgba(255, 255, 255, 0.75); }
+.shortcutLabelLight { color: #374151; }
+
+.shortcutKeys {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.shortcutPlus {
+  font-size: 0.65rem;
+  opacity: 0.38;
+  margin: 0 1px;
+}
+
+.shortcutKbd {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 7px;
+  border-radius: 5px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  font-family: 'Consolas', 'Courier New', monospace;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+.shortcutKbdDark {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-bottom-width: 2px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.shortcutKbdLight {
+  background: #f3f4f6;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-bottom-width: 2px;
+  color: #1f2937;
+}
+
+.shortcutNote {
+  font-size: 0.78rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 6px;
+  font-style: italic;
+}
+
+.shortcutNoteDark  { color: rgba(255,255,255,0.45); background: rgba(255,255,255,0.04); }
+.shortcutNoteLight { color: #6b7280; background: rgba(0,0,0,0.03); }
+
 /* ── Split pane ── */
 .splitPane {
   display: flex;

@@ -4,6 +4,7 @@ import Editor from '@monaco-editor/react';
 import { toast, ToastContainer } from 'react-toastify';
 import { useColorMode } from '@docusaurus/theme-common';
 import { format } from 'sql-formatter';
+import ShortcutHint from '../components/ShortcutHint';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from '../css/style.module.css';
 
@@ -120,6 +121,7 @@ function SqlFormatterContent() {
 
   const diffs = useMemo(() => {
     if (!diffMode) return null;
+    if (!leftSQL.trim() || !rightSQL.trim()) return null;
     return sqlDiff(leftSQL, rightSQL);
   }, [diffMode, leftSQL, rightSQL]);
 
@@ -202,6 +204,9 @@ function SqlFormatterContent() {
           <button className={`${styles.tBtn} ${styles.tBtnGhost} ${copied ? styles.tBtnSuccess : ''}`} onClick={copyToClipboard} disabled={!input}>
             {copied ? '✓ Copied!' : '⎘ Copy'}
           </button>
+          <button className={`${styles.tBtn} ${styles.tBtnDanger}`} onClick={() => setInput('')} disabled={!input}>
+            ✕ Clear
+          </button>
           <div className={styles.toolBarDivider} />
           <span className={styles.toolBarMeta}>{lines > 0 ? `${lines} lines` : 'Paste SQL below'}</span>
           <div className={styles.toolBarDivider} />
@@ -220,6 +225,9 @@ function SqlFormatterContent() {
         >
           {diffMode ? '✕ Close Diff' : '⇄ Diff'}
         </button>
+        <ShortcutHint shortcuts={[
+          { keys: ['Ctrl', 'Enter'], label: 'Format SQL' },
+        ]} />
       </div>
 
       {/* Normal mode — single editor, format in place */}

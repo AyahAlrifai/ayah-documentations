@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import Layout from '@theme/Layout';
 import { useColorMode } from '@docusaurus/theme-common';
+import ShortcutHint from '../components/ShortcutHint';
 import styles from '../css/style.module.css';
 
 /* ── Preset patterns ────────────────────────────────────────── */
@@ -235,11 +236,14 @@ function RegexTesterContent() {
         </label>
 
         <button
-          className={`${styles.tBtn} ${styles.tBtnGhost}`}
+          className={`${styles.tBtn} ${styles.tBtnDanger}`}
           onClick={() => { setPattern(''); setTestText(''); }}
           disabled={!pattern && !testText}>
           ✕ Clear
         </button>
+        <ShortcutHint shortcuts={[
+          { note: 'Type a pattern — matches are highlighted automatically as you type.' },
+        ]} />
       </div>
 
       {/* ── Scrollable content ── */}

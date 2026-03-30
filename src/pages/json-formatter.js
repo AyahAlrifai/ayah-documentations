@@ -1,8 +1,9 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import Layout from '@theme/Layout';
 import Editor from '@monaco-editor/react';
 import { toast, ToastContainer } from 'react-toastify';
 import { useColorMode } from '@docusaurus/theme-common';
+import ShortcutHint from '../components/ShortcutHint';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from '../css/style.module.css';
 
@@ -120,17 +121,28 @@ function JsonFormatterContent() {
     } catch { return null; }
   }, [diffMode, leftInput, rightInput]);
 
-  const formatJSON = () => {
+  const formatJSON = useCallback(() => {
     try {
       if (input) setInput(JSON.stringify(JSON.parse(input), null, 2));
     } catch { toast.error('Invalid JSON — check your syntax and try again.'); }
-  };
+  }, [input]);
 
-  const minifyJSON = () => {
+  const minifyJSON = useCallback(() => {
     try {
       if (input) setInput(JSON.stringify(JSON.parse(input)));
     } catch { toast.error('Invalid JSON — check your syntax and try again.'); }
-  };
+  }, [input]);
+
+  // Ctrl+Enter → Format,  Ctrl+M → Minify
+  useEffect(() => {
+    const onKeyDown = (e) => {
+      if (diffMode) return;
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); formatJSON(); }
+      if ((e.ctrlKey || e.metaKey) && e.key === 'm')     { e.preventDefault(); minifyJSON(); }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [diffMode, formatJSON, minifyJSON]);
 
   const copyToClipboard = async () => {
     if (!input) return;
@@ -167,11 +179,14 @@ function JsonFormatterContent() {
         <span className={styles.toolBarTitle}>JSON Formatter</span>
 
         {!diffMode && <>
-          <button className={`${styles.tBtn} ${styles.tBtnPrimary}`} onClick={formatJSON}>⇄ Format</button>
+          <button className={`${styles.tBtn} ${styles.tBtnPrimary}`} onClick={formatJSON}>⚡ Format</button>
           <button className={`${styles.tBtn} ${styles.tBtnGhost}`} onClick={minifyJSON}>⊟ Minify</button>
           <div className={styles.toolBarDivider} />
           <button className={`${styles.tBtn} ${styles.tBtnGhost} ${copied ? styles.tBtnSuccess : ''}`} onClick={copyToClipboard} disabled={!input}>
             {copied ? '✓ Copied!' : '⎘ Copy'}
+          </button>
+          <button className={`${styles.tBtn} ${styles.tBtnDanger}`} onClick={() => setInput('')} disabled={!input}>
+            ✕ Clear
           </button>
           <div className={styles.toolBarDivider} />
           <span className={styles.toolBarMeta}>{lines > 0 ? `${lines} lines · ${chars} chars` : 'Paste JSON below'}</span>
@@ -191,6 +206,10 @@ function JsonFormatterContent() {
         >
           {diffMode ? '✕ Close Diff' : '⇄ Diff'}
         </button>
+        <ShortcutHint shortcuts={[
+          { keys: ['Ctrl', 'Enter'], label: 'Format JSON' },
+          { keys: ['Ctrl', 'M'],     label: 'Minify JSON' },
+        ]} />
       </div>
 
       {/* Normal editor */}
@@ -213,7 +232,7 @@ function JsonFormatterContent() {
                 <span style={{ color: '#f87171' }}>●</span> left (original)
                 <button className={`${styles.tBtn} ${styles.tBtnPrimary}`} style={{ marginLeft: 'auto', padding: '1px 8px', fontSize: '0.72rem' }}
                   onClick={() => { try { setLeftInput(JSON.stringify(JSON.parse(leftInput), null, 2)); } catch { toast.error('Invalid JSON in left editor.'); } }}>
-                  ⇄ Format
+                  ⚡ Format
                 </button>
               </div>
               <div className={styles.paneBody}>
@@ -226,7 +245,7 @@ function JsonFormatterContent() {
                 <span style={{ color: '#4ade80' }}>●</span> right (changed)
                 <button className={`${styles.tBtn} ${styles.tBtnPrimary}`} style={{ marginLeft: 'auto', padding: '1px 8px', fontSize: '0.72rem' }}
                   onClick={() => { try { setRightInput(JSON.stringify(JSON.parse(rightInput), null, 2)); } catch { toast.error('Invalid JSON in right editor.'); } }}>
-                  ⇄ Format
+                  ⚡ Format
                 </button>
               </div>
               <div className={styles.paneBody}>
