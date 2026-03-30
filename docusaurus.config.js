@@ -5,15 +5,15 @@ require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` });
 
 const n8nApiUrl = process.env.REACT_APP_N8N_API_URL;
 
-/** @type {import(‘@docusaurus/types’).Config} */
+/** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: ‘Orbit’,
-  tagline: ‘Developer tools, references, and interactive utilities — all in one place.’,
-  favicon: ‘img/logo-3-orbit.svg’,
-  url: ‘https://canvas-eye-416011.web.app/’,
-  baseUrl: ‘/’,
-  organizationName: ‘Ayah Al-Rifai’,
-  projectName: ‘Orbit’,
+  title: 'Orbit',
+  tagline: 'Developer tools, references, and interactive utilities — all in one place.',
+  favicon: 'img/logo-3-orbit.svg',
+  url: 'https://canvas-eye-416011.web.app/',
+  baseUrl: '/',
+  organizationName: 'Ayah Al-Rifai',
+  projectName: 'Orbit',
   onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
   customFields: {
@@ -88,20 +88,20 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       metadata: [
-        { name: 'description',     content: 'Orbit — free online developer tools: JSON formatter, SQL formatter, JWT decoder, regex tester, data converter, API doc generator, HTTP status codes reference, and more.' },
-        { name: 'keywords',        content: 'JSON formatter, SQL formatter, JWT decoder, regex tester, data converter, YAML to JSON, JSON to YAML, TOML converter, XML converter, API documentation generator, Spring Boot annotations, HTTP status codes, markdown editor, developer tools, free online tools, Orbit' },
-        { name: 'author',          content: 'Ayah Al-Rifai' },
-        { name: 'robots',          content: 'index, follow' },
-        { property: 'og:type',        content: 'website' },
-        { property: 'og:site_name',   content: 'Orbit' },
-        { property: 'og:title',       content: 'Orbit — Developer Tools & References' },
+        { name: 'description', content: 'Orbit — free online developer tools: JSON formatter, SQL formatter, JWT decoder, regex tester, data converter, API doc generator, HTTP status codes reference, and more.' },
+        { name: 'keywords', content: 'JSON formatter, SQL formatter, JWT decoder, regex tester, data converter, YAML to JSON, JSON to YAML, TOML converter, XML converter, API documentation generator, Spring Boot annotations, HTTP status codes, markdown editor, developer tools, free online tools, Orbit' },
+        { name: 'author', content: 'Ayah Al-Rifai' },
+        { name: 'robots', content: 'index, follow' },
+        { property: 'og:type', content: 'website' },
+        { property: 'og:site_name', content: 'Orbit' },
+        { property: 'og:title', content: 'Orbit — Developer Tools & References' },
         { property: 'og:description', content: 'Free online developer tools: JSON formatter, SQL formatter, JWT decoder, regex tester, data converter, and more.' },
-        { property: 'og:image',       content: 'https://canvas-eye-416011.web.app/img/logo-3-orbit.svg' },
-        { property: 'og:url',         content: 'https://canvas-eye-416011.web.app/' },
-        { name: 'twitter:card',        content: 'summary' },
-        { name: 'twitter:title',       content: 'Orbit — Developer Tools & References' },
+        { property: 'og:image', content: 'https://canvas-eye-416011.web.app/img/logo-3-orbit.svg' },
+        { property: 'og:url', content: 'https://canvas-eye-416011.web.app/' },
+        { name: 'twitter:card', content: 'summary' },
+        { name: 'twitter:title', content: 'Orbit — Developer Tools & References' },
         { name: 'twitter:description', content: 'Free online developer tools: JSON formatter, SQL formatter, JWT decoder, regex tester, data converter, and more.' },
-        { name: 'twitter:image',       content: 'https://canvas-eye-416011.web.app/img/logo-3-orbit.svg' },
+        { name: 'twitter:image', content: 'https://canvas-eye-416011.web.app/img/logo-3-orbit.svg' },
       ],
       colorMode: {
         defaultMode: 'dark',
@@ -168,7 +168,7 @@ const config = {
             title: 'Author — Ayah Al-Rifai',
             items: [
               { label: 'LinkedIn', href: 'https://www.linkedin.com/in/ayah-alrefai-may1997/' },
-              { label: 'GitHub',   href: 'https://github.com/AyahAlrifai' },
+              { label: 'GitHub', href: 'https://github.com/AyahAlrifai' },
             ],
           },
         ],
