@@ -44,7 +44,8 @@
       "Bash(ss:*)",
       "Bash(cmd.exe /c \"dir D:\\\\ayah-documentations-master\")",
       "Bash(test:*)",
-      "Bash(cmd.exe /c \"if exist D:\\\\ayah-documentations-master\\\\node_modules \\(echo node_modules EXISTS\\) else \\(echo node_modules NOT FOUND\\)\")"
+      "Bash(cmd.exe /c \"if exist D:\\\\ayah-documentations-master\\\\node_modules \\(echo node_modules EXISTS\\) else \\(echo node_modules NOT FOUND\\)\")",
+      "Bash(node -e \"require\\(''''sharp''''\\)\")"
     ]
   }
 }

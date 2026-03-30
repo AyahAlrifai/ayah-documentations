@@ -10,16 +10,16 @@
   "theme_color": "#ec4899",
   "icons": [
     {
-      "src": "/img/logo-3-orbit.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "/img/logo-orbit-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/img/logo-3-orbit-dark.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "maskable"
+      "src": "/img/logo-orbit-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ],
   "categories": ["developer tools", "productivity", "utilities"]
