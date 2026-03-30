@@ -1,0 +1,26 @@
+{
+  "name": "Orbit",
+  "short_name": "Orbit",
+  "description": "Developer tools, references, and interactive utilities — all in one place.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0d1117",
+  "theme_color": "#ec4899",
+  "icons": [
+    {
+      "src": "/img/logo-3-orbit.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/img/logo-3-orbit-dark.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": ["developer tools", "productivity", "utilities"]
+}

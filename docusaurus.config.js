@@ -51,6 +51,15 @@ const config = {
   ],
 
   headTags: [
+    // PWA manifest
+    { tagName: 'link', attributes: { rel: 'manifest', href: '/manifest.json' } },
+    // Theme color (Chrome address bar + Android)
+    { tagName: 'meta', attributes: { name: 'theme-color', content: '#ec4899' } },
+    // iOS home screen icon (falls back gracefully on SVG-unsupported devices)
+    { tagName: 'link', attributes: { rel: 'apple-touch-icon', href: '/img/logo-3-orbit.svg' } },
+    { tagName: 'meta', attributes: { name: 'apple-mobile-web-app-capable', content: 'yes' } },
+    { tagName: 'meta', attributes: { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' } },
+    { tagName: 'meta', attributes: { name: 'apple-mobile-web-app-title', content: 'Orbit' } },
     {
       tagName: 'script',
       attributes: { type: 'application/ld+json' },
