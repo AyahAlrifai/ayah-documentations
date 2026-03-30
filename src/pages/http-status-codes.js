@@ -517,7 +517,7 @@ function HttpStatusCodesContent() {
 
 export default function HttpStatusCodes() {
   return (
-    <Layout title="HTTP Status Codes" description="Quick reference for all 60 standard HTTP response codes — searchable and filterable.">
+    <Layout title="HTTP Status Codes | Orbit" description="Complete HTTP status codes reference. Look up all standard HTTP response codes — 1xx informational, 2xx success, 3xx redirect, 4xx client error, 5xx server error — searchable and filterable.">
       <HttpStatusCodesContent />
     </Layout>
   );

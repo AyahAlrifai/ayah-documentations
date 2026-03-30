@@ -5,15 +5,15 @@ require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` });
 
 const n8nApiUrl = process.env.REACT_APP_N8N_API_URL;
 
-/** @type {import('@docusaurus/types').Config} */
+/** @type {import(‘@docusaurus/types’).Config} */
 const config = {
-  title: '‘DevDocs — Developer Reference & Tools’',
-  tagline: 'Structured docs, interactive tools, and real-world references for the modern developer stack.',
-  favicon: 'img/logo-3-orbit.svg',
-  url: 'https://canvas-eye-416011.web.app/',
-  baseUrl: '/',
-  organizationName: 'Ayah',
-  projectName: 'Ayah\'s documentations',
+  title: ‘Orbit’,
+  tagline: ‘Developer tools, references, and interactive utilities — all in one place.’,
+  favicon: ‘img/logo-3-orbit.svg’,
+  url: ‘https://canvas-eye-416011.web.app/’,
+  baseUrl: ‘/’,
+  organizationName: ‘Ayah Al-Rifai’,
+  projectName: ‘Orbit’,
   onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
   customFields: {
@@ -50,17 +50,68 @@ const config = {
     ],
   ],
 
+  headTags: [
+    {
+      tagName: 'script',
+      attributes: { type: 'application/ld+json' },
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: 'Orbit',
+        url: 'https://canvas-eye-416011.web.app/',
+        description: 'Developer tools, references, and interactive utilities — all in one place.',
+        author: { '@type': 'Person', name: 'Ayah Al-Rifai', url: 'https://github.com/AyahAlrifai' },
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: 'https://canvas-eye-416011.web.app/search?q={search_term_string}',
+          'query-input': 'required name=search_term_string',
+        },
+      }),
+    },
+    {
+      tagName: 'script',
+      attributes: { type: 'application/ld+json' },
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'SoftwareApplication',
+        name: 'Orbit Developer Tools',
+        url: 'https://canvas-eye-416011.web.app/',
+        applicationCategory: 'DeveloperApplication',
+        operatingSystem: 'Web',
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+        description: 'Free online developer tools: JSON formatter, SQL formatter, JWT decoder, regex tester, data format converter, API documentation generator, and more.',
+      }),
+    },
+  ],
+
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      metadata: [
+        { name: 'description',     content: 'Orbit — free online developer tools: JSON formatter, SQL formatter, JWT decoder, regex tester, data converter, API doc generator, HTTP status codes reference, and more.' },
+        { name: 'keywords',        content: 'JSON formatter, SQL formatter, JWT decoder, regex tester, data converter, YAML to JSON, JSON to YAML, TOML converter, XML converter, API documentation generator, Spring Boot annotations, HTTP status codes, markdown editor, developer tools, free online tools, Orbit' },
+        { name: 'author',          content: 'Ayah Al-Rifai' },
+        { name: 'robots',          content: 'index, follow' },
+        { property: 'og:type',        content: 'website' },
+        { property: 'og:site_name',   content: 'Orbit' },
+        { property: 'og:title',       content: 'Orbit — Developer Tools & References' },
+        { property: 'og:description', content: 'Free online developer tools: JSON formatter, SQL formatter, JWT decoder, regex tester, data converter, and more.' },
+        { property: 'og:image',       content: 'https://canvas-eye-416011.web.app/img/logo-3-orbit.svg' },
+        { property: 'og:url',         content: 'https://canvas-eye-416011.web.app/' },
+        { name: 'twitter:card',        content: 'summary' },
+        { name: 'twitter:title',       content: 'Orbit — Developer Tools & References' },
+        { name: 'twitter:description', content: 'Free online developer tools: JSON formatter, SQL formatter, JWT decoder, regex tester, data converter, and more.' },
+        { name: 'twitter:image',       content: 'https://canvas-eye-416011.web.app/img/logo-3-orbit.svg' },
+      ],
       colorMode: {
         defaultMode: 'dark',
         disableSwitch: false,
         respectPrefersColorScheme: true
       },
       navbar: {
+        title: 'Orbit',
         logo: {
-          alt: 'Learn Technology Easily',
+          alt: 'Orbit — Developer Tools & References',
           src: 'img/logo-3-orbit.svg',
           srcDark: 'img/logo-3-orbit-dark.svg',
           style: { width: '44px', height: '44px' }
@@ -107,19 +158,21 @@ const config = {
         style: 'dark',
         links: [
           {
-            title: 'Auther Ayah Al-Refai',
+            title: 'Orbit',
             items: [
-              {
-                label: 'LinkedIn',
-                href: 'https://www.linkedin.com/in/ayah-alrefai-may1997/',
-              }, {
-                label: 'GitHub',
-                href: 'https://github.com/AyahAlrifai',
-              }
+              { label: 'Tools', to: '/json-formatter' },
+              { label: 'Documentation', to: '/docs/multiExecPro' },
             ],
-          }
+          },
+          {
+            title: 'Author — Ayah Al-Rifai',
+            items: [
+              { label: 'LinkedIn', href: 'https://www.linkedin.com/in/ayah-alrefai-may1997/' },
+              { label: 'GitHub',   href: 'https://github.com/AyahAlrifai' },
+            ],
+          },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} Ayah Al-Rifai`,
+        copyright: `Copyright © ${new Date().getFullYear()} Ayah Al-Rifai · Orbit`,
       },
       prism: {
         theme: lightCodeTheme,

@@ -311,7 +311,7 @@ function JwtDecoderContent() {
 
 export default function JwtDecoder() {
   return (
-    <Layout title="JWT Decoder" description="Decode and inspect JWT tokens instantly in your browser">
+    <Layout title="JWT Decoder | Orbit" description="Free online JWT token decoder. Decode and inspect JWT header, payload, signature, expiry, and standard claims (iss, sub, exp, iat) instantly in your browser.">
       <JwtDecoderContent />
     </Layout>
   );

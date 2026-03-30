@@ -507,7 +507,7 @@ function RegexTesterContent() {
 
 export default function RegexTester() {
   return (
-    <Layout title="Regex Tester" description="Live regular expression tester and debugger — test patterns in real time">
+    <Layout title="Regex Tester | Orbit" description="Free online regular expression tester. Test, debug, and visualize regex patterns with live match highlighting, replace mode, flag support, and a built-in cheatsheet.">
       <RegexTesterContent />
     </Layout>
   );

@@ -853,7 +853,7 @@ function DataConverterContent() {
 
 export default function DataConverter() {
   return (
-    <Layout title="Data Converter" description="Convert between JSON, YAML, Properties, TOML, and XML in your browser">
+    <Layout title="Data Converter | Orbit" description="Free online data format converter. Convert between JSON, YAML, TOML, XML, .properties, and TOON instantly. Auto-detects input format — no install required.">
       <DataConverterContent />
     </Layout>
   );

@@ -619,7 +619,7 @@ function ApiDocContent() {
 
 export default function ApiDocumentationGenerator() {
   return (
-    <Layout title="API Documentation Generator" description="Generate API docs from Spring annotations">
+    <Layout title="API Documentation Generator | Orbit" description="Free online API documentation generator for Spring Boot. Auto-generate structured API docs from @RequestMapping, @RequestParam, @PathVariable, and @ApiResponse annotations.">
       <ApiDocContent />
     </Layout>
   );

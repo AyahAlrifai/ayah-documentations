@@ -4,14 +4,14 @@ import { useColorMode } from '@docusaurus/theme-common';
 import styles from '../../css/style.module.css';
 
 const TECH_CHIPS = [
-  { name: 'Angular', color: '#fc7dc7', delay: '0s', duration: '4.2s', top: '5%', left: '10%' },
-  { name: 'Java', color: '#fb923c', delay: '0.7s', duration: '3.8s', top: '2%', left: '45%' },
+  { name: 'Java', color: '#fc7dc7', delay: '0s', duration: '4.2s', top: '5%', left: '10%' },
+  { name: 'Camunda', color: '#fb923c', delay: '0.7s', duration: '3.8s', top: '2%', left: '45%' },
   { name: 'Spring', color: '#4ade80', delay: '1.4s', duration: '4.6s', top: '14%', left: '72%' },
-  { name: 'SQL', color: '#60a5fa', delay: '0.3s', duration: '3.5s', top: '46%', left: '83%' },
-  { name: 'Redis', color: '#fc7dc7', delay: '1.8s', duration: '4.0s', top: '75%', left: '65%' },
+  { name: 'JSON', color: '#60a5fa', delay: '0.3s', duration: '3.5s', top: '46%', left: '83%' },
+  { name: 'Redis', color: '#fc7d8e', delay: '1.8s', duration: '4.0s', top: '75%', left: '65%' },
   { name: 'RabbitMQ', color: '#fbbf24', delay: '0.9s', duration: '5.0s', top: '83%', left: '28%' },
-  { name: 'Swagger', color: '#34d399', delay: '2.1s', duration: '3.6s', top: '66%', left: '5%' },
-  { name: 'Markdown', color: '#a78bfa', delay: '1.5s', duration: '4.4s', top: '38%', left: '1%' },
+  { name: 'Tools', color: '#34d399', delay: '2.1s', duration: '3.6s', top: '66%', left: '5%' },
+  { name: 'Games', color: '#a78bfa', delay: '1.5s', duration: '4.4s', top: '38%', left: '1%' },
 ];
 
 function TypeWriter({ text, startDelay = 700 }) {

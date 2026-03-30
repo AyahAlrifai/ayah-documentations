@@ -278,7 +278,7 @@ function JsonFormatterContent() {
 
 export default function JsonFormatter() {
   return (
-    <Layout title="JSON Formatter" description="Format, minify and diff JSON in your browser">
+    <Layout title="JSON Formatter | Orbit" description="Free online JSON formatter, validator, minifier, and diff tool. Beautify, minify, and compare JSON instantly in your browser — no install required.">
       <JsonFormatterContent />
     </Layout>
   );

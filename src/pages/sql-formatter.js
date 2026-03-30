@@ -295,7 +295,7 @@ function SqlFormatterContent() {
 
 export default function SqlFormatter() {
   return (
-    <Layout title="SQL Formatter" description="Format and beautify SQL queries in your browser">
+    <Layout title="SQL Formatter | Orbit" description="Free online SQL formatter and beautifier. Format, indent, and compare SQL queries with keyword uppercasing and syntax highlighting — works in your browser.">
       <SqlFormatterContent />
     </Layout>
   );

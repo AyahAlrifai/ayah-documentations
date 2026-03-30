@@ -126,7 +126,7 @@ function MarkdownEditorContent() {
 
 export default function CreateNewDocument() {
   return (
-    <Layout title="Markdown Editor" description="Write and preview markdown in real time">
+    <Layout title="Markdown Editor | Orbit" description="Free online Markdown editor with live preview. Write, format, and export Markdown documents instantly in your browser — no account or install needed.">
       <MarkdownEditorContent />
     </Layout>
   );
