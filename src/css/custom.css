@@ -620,6 +620,13 @@ html[data-theme='dark'] {
 .nav-icon-http::before      { background-image: url('/img/icons/http.svg'); }
 .nav-icon-converter::before { background-image: url('/img/icons/converter.svg'); }
 
+/* ── Docs: remove excess horizontal margin from content container ── */
+.container.padding-top--md {
+  max-width: 100% !important;
+  padding-left: 2rem;
+  padding-right: 1rem;
+}
+
 /* ── Smooth scroll ── */
 html {
   scroll-behavior: smooth;
