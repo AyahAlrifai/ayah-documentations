@@ -36,6 +36,7 @@ export const rooms = [
     atmosphere: 'The air is thick with old wood and secrets. Somewhere above, unseen pages turn themselves in a draft that shouldn’t exist.',
     accent: '#b3703c',
     doorLabel: 'the well hidden behind the stacks',
+    wellText: 'Where old chapters rest — A.A.',
     cvSectionId: 'education',
     keyChain: [
       {
@@ -60,6 +61,7 @@ export const rooms = [
     atmosphere: 'Night has fallen inside a room that should have no night. Vines glow faint green; crickets chirr from nowhere in particular.',
     accent: '#4fd67a',
     doorLabel: 'the moss-covered well',
+    wellText: 'Grown in the dark, still it glows — A.A.',
     cvSectionId: 'second-step',
     keyChain: [
       {
@@ -92,6 +94,7 @@ export const rooms = [
     atmosphere: 'Copper pipes hiss overhead. Beakers boil unattended, their liquids shifting colour when no one looks directly at them.',
     accent: '#4fc7c2',
     doorLabel: 'the reinforced steel hatch',
+    wellText: 'Every formula has its answer — A.A.',
     cvSectionId: 'blulogix',
     keyChain: [
       {
@@ -124,6 +127,7 @@ export const rooms = [
     atmosphere: 'Wind-up toys shift and click on shelves with no hand to wind them. A music box melody drifts, stopping mid-phrase, resuming elsewhere.',
     accent: '#e78bb0',
     doorLabel: 'the nursery-scaled door',
+    wellText: 'Wound once, remembered always — A.A.',
     cvSectionId: 'skills',
     keyChain: [
       {
@@ -148,6 +152,7 @@ export const rooms = [
     atmosphere: 'The ceiling doesn’t exist — replaced by a slow-wheeling galaxy. Model planets turn on unseen gears, patient and silent.',
     accent: '#8b7bea',
     doorLabel: 'the iris-shutter door',
+    wellText: 'Look up to find the way down — A.A.',
     cvSectionId: 'digitinary',
     keyChain: [
       {
@@ -180,6 +185,7 @@ export const rooms = [
     atmosphere: 'Every wall is mirror, floor to ceiling. At the centre, a golden throne catches and multiplies what little light remains.',
     accent: '#d9b23c',
     doorLabel: 'the final exit gate',
+    wellText: 'Six reflections, one truth — A.A.',
     cvSectionId: 'contact',
     keyChain: [
       {

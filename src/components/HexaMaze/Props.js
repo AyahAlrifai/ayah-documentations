@@ -506,10 +506,23 @@ function KeyBeacon({ accent }) {
   );
 }
 
+// Floats well above every node prop's tallest point (the tallest is the
+// ladder at ~2.4) and stays at a fixed depth (z locked to 0, its natural
+// marker depth) so it never drifts into — or behind — the thin, mostly-flat
+// props (paintings, mirrors, the blackboard) or nearby room decor. Movement
+// is a small vertical circle (x + y only) so it still visibly drifts around
+// without ever leaving that safe, unobstructed band above the room's props.
 function OrbBeacon({ accent }) {
+  const ref = useRef();
+  useFrame((state) => {
+    if (!ref.current) return;
+    const t = state.clock.elapsedTime;
+    ref.current.position.x = Math.sin(t * 0.9) * 0.25;
+    ref.current.position.y = 2.7 + Math.cos(t * 0.9) * 0.2;
+  });
   return (
-    <mesh position={[0, 2.1, 0]}>
-      <sphereGeometry args={[0.09, 8, 8]} />
+    <mesh ref={ref} position={[0, 2.7, 0]}>
+      <sphereGeometry args={[0.22, 16, 16]} />
       <meshStandardMaterial color={accent} emissive={accent} emissiveIntensity={2} />
     </mesh>
   );
@@ -540,10 +553,45 @@ export function InteractiveObject({ node, stageIndex, done, active, animating, a
 // always rendered closed and unlit (see the hardcoded unlocked/open props
 // passed to it in index.js).
 
-export function Well({ position, unlocked, open }) {
+// A small stone plaque carved into the well's rim, facing the player's spawn
+// point (the well sits behind spawn, at a higher z, so the side facing the
+// player is at local -z). Wraps to a second line at the em dash so the
+// "riddle — signature" wellText strings always fit without measuring text.
+function usePlaqueTexture(text) {
+  return useMemo(() => {
+    if (typeof document === 'undefined' || !text) return null;
+    const canvas = document.createElement('canvas');
+    canvas.width = 512; canvas.height = 200;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#2a261e';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.strokeStyle = '#6a604a';
+    ctx.lineWidth = 6;
+    ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
+    ctx.fillStyle = '#cfc6ae';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const parts = text.split(' — ');
+    if (parts.length === 2) {
+      ctx.font = 'italic 42px Georgia, serif';
+      ctx.fillText(parts[0], canvas.width / 2, canvas.height / 2 - 30);
+      ctx.font = 'italic 32px Georgia, serif';
+      ctx.fillText(`— ${parts[1]}`, canvas.width / 2, canvas.height / 2 + 36);
+    } else {
+      ctx.font = 'italic 42px Georgia, serif';
+      ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+    }
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.needsUpdate = true;
+    return texture;
+  }, [text]);
+}
+
+export function Well({ position, unlocked, open, text }) {
   const hatchLeft = useRef();
   const hatchRight = useRef();
   const glow = useRef();
+  const plaqueTexture = usePlaqueTexture(text);
   useFrame((state) => {
     const t = open ? 1 : 0;
     if (hatchLeft.current) hatchLeft.current.rotation.z = lerp(0, -2.1, t);
@@ -558,6 +606,14 @@ export function Well({ position, unlocked, open }) {
         <cylinderGeometry args={[0.9, 1.0, 0.6, 20, 1, true]} />
         <meshStandardMaterial color="#4a453c" roughness={0.95} side={THREE.DoubleSide} />
       </mesh>
+
+      {plaqueTexture && (
+        <mesh position={[0, 0.34, -0.98]}>
+          <planeGeometry args={[1.1, 0.42]} />
+          <meshStandardMaterial map={plaqueTexture} roughness={0.9} side={THREE.DoubleSide} />
+        </mesh>
+      )}
+
       <mesh position={[0, 0.61, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <ringGeometry args={[0.75, 0.92, 20]} />
         <meshStandardMaterial color="#5a5448" roughness={0.9} />

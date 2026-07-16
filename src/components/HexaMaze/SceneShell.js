@@ -219,6 +219,31 @@ function RoomDecor({ kind, w, d, accent, bounds }) {
           </group>
         ))}
         <DecorLight position={[0, 3.7, -1]} color="#e8a860" />
+
+        {/* Reading table, tucked in the vestibule so it never crowds a node. */}
+        <group position={[1.8, 0, 2.6]}>
+          <mesh position={[0, 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+            <planeGeometry args={[2, 1.4]} />
+            <meshStandardMaterial color="#5a2020" roughness={0.95} />
+          </mesh>
+          <mesh position={[0, 0.55, 0]}>
+            <boxGeometry args={[1.1, 0.08, 0.7]} />
+            <meshStandardMaterial color="#3a2c1c" roughness={0.85} />
+          </mesh>
+          {[[-0.45, -0.28], [0.45, -0.28], [-0.45, 0.28], [0.45, 0.28]].map(([x, z], i) => (
+            <mesh key={i} position={[x, 0.27, z]}>
+              <boxGeometry args={[0.08, 0.55, 0.08]} />
+              <meshStandardMaterial color="#3a2c1c" roughness={0.85} />
+            </mesh>
+          ))}
+          {[0, 1, 2].map((i) => (
+            <mesh key={i} position={[0.2, 0.62 + i * 0.08, 0.1]} rotation={[0, i * 0.35, 0]}>
+              <boxGeometry args={[0.32, 0.07, 0.24]} />
+              <meshStandardMaterial color={['#5a2020', '#2a3a5a', '#4a3a1a'][i]} roughness={0.85} />
+            </mesh>
+          ))}
+          <DecorLight position={[0, 1.0, 0]} color="#e8a860" />
+        </group>
       </group>
     );
   }
@@ -226,6 +251,7 @@ function RoomDecor({ kind, w, d, accent, bounds }) {
     const fireflies = React.useMemo(() => Array.from({ length: 10 }, () => ({
       pos: [(Math.random() - 0.5) * w * 0.8, 1.2 + Math.random() * 2.2, (Math.random() - 0.5) * d * 0.8],
     })), [w, d]);
+    const potSpots = [[-w / 2 + 0.8, 3.5], [w / 2 - 0.8, 3.5], [-w / 2 + 0.8, -4.5]];
     return (
       <group>
         {[-w / 2 + 0.4, w / 2 - 0.4].map((x, i) => (
@@ -240,6 +266,28 @@ function RoomDecor({ kind, w, d, accent, bounds }) {
             <meshStandardMaterial color="#9fffb0" emissive="#9fffb0" emissiveIntensity={2.4} />
           </mesh>
         ))}
+
+        {/* Potted plants along the walls, and a glowing mushroom cluster on the floor. */}
+        {potSpots.map(([x, z], i) => (
+          <group key={i} position={[x, 0, z]}>
+            <mesh position={[0, 0.25, 0]}>
+              <cylinderGeometry args={[0.22, 0.28, 0.5, 10]} />
+              <meshStandardMaterial color="#4a3a2a" roughness={0.9} />
+            </mesh>
+            <mesh position={[0, 0.65, 0]}>
+              <coneGeometry args={[0.32, 0.8, 8]} />
+              <meshStandardMaterial color="#2d6a2d" roughness={0.8} />
+            </mesh>
+          </group>
+        ))}
+        <group position={[w / 2 - 0.9, 0, -4.5]}>
+          {[0, 1, 2].map((i) => (
+            <mesh key={i} position={[i * 0.16 - 0.16, 0.08 + i * 0.03, i * 0.1]}>
+              <coneGeometry args={[0.09 - i * 0.015, 0.16, 8]} />
+              <meshStandardMaterial color="#e07a9a" emissive="#e07a9a" emissiveIntensity={0.8} roughness={0.6} />
+            </mesh>
+          ))}
+        </group>
       </group>
     );
   }
@@ -259,6 +307,34 @@ function RoomDecor({ kind, w, d, accent, bounds }) {
           </mesh>
         ))}
         <DecorLight position={[0, 5.5, 1.5]} color="#4fc7c2" />
+
+        {/* Workbench with spare bottles, tucked in the vestibule. */}
+        <group position={[0, 0, 3]}>
+          <mesh position={[0, 0.5, 0]}>
+            <boxGeometry args={[1.6, 0.9, 0.6]} />
+            <meshStandardMaterial color="#3a3a3a" metalness={0.3} roughness={0.6} />
+          </mesh>
+          {[-0.5, -0.15, 0.2, 0.55].map((x, i) => (
+            <mesh key={i} position={[x, 1.02, 0]}>
+              <cylinderGeometry args={[0.07, 0.09, 0.35, 8]} />
+              <meshStandardMaterial color={['#4fc7c2', '#b23a2a', '#8a6a3a', '#4fc7c2'][i]} transparent opacity={0.75} roughness={0.2} />
+            </mesh>
+          ))}
+        </group>
+
+        {/* Pressure gauges on the side walls. */}
+        {[-w / 2 + 0.42, w / 2 - 0.42].map((x, i) => (
+          <group key={i} position={[x, 2.6, 2]} rotation={[0, i === 0 ? Math.PI / 2 : -Math.PI / 2, 0]}>
+            <mesh>
+              <cylinderGeometry args={[0.22, 0.22, 0.06, 16]} />
+              <meshStandardMaterial color="#c9c9c9" metalness={0.6} roughness={0.3} />
+            </mesh>
+            <mesh position={[0, 0, 0.04]}>
+              <boxGeometry args={[0.02, 0.16, 0.02]} />
+              <meshStandardMaterial color="#b23a2a" />
+            </mesh>
+          </group>
+        ))}
       </group>
     );
   }
@@ -276,6 +352,36 @@ function RoomDecor({ kind, w, d, accent, bounds }) {
             <meshStandardMaterial color={b.color} roughness={0.6} />
           </mesh>
         ))}
+
+        {/* Rocking horse, tucked by the back-left wall. */}
+        <group position={[-3.6, 0, -4.2]} rotation={[0, 0.4, 0]}>
+          <mesh position={[0, 0.5, 0]}>
+            <boxGeometry args={[0.9, 0.35, 0.25]} />
+            <meshStandardMaterial color="#c9915a" roughness={0.7} />
+          </mesh>
+          <mesh position={[0.4, 0.75, 0]}>
+            <sphereGeometry args={[0.2, 10, 10]} />
+            <meshStandardMaterial color="#c9915a" roughness={0.7} />
+          </mesh>
+          <mesh position={[0, 0.18, 0]}>
+            <torusGeometry args={[0.55, 0.05, 6, 16, Math.PI]} />
+            <meshStandardMaterial color="#8a5a30" roughness={0.7} />
+          </mesh>
+        </group>
+
+        {/* Shelf of toy soldiers along the right wall. */}
+        <group position={[w / 2 - 0.5, 0.55, -2.5]}>
+          <mesh>
+            <boxGeometry args={[0.35, 0.06, 1.6]} />
+            <meshStandardMaterial color="#6b4530" roughness={0.8} />
+          </mesh>
+          {Array.from({ length: 6 }, (_, i) => (
+            <mesh key={i} position={[0, 0.16, -0.65 + i * 0.26]}>
+              <cylinderGeometry args={[0.05, 0.06, 0.3, 8]} />
+              <meshStandardMaterial color={['#b23a2a', '#3a5aa0'][i % 2]} roughness={0.7} />
+            </mesh>
+          ))}
+        </group>
       </group>
     );
   }
@@ -288,6 +394,36 @@ function RoomDecor({ kind, w, d, accent, bounds }) {
             <meshStandardMaterial color="#6a63a0" emissive="#4a3fa0" emissiveIntensity={0.5} roughness={0.5} />
           </mesh>
         ))}
+
+        {/* A second, purely decorative telescope stand and star desk in the vestibule. */}
+        <group position={[-2.2, 0, 3.2]} rotation={[0, 0.5, 0]}>
+          <mesh position={[0, 0.9, 0]} rotation={[-0.3, 0, 0]}>
+            <cylinderGeometry args={[0.07, 0.09, 1.5, 10]} />
+            <meshStandardMaterial color="#8b7bea" metalness={0.6} roughness={0.3} />
+          </mesh>
+          {[0, 1, 2].map((i) => (
+            <mesh key={i} position={[Math.sin(i * 2.1) * 0.28, 0.05, Math.cos(i * 2.1) * 0.28]}>
+              <cylinderGeometry args={[0.04, 0.04, 0.85, 6]} />
+              <meshStandardMaterial color="#4a3a2a" roughness={0.7} />
+            </mesh>
+          ))}
+        </group>
+        <group position={[2, 0, 3.2]}>
+          <mesh position={[0, 0.5, 0]}>
+            <boxGeometry args={[1, 0.06, 0.7]} />
+            <meshStandardMaterial color="#2a2650" roughness={0.8} />
+          </mesh>
+          <mesh position={[0, 0.53, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+            <planeGeometry args={[0.8, 0.5]} />
+            <meshStandardMaterial color="#1c1a3a" emissive="#3a3570" emissiveIntensity={0.3} roughness={0.9} />
+          </mesh>
+          {[[-0.4, 0.27], [0.4, 0.27], [-0.4, -0.27], [0.4, -0.27]].map(([x, z], i) => (
+            <mesh key={i} position={[x, 0.25, z]}>
+              <boxGeometry args={[0.06, 0.5, 0.06]} />
+              <meshStandardMaterial color="#2a2650" roughness={0.8} />
+            </mesh>
+          ))}
+        </group>
       </group>
     );
   }
@@ -307,6 +443,31 @@ function RoomDecor({ kind, w, d, accent, bounds }) {
             <DecorLight position={[0, 2.85, 0]} color="#ffb84d" />
           </group>
         ))}
+
+        {/* The golden throne the room's atmosphere text promises, tucked into
+            the vestibule so it never crowds a puzzle node. */}
+        <group position={[-2, 0, 4.6]}>
+          <mesh position={[0, 0.45, 0]}>
+            <boxGeometry args={[0.9, 0.9, 0.8]} />
+            <meshStandardMaterial color="#7a1c24" roughness={0.7} />
+          </mesh>
+          <mesh position={[0, 1.3, -0.35]}>
+            <boxGeometry args={[0.9, 1.6, 0.14]} />
+            <meshStandardMaterial color="#d9b23c" metalness={0.7} roughness={0.25} />
+          </mesh>
+          {[-0.5, 0.5].map((x, i) => (
+            <mesh key={i} position={[x, 0.45, 0]}>
+              <boxGeometry args={[0.12, 0.9, 0.8]} />
+              <meshStandardMaterial color="#d9b23c" metalness={0.7} roughness={0.25} />
+            </mesh>
+          ))}
+          <DecorLight position={[0, 2.15, -0.3]} color="#ffb84d" />
+        </group>
+        {/* Carpet runner leading from spawn toward the throne. */}
+        <mesh position={[-1, 0.015, 5.6]} rotation={[-Math.PI / 2, 0, 0]}>
+          <planeGeometry args={[1.3, 2.6]} />
+          <meshStandardMaterial color="#7a1c24" roughness={0.9} />
+        </mesh>
       </group>
     );
   }

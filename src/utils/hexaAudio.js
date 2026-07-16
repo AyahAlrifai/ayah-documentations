@@ -4,7 +4,6 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 let ctx = null;
-let ambienceHandle = null;
 
 function getCtx() {
   if (!ctx && typeof window !== 'undefined') {
@@ -223,76 +222,3 @@ export function playSound(name) {
   if (fn) fn();
 }
 
-// ── Looping ambience: low drone hum + filtered-noise wind ──────────────────
-// A quiet, slowly-shifting wash of filtered noise (faint air moving through
-// an old building) with a deep, slowly-pulsing drone hum underneath it for
-// a heavier, more ominous room tone. Kept subtle so it sits behind everything
-// else.
-
-export function startAmbience() {
-  const c = getCtx();
-  if (!c || ambienceHandle) return;
-  const now = c.currentTime;
-
-  const master = c.createGain();
-  master.gain.value = 0.0001;
-  master.gain.linearRampToValueAtTime(0.05, now + 3);
-  master.connect(c.destination);
-
-  const noiseSrc = c.createBufferSource();
-  noiseSrc.buffer = noiseBuffer(c, 6);
-  noiseSrc.loop = true;
-
-  const filter = c.createBiquadFilter();
-  filter.type = 'bandpass';
-  filter.frequency.value = 480;
-  filter.Q.value = 0.6;
-
-  // Slowly sweeps the filter so the noise breathes like wind, not a static hiss.
-  const filterLfo = c.createOscillator(); filterLfo.type = 'sine'; filterLfo.frequency.value = 0.045;
-  const filterLfoGain = c.createGain(); filterLfoGain.gain.value = 220;
-  filterLfo.connect(filterLfoGain).connect(filter.frequency);
-
-  // Gentle volume swell — the occasional "gust".
-  const gustLfo = c.createOscillator(); gustLfo.type = 'sine'; gustLfo.frequency.value = 0.023;
-  const gustLfoGain = c.createGain(); gustLfoGain.gain.value = 0.018;
-  gustLfo.connect(gustLfoGain).connect(master.gain);
-
-  noiseSrc.connect(filter).connect(master);
-
-  // Deep drone hum — two slightly detuned low sines for a thick, unsettled
-  // tone, slowly pulsing in volume like a distant heartbeat under the wind.
-  const droneGain = c.createGain();
-  droneGain.gain.value = 0.16;
-  droneGain.connect(master);
-
-  const drone = c.createOscillator(); drone.type = 'sine'; drone.frequency.value = 58;
-  const droneDetuned = c.createOscillator(); droneDetuned.type = 'sine'; droneDetuned.frequency.value = 61.5;
-  drone.connect(droneGain); droneDetuned.connect(droneGain);
-
-  const droneLfo = c.createOscillator(); droneLfo.type = 'sine'; droneLfo.frequency.value = 0.09;
-  const droneLfoGain = c.createGain(); droneLfoGain.gain.value = 0.07;
-  droneLfo.connect(droneLfoGain).connect(droneGain.gain);
-
-  noiseSrc.start(now); filterLfo.start(now); gustLfo.start(now);
-  drone.start(now); droneDetuned.start(now); droneLfo.start(now);
-
-  ambienceHandle = { noiseSrc, filterLfo, gustLfo, drone, droneDetuned, droneLfo, master };
-}
-
-export function stopAmbience() {
-  if (!ambienceHandle) return;
-  const { noiseSrc, filterLfo, gustLfo, drone, droneDetuned, droneLfo, master } = ambienceHandle;
-  const c = getCtx();
-  const t = c.currentTime;
-  master.gain.cancelScheduledValues(t);
-  master.gain.setValueAtTime(master.gain.value, t);
-  master.gain.linearRampToValueAtTime(0.0001, t + 0.6);
-  noiseSrc.stop(t + 0.65);
-  filterLfo.stop(t + 0.65);
-  gustLfo.stop(t + 0.65);
-  drone.stop(t + 0.65);
-  droneDetuned.stop(t + 0.65);
-  droneLfo.stop(t + 0.65);
-  ambienceHandle = null;
-}

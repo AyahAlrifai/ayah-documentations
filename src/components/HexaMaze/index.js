@@ -31,6 +31,7 @@ export default function HexaMaze({ apiRef, onState, onSectionReveal, onNearChang
   const moveInputRef = useRef({ forward: false, back: false, left: false, right: false });
   const nearIdRef = useRef(null);
   const orbNotifiedRef = useRef(new Set());
+  const keyNotifiedRef = useRef(new Set());
   const transitioningRef = useRef(false);
 
   const room = rooms[roomIndex];
@@ -60,15 +61,19 @@ export default function HexaMaze({ apiRef, onState, onSectionReveal, onNearChang
     setAnimatingId(null);
     setChainProgress(prev => {
       const next = { ...prev, [node.objectId]: (prev[node.objectId] || 0) + 1 };
-      if (chainType === 'orb') {
-        const chain = room.orbChain;
-        const lastNode = chain[chain.length - 1];
-        const orbNowDone = (next[lastNode.objectId] || 0) >= lastNode.stages.length;
-        if (orbNowDone && !orbNotifiedRef.current.has(room.id)) {
-          orbNotifiedRef.current.add(room.id);
+      const chain = chainType === 'orb' ? room.orbChain : room.keyChain;
+      const lastNode = chain[chain.length - 1];
+      const chainNowDone = (next[lastNode.objectId] || 0) >= lastNode.stages.length;
+      const notifiedRef = chainType === 'orb' ? orbNotifiedRef : keyNotifiedRef;
+      if (chainNowDone && !notifiedRef.current.has(room.id)) {
+        notifiedRef.current.add(room.id);
+        if (chainType === 'orb') {
           setTimeout(() => {
+            playSound('chime');
             setCarriedOrbs(c => [...c, room.cvSectionId]);
           }, 300);
+        } else {
+          setTimeout(() => playSound('lockClick'), 300);
         }
       }
       return next;
@@ -239,7 +244,7 @@ export default function HexaMaze({ apiRef, onState, onSectionReveal, onNearChang
         );
       })}
 
-      <Well position={WELL_POSITION} unlocked={false} open={false} />
+      <Well position={WELL_POSITION} unlocked={false} open={false} text={room.wellText} />
       <Door position={DOOR_POSITION} unlocked={doorUnlocked} open={doorOpenAnim || finaleStage === 'unlocked' || finaleStage === 'escaped'} />
     </Canvas>
   );

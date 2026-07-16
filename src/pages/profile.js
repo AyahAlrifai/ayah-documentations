@@ -137,10 +137,7 @@ export default function Profile() {
   const introTimer = useRef(null);
   const codeRevealTimer = useRef(null);
 
-  useEffect(() => () => {
-    hexaAudio.stopAmbience();
-    clearTimeout(codeRevealTimer.current);
-  }, []);
+  useEffect(() => () => clearTimeout(codeRevealTimer.current), []);
 
   useEffect(() => {
     setCodeInput('');
@@ -156,7 +153,6 @@ export default function Profile() {
 
   function beginQuest() {
     hexaAudio.unlock();
-    hexaAudio.startAmbience();
     setEntered(true);
   }
 
