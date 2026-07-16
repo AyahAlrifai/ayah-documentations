@@ -45,7 +45,24 @@
       "Bash(cmd.exe /c \"dir D:\\\\ayah-documentations-master\")",
       "Bash(test:*)",
       "Bash(cmd.exe /c \"if exist D:\\\\ayah-documentations-master\\\\node_modules \\(echo node_modules EXISTS\\) else \\(echo node_modules NOT FOUND\\)\")",
-      "Bash(node -e \"require\\(''''sharp''''\\)\")"
+      "Bash(node -e \"require\\(''''sharp''''\\)\")",
+      "Bash(mkdir -p \"static/files\")",
+      "Bash(cp \"AyahRefai_Software_Developer-1.pdf\" \"static/files/Ayah-Alrefai-CV.pdf\")",
+      "Skill(run)",
+      "Bash(timeout 90 bash -c 'until curl -sf http://localhost:3000 >/dev/null 2>&1; do sleep 2; done')",
+      "Read(//tmp/**)",
+      "Bash(curl -s http://localhost:3000/profile -o /tmp/profile.html -w \"HTTP %{http_code}\\\\n\")",
+      "Bash(where chromium-cli *)",
+      "Bash(npm root *)",
+      "Bash(npm run *)",
+      "Bash(npm view *)",
+      "Bash(mkdir -p archive/profile-horror-maze-v1/components/HorrorScene archive/profile-horror-maze-v1/utils archive/profile-horror-maze-v1/data)",
+      "Bash(cp src/pages/profile.js archive/profile-horror-maze-v1/profile.js)",
+      "Bash(cp src/components/HorrorScene/index.js archive/profile-horror-maze-v1/components/HorrorScene/index.js)",
+      "Bash(cp src/utils/horrorAudio.js archive/profile-horror-maze-v1/utils/horrorAudio.js)",
+      "Bash(cp src/data/cv.js archive/profile-horror-maze-v1/data/cv.js)",
+      "Skill(artifact-design)",
+      "Artifact"
     ]
   }
 }

@@ -134,6 +134,12 @@ const config = {
             className: 'nav-icon-doc',
           },
           {
+            to: 'profile',
+            position: 'left',
+            label: 'CV',
+            className: 'nav-icon-profile',
+          },
+          {
             label: 'Tools',
             position: 'left',
             className: 'nav-icon-tools',
