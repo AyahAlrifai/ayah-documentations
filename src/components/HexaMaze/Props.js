@@ -539,7 +539,7 @@ export function InteractiveObject({ node, stageIndex, done, active, animating, a
       {active && !done && (
         <>
           {kind === 'key' ? <KeyBeacon accent={accent} /> : <OrbBeacon accent={accent} />}
-          <pointLight position={[0, 2.1, 0]} color={accent} intensity={1.7} distance={5.5} decay={1.6} />
+          <pointLight position={[0, 2.1, 0]} color={accent} intensity={20} distance={5.5} decay={1.6} />
         </>
       )}
     </group>
@@ -629,7 +629,7 @@ export function Well({ position, unlocked, open, text }) {
             <circleGeometry args={[0.55, 20]} />
             <meshStandardMaterial color="#d9b23c" emissive="#d9b23c" emissiveIntensity={0.9} />
           </mesh>
-          <pointLight position={[0, 0.9, 0]} color="#d9b23c" intensity={1.8} distance={6.5} decay={1.7} />
+          <pointLight position={[0, 0.9, 0]} color="#d9b23c" intensity={22} distance={6.5} decay={1.7} />
         </>
       )}
 
@@ -677,7 +677,7 @@ export function Door({ position, unlocked, open }) {
         </mesh>
       </group>
       {unlocked && !open && (
-        <pointLight position={[0, 1.8, 0.5]} color="#ffd27a" intensity={1.6} distance={5} />
+        <pointLight position={[0, 1.8, 0.5]} color="#ffd27a" intensity={20} distance={5} />
       )}
     </group>
   );

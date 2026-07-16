@@ -123,7 +123,6 @@ function DpadBtn({ dir, apiRef, children }) {
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function Profile() {
-  const [viewMode, setViewMode] = useState('scene');
   const [entered, setEntered] = useState(false);
   const [gameState, setGameState] = useState(null);
   const [nearInfo, setNearInfo] = useState(null);
@@ -191,8 +190,8 @@ export default function Profile() {
 
   return (
     <Layout
-      title={`${person.name} — The Hexa Maze`}
-      description={`${person.title}. Six rooms, six keys, six glowing orbs — explore The Hexa Maze to uncover the CV, or view it as plain text.`}
+      title={`${person.name} — The Core Dump`}
+      description={`${person.title}. Six subsystems, six access keys, six memory cores — explore The Core Dump to uncover the CV, or view it as plain text.`}
     >
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Cinzel:wght@400;600;700&family=EB+Garamond:ital@0;1&display=swap');
@@ -221,20 +220,11 @@ export default function Profile() {
       }}>
 
         <div style={{ position: 'absolute', top: 10, right: 10, zIndex: 60, display: 'flex', gap: '0.5rem' }}>
-          <button style={cornerBtn(gold)} onClick={() => setViewMode(v => (v === 'scene' ? 'text' : 'scene'))}
-            title={viewMode === 'scene' ? 'View as text' : 'Enter the maze'}>
-            {viewMode === 'scene' ? '📄' : '🗝️'}
-          </button>
           <a href="/files/Ayah-Alrefai-CV.pdf" download style={cornerBtn(gold)} title="Download PDF">⬇</a>
         </div>
 
-        {viewMode === 'text' ? (
-          <div style={{ flex: 1, overflowY: 'auto', padding: '2.5rem 1rem 3rem', display: 'flex', justifyContent: 'center' }}>
-            <TextFallback surface={surface} sub={sub} shadow={shadow} />
-          </div>
-        ) : (
-          <div style={{ position: 'relative', flex: 1, width: '100%' }}>
-            <BrowserOnly fallback={
+        <div style={{ position: 'relative', flex: 1, width: '100%' }}>
+          <BrowserOnly fallback={
               <div style={{ height: '100%', overflowY: 'auto', padding: '2.5rem 1rem 3rem', display: 'flex', justifyContent: 'center' }}>
                 <TextFallback surface={surface} sub={sub} shadow={shadow} />
               </div>
@@ -250,19 +240,19 @@ export default function Profile() {
                         background: surface, borderRadius: 18, padding: '2.2rem 1.8rem', boxShadow: shadow,
                         maxWidth: 440, textAlign: 'center', border: `1px solid ${gold}44`,
                       }}>
-                        <div style={{ fontSize: '1.6rem', animation: 'softGlow 3.2s ease-in-out infinite' }}>🗝️ 🔮</div>
+                        <div style={{ fontSize: '1.6rem', animation: 'softGlow 3.2s ease-in-out infinite' }}>🖥️ 💠</div>
                         <h1 style={{
                           fontSize: '2.1rem', fontWeight: 400, color: gold, margin: 0,
                           fontFamily: "'Creepster', cursive", letterSpacing: 1.5,
                           animation: 'softGlow 3.2s ease-in-out infinite',
-                        }}>The Hexa Maze</h1>
+                        }}>The Core Dump</h1>
                         <p style={{ margin: 0, fontWeight: 700 }}>{person.name} — {person.title}</p>
                         <p style={{ color: sub, fontSize: '0.9rem', lineHeight: 1.6, margin: 0 }}>
-                          Six rooms. In each, find the Hidden Key and the Glowing Orb — the orb is your
-                          light, and the story of one chapter of my career. Both must be found before
-                          the door forward will open.
+                          Six subsystems, one broken system. In each, recover the Access Key and the
+                          Memory Core — the core is your light, and the story of one chapter of my
+                          career. Both must be restored before the room's process will let you deploy forward.
                         </p>
-                        <button style={btnPrimary} onClick={beginQuest}>🗝️ Begin the Quest</button>
+                        <button style={btnPrimary} onClick={beginQuest}>🔑 Start Debugging</button>
                         <span style={{ fontSize: '0.72rem', color: sub }}>WASD / arrows to move · E or tap to interact</span>
                       </div>
                     </div>
@@ -291,8 +281,8 @@ export default function Profile() {
                           Room {gameState.roomIndex + 1} / {gameState.roomCount} — {gameState.room.title}
                         </div>
                         <div style={{ display: 'flex', gap: '0.7rem', marginTop: '0.3rem' }}>
-                          <span style={{ opacity: gameState.keyDone ? 1 : 0.35 }}>🗝️ Key</span>
-                          <span style={{ opacity: gameState.orbDone ? 1 : 0.35 }}>🔮 Orb</span>
+                          <span style={{ opacity: gameState.keyDone ? 1 : 0.35 }}>🔑 Key</span>
+                          <span style={{ opacity: gameState.orbDone ? 1 : 0.35 }}>💠 Core</span>
                         </div>
                       </div>
                     )}
@@ -411,7 +401,7 @@ export default function Profile() {
                           </div>
                           {finaleStage === 'escaped' && (
                             <div style={{ marginTop: '1rem', fontSize: '0.85rem', color: sub }}>
-                              Thanks for playing through my career — let's talk: <a href="mailto:alrefayayah@gmail.com" style={{ color: gold }}>alrefayayah@gmail.com</a>
+                              Thanks for debugging my career — let's talk: <a href="mailto:alrefayayah@gmail.com" style={{ color: gold }}>alrefayayah@gmail.com</a>
                             </div>
                           )}
                         </div>
@@ -422,7 +412,6 @@ export default function Profile() {
               }}
             </BrowserOnly>
           </div>
-        )}
 
         {activeReveal && (
           <div

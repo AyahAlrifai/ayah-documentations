@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { rooms, ROOM_BOUNDS, PLAYER_START, DOOR_POSITION, WELL_POSITION, finale } from '../../data/hexaMaze';
-import { Player, CameraRig, PlayerController, RoomShell, useKeyboard } from './SceneShell';
+import { Player, CameraRig, PlayerController, RoomShell, useKeyboard, roomFurnitureObstacles } from './SceneShell';
 import { InteractiveObject, Well, Door } from './Props';
 import { playSound, playDoorUnlock, playFinaleBlast, playFootstep } from '../../utils/hexaAudio';
 
@@ -206,8 +206,13 @@ export default function HexaMaze({ apiRef, onState, onSectionReveal, onNearChang
   const initialCamZ = Math.min(PLAYER_START[2] + 6, (ROOM_BOUNDS.maxZ - ROOM_BOUNDS.minZ) / 2 + 0.75 - 1);
   // Both the well and the door block movement, so the player stops just
   // short of each instead of walking through/onto them (which, for the
-  // door, used to leave it hidden behind the player's own body).
-  const obstacles = [...allNodes, { position: WELL_POSITION }, { position: DOOR_POSITION }];
+  // door, used to leave it hidden behind the player's own body). Freestanding
+  // decor (tables, racks, the throne) gets its own obstacle entries from
+  // roomFurnitureObstacles — RoomDecor itself is purely visual.
+  const obstacles = [
+    ...allNodes, { position: WELL_POSITION }, { position: DOOR_POSITION },
+    ...roomFurnitureObstacles(room.id, ROOM_BOUNDS),
+  ];
 
   return (
     <Canvas camera={{ position: [0, 5.6, initialCamZ], fov: 50 }} gl={{ antialias: true }} style={{ background: '#111018' }}>
