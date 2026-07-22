@@ -1,70 +1,39 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useMemo } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
+import { useCanvasTextTexture } from '../../utils/textTexture';
 
-// ─── Player: a simple explorer figure carrying a light that grows with orbs ───
+const _euler = new THREE.Euler();
+
+// ─── Player: no visible body (the camera sits inside the player's head in
+// first person) — just the light they carry, which grows as they collect orbs
 
 export function Player({ posRef, orbCount }) {
-  const group = useRef();
   const lightRef = useRef();
   useFrame((state) => {
-    if (!group.current) return;
-    group.current.position.set(posRef.current.x, 0, posRef.current.z);
-    group.current.rotation.y = posRef.current.facing;
-    if (lightRef.current) {
-      const base = 30 + orbCount * 12;
-      const flicker = base + Math.sin(state.clock.elapsedTime * 6) * 0.8;
-      lightRef.current.intensity = flicker;
-      lightRef.current.distance = 12 + orbCount * 2.4;
-    }
+    if (!lightRef.current) return;
+    const base = 30 + orbCount * 12;
+    const flicker = base + Math.sin(state.clock.elapsedTime * 6) * 0.8;
+    lightRef.current.intensity = flicker;
+    lightRef.current.distance = 12 + orbCount * 2.4;
+    lightRef.current.position.set(posRef.current.x, 1.5, posRef.current.z);
   });
-  return (
-    <group ref={group}>
-      <mesh position={[0, 0.9, 0]}>
-        <capsuleGeometry args={[0.32, 0.9, 4, 8]} />
-        <meshStandardMaterial color="#3a3448" roughness={0.8} />
-      </mesh>
-      <mesh position={[0, 1.65, 0]}>
-        <sphereGeometry args={[0.24, 12, 12]} />
-        <meshStandardMaterial color="#4a4458" roughness={0.8} />
-      </mesh>
-      <pointLight ref={lightRef} position={[0, 1.5, 0.3]} color="#fff2d6" intensity={30} distance={12} decay={1.5} />
-    </group>
-  );
+  return <pointLight ref={lightRef} color="#fff2d6" intensity={30} distance={12} decay={1.5} />;
 }
 
-// ─── Camera rig: follows the player smoothly ──────────────────────────────────
+// ─── First-person camera rig: the camera *is* the player's eyes ───────────────
+// Position tracks posRef (set by PlayerController from WASD/D-pad input);
+// rotation tracks lookRef (set by LookControls from mouse/touch look input —
+// see FirstPersonControls.js). Euler order 'YXZ' is the standard FPS order
+// (yaw applied before pitch) so looking up/down never rolls the horizon.
 
-// Camera offset behind the player. Kept modest and always clamped to stay
-// inside the walls (see wallClearance below) — previously this used a fixed
-// +7.5 offset with no clamp, which put the camera *outside* the room for
-// most of the room's depth: you'd be staring at the outward (unlit) face of
-// the near wall, i.e. a black box, unable to see anything.
-const CAMERA_FOLLOW_DISTANCE = 6;
+export const EYE_HEIGHT = 1.6;
 
-export function CameraRig({ posRef, bounds }) {
+export function FirstPersonRig({ posRef, lookRef }) {
   const { camera } = useThree();
-  const look = useRef(new THREE.Vector3(0, 1, 0));
-  // Mirrors RoomShell's wall placement (±w/2, ±d/2 with 1.5 padding, 0.4 thick)
-  // so the camera clamp always tracks the real wall regardless of room shape.
-  const halfDepth = (bounds.maxZ - bounds.minZ) / 2 + 0.75;
-  const halfWidth = (bounds.maxX - bounds.minX) / 2 + 0.75;
-  useFrame((state) => {
-    const wallClearance = 1.0; // stay this far inside the wall's inner face
-    const maxCamZ = halfDepth - wallClearance;
-    const minCamZ = -halfDepth + wallClearance;
-    const maxCamX = halfWidth - wallClearance;
-    const minCamX = -halfWidth + wallClearance;
-
-    const targetX = THREE.MathUtils.clamp(posRef.current.x, minCamX, maxCamX);
-    const targetZ = THREE.MathUtils.clamp(posRef.current.z + CAMERA_FOLLOW_DISTANCE, minCamZ, maxCamZ);
-    const breathe = Math.sin(state.clock.elapsedTime * 0.6) * 0.04;
-    camera.position.x += (targetX - camera.position.x) * 0.07;
-    camera.position.z += (targetZ - camera.position.z) * 0.07;
-    camera.position.y += (5.6 + breathe - camera.position.y) * 0.07;
-    look.current.x += (posRef.current.x - look.current.x) * 0.09;
-    look.current.z += (posRef.current.z - 1.5 - look.current.z) * 0.09;
-    camera.lookAt(look.current.x, 1, look.current.z);
+  useFrame(() => {
+    camera.position.set(posRef.current.x, EYE_HEIGHT, posRef.current.z);
+    camera.rotation.set(lookRef.current.pitch, lookRef.current.yaw, 0, 'YXZ');
   });
   return null;
 }
@@ -85,8 +54,10 @@ function segmentCircleDist(x0, z0, x1, z1, cx, cz) {
   return Math.hypot(x0 + t * dx - cx, z0 + t * dz - cz);
 }
 
-export function PlayerController({ posRef, bounds, obstacles, interactables, onNear, moveInputRef, onStep }) {
+export function PlayerController({ posRef, lookRef, bounds, obstacles, interactables, onNear, moveInputRef, onStep }) {
   const stepTimer = useRef(0);
+  const forward = useRef(new THREE.Vector3());
+  const right = useRef(new THREE.Vector3());
   useFrame((_, rawDelta) => {
     // Clamp so a stutter (GC pause, a backgrounded tab resuming, a slow
     // device) can't turn into one huge movement step — combined with the
@@ -95,15 +66,29 @@ export function PlayerController({ posRef, bounds, obstacles, interactables, onN
     const delta = Math.min(rawDelta, 0.05);
     const speed = 5;
     const keys = moveInputRef.current;
-    let dx = 0, dz = 0;
-    if (keys.forward) dz -= 1;
-    if (keys.back) dz += 1;
-    if (keys.left) dx -= 1;
-    if (keys.right) dx += 1;
 
-    if (dx !== 0 || dz !== 0) {
+    // Facing is driven by look (mouse/touch), not by movement direction —
+    // true FPS behavior, unlike the old isometric turn-to-face-movement.
+    posRef.current.facing = lookRef.current.yaw;
+
+    let move = 0, strafe = 0;
+    if (keys.forward) move += 1;
+    if (keys.back) move -= 1;
+    if (keys.right) strafe += 1;
+    if (keys.left) strafe -= 1;
+
+    if (move !== 0 || strafe !== 0) {
+      // Forward/right basis rotated by yaw only — pitch never affects
+      // ground movement, matching standard FPS controls.
+      _euler.set(0, lookRef.current.yaw, 0);
+      forward.current.set(0, 0, -1).applyEuler(_euler);
+      right.current.set(1, 0, 0).applyEuler(_euler);
+
+      let dx = forward.current.x * move + right.current.x * strafe;
+      let dz = forward.current.z * move + right.current.z * strafe;
       const len = Math.hypot(dx, dz);
-      dx /= len; dz /= len;
+      if (len > 0) { dx /= len; dz /= len; }
+
       let nx = posRef.current.x + dx * speed * delta;
       let nz = posRef.current.z + dz * speed * delta;
       nx = THREE.MathUtils.clamp(nx, bounds.minX, bounds.maxX);
@@ -118,7 +103,6 @@ export function PlayerController({ posRef, bounds, obstacles, interactables, onN
         posRef.current.x = nx;
         posRef.current.z = nz;
       }
-      posRef.current.facing = Math.atan2(dx, dz);
 
       stepTimer.current += delta;
       if (stepTimer.current > 0.32) {
@@ -140,12 +124,80 @@ export function PlayerController({ posRef, bounds, obstacles, interactables, onN
 
 // ─── Room shell: floor + walls, tinted per room, with light per-type flourish ──
 
-export function RoomShell({ bounds, accent, kind }) {
+// Splits a wall of total length `totalLen` around a door gap centered at
+// `gap.along`, returning the two solid side segments' lengths/centers (in
+// the wall's local along-axis, 0 = wall center). Returns null when there's
+// no gap for this wall, so the caller falls back to one solid box.
+function gapSegments(totalLen, gap) {
+  if (!gap) return null;
+  const gapWidth = gap.width ?? 2.4;
+  const along = gap.along ?? 0;
+  const half = totalLen / 2;
+  const leftLen = (along - gapWidth / 2) - -half;
+  const rightLen = half - (along + gapWidth / 2);
+  return {
+    leftLen, rightLen,
+    leftCenter: -half + leftLen / 2,
+    rightCenter: along + gapWidth / 2 + rightLen / 2,
+  };
+}
+
+// One wall of the room, optionally with a door-sized gap cut into it (two
+// side segments + a header above the gap instead of one solid box) so a
+// room's exit/back door can sit on any of the four walls, not just FAR.
+function Wall({ orientation, w, d, color, metalness, roughness, gap }) {
+  const isX = orientation === 'FAR' || orientation === 'NEAR'; // wall spans along world X
+  const length = isX ? w : d;
+  const thickness = 0.4;
+  const height = 7;
+  const fixedCoord = orientation === 'FAR' ? -d / 2
+    : orientation === 'NEAR' ? d / 2
+    : orientation === 'LEFT' ? -w / 2
+    : w / 2;
+  const boxArgs = (len) => (isX ? [len, height, thickness] : [thickness, height, len]);
+  const posFor = (along) => (isX ? [along, height / 2, fixedCoord] : [fixedCoord, height / 2, along]);
+  const mat = <meshStandardMaterial color={color} metalness={metalness} roughness={roughness} />;
+
+  const seg = gapSegments(length, gap);
+  if (!seg) {
+    return (
+      <mesh position={posFor(0)}>
+        <boxGeometry args={boxArgs(length)} />
+        {mat}
+      </mesh>
+    );
+  }
+  const gapHeight = gap.height ?? 3.6;
+  const headerHeight = height - gapHeight;
+  const headerPos = isX
+    ? [gap.along ?? 0, gapHeight + headerHeight / 2, fixedCoord]
+    : [fixedCoord, gapHeight + headerHeight / 2, gap.along ?? 0];
+  const headerArgs = isX ? [gap.width ?? 2.4, headerHeight, thickness] : [thickness, headerHeight, gap.width ?? 2.4];
+  return (
+    <group>
+      <mesh position={posFor(seg.leftCenter)}>
+        <boxGeometry args={boxArgs(seg.leftLen)} />
+        {mat}
+      </mesh>
+      <mesh position={posFor(seg.rightCenter)}>
+        <boxGeometry args={boxArgs(seg.rightLen)} />
+        {mat}
+      </mesh>
+      <mesh position={headerPos}>
+        <boxGeometry args={headerArgs} />
+        {mat}
+      </mesh>
+    </group>
+  );
+}
+
+export function RoomShell({ bounds, accent, kind, doorGaps }) {
   const w = bounds.maxX - bounds.minX + 1.5;
   const d = bounds.maxZ - bounds.minZ + 1.5;
   const wallColor = kind === 'console' ? '#3a3a44' : '#221f2c';
   const wallMetalness = kind === 'console' ? 0.85 : 0.05;
   const wallRoughness = kind === 'console' ? 0.15 : 0.95;
+  const gaps = doorGaps || {};
 
   const stars = React.useMemo(() => {
     if (kind !== 'deck') return [];
@@ -175,22 +227,10 @@ export function RoomShell({ bounds, accent, kind }) {
         </mesh>
       ))}
 
-      <mesh position={[0, 3.5, -d / 2]}>
-        <boxGeometry args={[w, 7, 0.4]} />
-        <meshStandardMaterial color={wallColor} metalness={wallMetalness} roughness={wallRoughness} />
-      </mesh>
-      <mesh position={[0, 3.5, d / 2]}>
-        <boxGeometry args={[w, 7, 0.4]} />
-        <meshStandardMaterial color={wallColor} metalness={wallMetalness} roughness={wallRoughness} />
-      </mesh>
-      <mesh position={[-w / 2, 3.5, 0]}>
-        <boxGeometry args={[0.4, 7, d]} />
-        <meshStandardMaterial color={wallColor} metalness={wallMetalness} roughness={wallRoughness} />
-      </mesh>
-      <mesh position={[w / 2, 3.5, 0]}>
-        <boxGeometry args={[0.4, 7, d]} />
-        <meshStandardMaterial color={wallColor} metalness={wallMetalness} roughness={wallRoughness} />
-      </mesh>
+      <Wall orientation="FAR" w={w} d={d} color={wallColor} metalness={wallMetalness} roughness={wallRoughness} gap={gaps.FAR} />
+      <Wall orientation="NEAR" w={w} d={d} color={wallColor} metalness={wallMetalness} roughness={wallRoughness} gap={gaps.NEAR} />
+      <Wall orientation="LEFT" w={w} d={d} color={wallColor} metalness={wallMetalness} roughness={wallRoughness} gap={gaps.LEFT} />
+      <Wall orientation="RIGHT" w={w} d={d} color={wallColor} metalness={wallMetalness} roughness={wallRoughness} gap={gaps.RIGHT} />
 
       {/* Intensities here are tuned high because three.js's physically-correct
           lighting (default since r155) treats point/spot intensity as
@@ -691,6 +731,118 @@ function RoomDecor({ kind, w, d, accent, bounds }) {
     );
   }
   return null;
+}
+
+// ─── Scattered environmental text ──────────────────────────────────────────
+// Short lore fragments (room.loreFragments in src/data/hexaMaze.js) spread
+// across all six surfaces — FAR/NEAR/LEFT/RIGHT walls, floor, ceiling — so a
+// full 360 look-around always finds something to read. Placement is
+// deterministic (no per-render Math.random reshuffle) and nudges away from
+// whichever wall has a door gap on it, so fragments never render on top of a
+// door frame.
+
+const TEXT_SURFACES = ['FAR', 'NEAR', 'LEFT', 'RIGHT', 'floor', 'ceiling'];
+
+// Spreads `count` items evenly across [-span/2+pad, span/2-pad].
+function spreadAlong(index, count, span, pad = 1.2) {
+  const usable = Math.max(span - pad * 2, 0.5);
+  const t = count > 1 ? index / (count - 1) : 0.5;
+  return -usable / 2 + t * usable;
+}
+
+function fragmentTransform(surface, index, count, w, d, doorAlong) {
+  const halfW = w / 2, halfD = d / 2;
+  const height = 1.4 + (index % 2) * 1.2;
+  let along;
+  if (surface === 'FAR' || surface === 'NEAR') along = spreadAlong(index, count, w);
+  else if (surface === 'LEFT' || surface === 'RIGHT') along = spreadAlong(index, count, d);
+
+  if (along !== undefined && doorAlong != null && Math.abs(along - doorAlong) < 1.6) {
+    along += along >= doorAlong ? 1.8 : -1.8;
+  }
+
+  switch (surface) {
+    case 'FAR': return { position: [along, height, -halfD + 0.05], rotation: [0, 0, 0] };
+    case 'NEAR': return { position: [along, height, halfD - 0.05], rotation: [0, Math.PI, 0] };
+    case 'LEFT': return { position: [-halfW + 0.05, height, along], rotation: [0, Math.PI / 2, 0] };
+    case 'RIGHT': return { position: [halfW - 0.05, height, along], rotation: [0, -Math.PI / 2, 0] };
+    case 'floor': return {
+      position: [spreadAlong(index, count, w * 0.8), 0.02, ((index * 2.7) % (d - 2)) - (d - 2) / 2],
+      rotation: [-Math.PI / 2, 0, 0],
+    };
+    case 'ceiling': default: return {
+      position: [spreadAlong(index, count, w * 0.8), 3.85, ((index * 3.3) % (d - 2)) - (d - 2) / 2],
+      rotation: [Math.PI / 2, 0, 0],
+    };
+  }
+}
+
+// A single lore fragment rendered as a canvas-text decal. Each frame, it
+// checks how closely the camera's look direction (from lookRef.{yaw,pitch})
+// points toward it and ramps opacity/glow up when it's near the center of
+// view versus the periphery — a cheap dot-product view-cone check rather
+// than a literal per-mesh Raycaster hit-test, since the goal is "text
+// visually focuses as you look toward it," not occlusion-accurate picking.
+function TextDecal({ text, position, rotation, lookRef }) {
+  const texture = useCanvasTextTexture(text, {
+    width: 320, height: 100, color: '#cfc6ae', font: 'italic 30px Georgia, serif',
+  });
+  const matRef = useRef();
+  const worldPos = useMemo(() => new THREE.Vector3(position[0], position[1], position[2]), [position]);
+  const forward = useRef(new THREE.Vector3());
+  const toText = useRef(new THREE.Vector3());
+  useFrame((state) => {
+    if (!matRef.current) return;
+    _euler.set(lookRef.current.pitch, lookRef.current.yaw, 0, 'YXZ');
+    forward.current.set(0, 0, -1).applyEuler(_euler);
+    toText.current.copy(worldPos).sub(state.camera.position);
+    const dist = toText.current.length();
+    toText.current.normalize();
+    const dot = forward.current.dot(toText.current);
+    const focus = dist < 9 ? THREE.MathUtils.clamp((dot - 0.85) / 0.15, 0, 1) : 0;
+    matRef.current.opacity = 0.18 + focus * 0.82;
+    matRef.current.emissiveIntensity = 0.15 + focus * 1.6;
+  });
+  if (!texture) return null;
+  return (
+    <mesh position={position} rotation={rotation}>
+      <planeGeometry args={[1.1, 0.34]} />
+      <meshStandardMaterial
+        ref={matRef} map={texture} transparent opacity={0.18}
+        emissive="#fff8e0" emissiveMap={texture} emissiveIntensity={0.15}
+        depthWrite={false} side={THREE.DoubleSide}
+      />
+    </mesh>
+  );
+}
+
+export function ScatteredTextField({ fragments, bounds, doorGaps, lookRef }) {
+  const w = bounds.maxX - bounds.minX + 1.5;
+  const d = bounds.maxZ - bounds.minZ + 1.5;
+  const gaps = doorGaps || {};
+
+  const items = useMemo(() => {
+    const bySurface = { FAR: [], NEAR: [], LEFT: [], RIGHT: [], floor: [], ceiling: [] };
+    (fragments || []).forEach((text, i) => bySurface[TEXT_SURFACES[i % TEXT_SURFACES.length]].push(text));
+    const out = [];
+    Object.entries(bySurface).forEach(([surface, texts]) => {
+      const doorAlong = gaps[surface] ? gaps[surface].along ?? 0 : null;
+      texts.forEach((text, i) => {
+        const { position, rotation } = fragmentTransform(surface, i, texts.length, w, d, doorAlong);
+        out.push({ key: `${surface}-${i}`, text, position, rotation });
+      });
+    });
+    return out;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fragments, w, d, gaps.FAR, gaps.NEAR, gaps.LEFT, gaps.RIGHT]);
+
+  return (
+    <group>
+      {items.map((item) => (
+        <TextDecal key={item.key} text={item.text} position={item.position} rotation={item.rotation} lookRef={lookRef} />
+      ))}
+    </group>
+  );
 }
 
 // ─── Keyboard bridge ────────────────────────────────────────────────────────

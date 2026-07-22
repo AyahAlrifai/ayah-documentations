@@ -1,6 +1,8 @@
-import React, { useRef, useMemo } from 'react';
+import React, { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import { useCanvasTextTexture } from '../../utils/textTexture';
+import { WALL_ROTATION_Y } from '../../data/hexaMaze';
 
 const lerp = (a, b, t) => a + (b - a) * Math.min(1, Math.max(0, t));
 
@@ -144,22 +146,11 @@ function NestRenderer({ done }) {
 // the actual combination on the board — not just an abstract "solved" mark —
 // before dialling it into the drawer lock.
 function useChalkTexture(text) {
-  return useMemo(() => {
-    if (typeof document === 'undefined' || !text) return null;
-    const canvas = document.createElement('canvas');
-    canvas.width = 256; canvas.height = 176;
-    const ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#1c2a22';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = '#e8e4d8';
-    ctx.font = 'bold 92px "Courier New", monospace';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(text, canvas.width / 2, canvas.height / 2 + 8);
-    const texture = new THREE.CanvasTexture(canvas);
-    texture.needsUpdate = true;
-    return texture;
-  }, [text]);
+  return useCanvasTextTexture(text, {
+    width: 256, height: 176, background: '#1c2a22', color: '#e8e4d8',
+    font: 'bold 92px "Courier New", monospace',
+    draw: (ctx, t, w, h) => ctx.fillText(t, w / 2, h / 2 + 8),
+  });
 }
 
 function BlackboardRenderer({ node, done }) {
@@ -558,33 +549,21 @@ export function InteractiveObject({ node, stageIndex, done, active, animating, a
 // player is at local -z). Wraps to a second line at the em dash so the
 // "riddle — signature" wellText strings always fit without measuring text.
 function usePlaqueTexture(text) {
-  return useMemo(() => {
-    if (typeof document === 'undefined' || !text) return null;
-    const canvas = document.createElement('canvas');
-    canvas.width = 512; canvas.height = 200;
-    const ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#2a261e';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.strokeStyle = '#6a604a';
-    ctx.lineWidth = 6;
-    ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
-    ctx.fillStyle = '#cfc6ae';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    const parts = text.split(' — ');
-    if (parts.length === 2) {
-      ctx.font = 'italic 42px Georgia, serif';
-      ctx.fillText(parts[0], canvas.width / 2, canvas.height / 2 - 30);
-      ctx.font = 'italic 32px Georgia, serif';
-      ctx.fillText(`— ${parts[1]}`, canvas.width / 2, canvas.height / 2 + 36);
-    } else {
-      ctx.font = 'italic 42px Georgia, serif';
-      ctx.fillText(text, canvas.width / 2, canvas.height / 2);
-    }
-    const texture = new THREE.CanvasTexture(canvas);
-    texture.needsUpdate = true;
-    return texture;
-  }, [text]);
+  return useCanvasTextTexture(text, {
+    width: 512, height: 200, background: '#2a261e', color: '#cfc6ae', border: '#6a604a',
+    font: 'italic 42px Georgia, serif',
+    draw: (ctx, t, w, h) => {
+      const parts = t.split(' — ');
+      if (parts.length === 2) {
+        ctx.font = 'italic 42px Georgia, serif';
+        ctx.fillText(parts[0], w / 2, h / 2 - 30);
+        ctx.font = 'italic 32px Georgia, serif';
+        ctx.fillText(`— ${parts[1]}`, w / 2, h / 2 + 36);
+      } else {
+        ctx.fillText(t, w / 2, h / 2);
+      }
+    },
+  });
 }
 
 export function Well({ position, unlocked, open, text }) {
@@ -650,11 +629,15 @@ export function Well({ position, unlocked, open, text }) {
 }
 
 // ─── Door ───────────────────────────────────────────────────────────────────
-// The room's actual exit: an upright gate frame set against the far wall,
-// separate from the decorative Well near spawn (see DOOR_POSITION/
-// WELL_POSITION in src/data/hexaMaze.js).
+// A room's exit or back door: an upright gate frame set against whichever
+// wall it's assigned to, separate from the decorative Well near spawn (see
+// wallDoorPosition/WELL_POSITION in src/data/hexaMaze.js).
 
-export function Door({ position, unlocked, open }) {
+// `wall` orients the whole frame to face into the room regardless of which
+// of the four walls it's embedded in (FAR/NEAR/LEFT/RIGHT) — see
+// WALL_ROTATION_Y in src/data/hexaMaze.js, shared with the scattered wall
+// text so both agree on which way "into the room" is per wall.
+export function Door({ position, wall = 'FAR', unlocked, open }) {
   const left = useRef();
   const right = useRef();
   useFrame(() => {
@@ -663,7 +646,7 @@ export function Door({ position, unlocked, open }) {
     if (right.current) right.current.rotation.y = lerp(0, -1.3, t);
   });
   return (
-    <group position={position}>
+    <group position={position} rotation={[0, WALL_ROTATION_Y[wall] ?? 0, 0]}>
       <group ref={left} position={[-0.95, 0, 0]}>
         <mesh position={[0.65, 1.6, 0]}>
           <boxGeometry args={[1.3, 3.2, 0.15]} />

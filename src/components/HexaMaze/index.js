@@ -1,7 +1,11 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { rooms, ROOM_BOUNDS, PLAYER_START, DOOR_POSITION, WELL_POSITION, finale } from '../../data/hexaMaze';
-import { Player, CameraRig, PlayerController, RoomShell, useKeyboard, roomFurnitureObstacles } from './SceneShell';
+import { rooms, ROOM_BOUNDS, PLAYER_START, WELL_POSITION, wallDoorPosition, BACK_DOOR_ALONG, finale } from '../../data/hexaMaze';
+import {
+  Player, FirstPersonRig, PlayerController, RoomShell, ScatteredTextField,
+  useKeyboard, roomFurnitureObstacles, EYE_HEIGHT,
+} from './SceneShell';
+import { LookControls } from './FirstPersonControls';
 import { InteractiveObject, Well, Door } from './Props';
 import { playSound, playDoorUnlock, playFinaleBlast, playFootstep } from '../../utils/hexaAudio';
 
@@ -18,16 +22,21 @@ function isChainDone(chain, progress) {
   return (progress[last.objectId] || 0) >= last.stages.length;
 }
 
-export default function HexaMaze({ apiRef, onState, onSectionReveal, onNearChange, onCodeRequest, onCodeReveal, onFinaleStage }) {
+export default function HexaMaze({ apiRef, onState, onSectionReveal, onNearChange, onCodeRequest, onCodeReveal, onFinaleStage, onLookLockChange }) {
   const [roomIndex, setRoomIndex] = useState(0);
   const [chainProgress, setChainProgress] = useState({});
   const [animatingId, setAnimatingId] = useState(null);
-  const [doorOpenAnim, setDoorOpenAnim] = useState(false);
+  // Which door (if either) is mid-open-animation right now — 'EXIT' for the
+  // forward-progress door, 'BACK' for the door back to the previous room.
+  // Only one can ever be true at once (transitioningRef guards both).
+  const [openingDoor, setOpeningDoor] = useState(null);
   const [carriedOrbs, setCarriedOrbs] = useState([]);
   const [pendingCode, setPendingCode] = useState(null);
   const [finaleStage, setFinaleStage] = useState(null);
+  const [lookLocked, setLookLocked] = useState(false);
 
   const posRef = useRef({ x: PLAYER_START[0], z: PLAYER_START[2], facing: 0 });
+  const lookRef = useRef({ yaw: 0, pitch: 0 });
   const moveInputRef = useRef({ forward: false, back: false, left: false, right: false });
   const nearIdRef = useRef(null);
   const orbNotifiedRef = useRef(new Set());
@@ -57,6 +66,11 @@ export default function HexaMaze({ apiRef, onState, onSectionReveal, onNearChang
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [finaleStage]);
 
+  useEffect(() => {
+    onLookLockChange && onLookLockChange(lookLocked);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lookLocked]);
+
   function completeStage(node, chainType) {
     setAnimatingId(null);
     setChainProgress(prev => {
@@ -80,17 +94,38 @@ export default function HexaMaze({ apiRef, onState, onSectionReveal, onNearChang
     });
   }
 
+  // chainProgress is intentionally never reset here — objectIds are unique
+  // across every room, so a solved room's key/orb chains simply stay solved
+  // (props render their finished state) if the player walks back into it.
   function goToNextRoom() {
     if (transitioningRef.current) return;
     transitioningRef.current = true;
     playDoorUnlock();
-    setDoorOpenAnim(true);
+    setOpeningDoor('EXIT');
     onSectionReveal && onSectionReveal(room.cvSectionId);
     setTimeout(() => {
       setRoomIndex(i => i + 1);
-      setChainProgress({});
-      setDoorOpenAnim(false);
+      setOpeningDoor(null);
       posRef.current = { x: PLAYER_START[0], z: PLAYER_START[2], facing: 0 };
+      lookRef.current.yaw = 0;
+      lookRef.current.pitch = 0;
+      transitioningRef.current = false;
+    }, 750);
+  }
+
+  // Mirrors goToNextRoom but backward: no puzzle reset, no CV reveal — just
+  // a teleport back through the NEAR-wall back door to the previous room.
+  function goToPreviousRoom() {
+    if (transitioningRef.current || roomIndex === 0) return;
+    transitioningRef.current = true;
+    playDoorUnlock();
+    setOpeningDoor('BACK');
+    setTimeout(() => {
+      setRoomIndex(i => i - 1);
+      setOpeningDoor(null);
+      posRef.current = { x: PLAYER_START[0], z: PLAYER_START[2], facing: 0 };
+      lookRef.current.yaw = 0;
+      lookRef.current.pitch = 0;
       transitioningRef.current = false;
     }, 750);
   }
@@ -124,6 +159,10 @@ export default function HexaMaze({ apiRef, onState, onSectionReveal, onNearChang
     if (id === 'DOOR') {
       if (roomIndex === rooms.length - 1) triggerFinale();
       else goToNextRoom();
+      return;
+    }
+    if (id === 'BACK_DOOR') {
+      goToPreviousRoom();
       return;
     }
 
@@ -184,6 +223,8 @@ export default function HexaMaze({ apiRef, onState, onSectionReveal, onNearChang
       let label = null;
       if (id === 'DOOR') {
         label = roomIndex === rooms.length - 1 ? 'Open the final exit gate' : `Open ${room.doorLabel}`;
+      } else if (id === 'BACK_DOOR') {
+        label = `Return to ${rooms[roomIndex - 1].title}`;
       } else if (id) {
         const node = [...room.keyChain, ...room.orbChain].find(n => n.objectId === id);
         if (node) {
@@ -198,30 +239,43 @@ export default function HexaMaze({ apiRef, onState, onSectionReveal, onNearChang
   const allNodes = [...room.keyChain, ...room.orbChain];
   const keyActive = getActiveNode(room.keyChain, chainProgress);
   const orbActive = getActiveNode(room.orbChain, chainProgress);
+  const hasBackDoor = roomIndex > 0;
+  const exitDoorPosition = wallDoorPosition(room.exitWall, room.exitDoorAlong ?? 0);
+  const backDoorPosition = wallDoorPosition('NEAR', BACK_DOOR_ALONG);
+  // Which wall(s) of this room have a door-sized gap cut into them, and
+  // where along that wall — read by RoomShell/ScatteredTextField so the
+  // wall geometry and the scattered lore both agree on where the doors are.
+  const doorGaps = { FAR: null, NEAR: null, LEFT: null, RIGHT: null };
+  doorGaps[room.exitWall] = { along: room.exitDoorAlong ?? 0 };
+  if (hasBackDoor) doorGaps.NEAR = { along: BACK_DOOR_ALONG };
+
   const interactables = [];
   if (keyActive) interactables.push({ id: keyActive.objectId, position: keyActive.position });
   if (orbActive) interactables.push({ id: orbActive.objectId, position: orbActive.position });
-  if (doorUnlocked && !doorOpenAnim) interactables.push({ id: 'DOOR', position: DOOR_POSITION });
+  if (doorUnlocked && !openingDoor) interactables.push({ id: 'DOOR', position: exitDoorPosition });
+  if (hasBackDoor && !openingDoor) interactables.push({ id: 'BACK_DOOR', position: backDoorPosition });
 
-  const initialCamZ = Math.min(PLAYER_START[2] + 6, (ROOM_BOUNDS.maxZ - ROOM_BOUNDS.minZ) / 2 + 0.75 - 1);
-  // Both the well and the door block movement, so the player stops just
-  // short of each instead of walking through/onto them (which, for the
-  // door, used to leave it hidden behind the player's own body). Freestanding
-  // decor (tables, racks, the throne) gets its own obstacle entries from
+  // Both doors and the well block movement, so the player stops just short
+  // of each instead of walking through/onto them. Freestanding decor
+  // (tables, racks, the throne) gets its own obstacle entries from
   // roomFurnitureObstacles — RoomDecor itself is purely visual.
   const obstacles = [
-    ...allNodes, { position: WELL_POSITION }, { position: DOOR_POSITION },
+    ...allNodes, { position: WELL_POSITION }, { position: exitDoorPosition },
+    ...(hasBackDoor ? [{ position: backDoorPosition }] : []),
     ...roomFurnitureObstacles(room.id, ROOM_BOUNDS),
   ];
 
   return (
-    <Canvas camera={{ position: [0, 5.6, initialCamZ], fov: 50 }} gl={{ antialias: true }} style={{ background: '#111018' }}>
+    <Canvas camera={{ position: [PLAYER_START[0], EYE_HEIGHT, PLAYER_START[2]], fov: 75 }} gl={{ antialias: true }} style={{ background: '#111018' }}>
       <fog attach="fog" args={['#111018', 14, 34]} />
-      <RoomShell bounds={ROOM_BOUNDS} accent={room.accent} kind={room.id} />
+      <RoomShell bounds={ROOM_BOUNDS} accent={room.accent} kind={room.id} doorGaps={doorGaps} />
+      <ScatteredTextField fragments={room.loreFragments} bounds={ROOM_BOUNDS} doorGaps={doorGaps} lookRef={lookRef} />
       <Player posRef={posRef} orbCount={carriedOrbs.length} />
-      <CameraRig posRef={posRef} bounds={ROOM_BOUNDS} />
+      <FirstPersonRig posRef={posRef} lookRef={lookRef} />
+      <LookControls lookRef={lookRef} onLockChange={setLookLocked} />
       <PlayerController
         posRef={posRef}
+        lookRef={lookRef}
         bounds={ROOM_BOUNDS}
         obstacles={obstacles}
         interactables={interactables}
@@ -250,7 +304,18 @@ export default function HexaMaze({ apiRef, onState, onSectionReveal, onNearChang
       })}
 
       <Well position={WELL_POSITION} unlocked={false} open={false} text={room.wellText} />
-      <Door position={DOOR_POSITION} unlocked={doorUnlocked} open={doorOpenAnim || finaleStage === 'unlocked' || finaleStage === 'escaped'} />
+      {/* A door's leaves swing open as soon as it's actually walkable, not
+          just during the brief teleport animation — so it reads as "open
+          and waiting" the whole time you can use it, not "closed" right up
+          until the instant you interact with it. The back door has no lock
+          at all, so it's always open. */}
+      <Door
+        position={exitDoorPosition} wall={room.exitWall} unlocked={doorUnlocked}
+        open={doorUnlocked || finaleStage === 'unlocked' || finaleStage === 'escaped'}
+      />
+      {hasBackDoor && (
+        <Door position={backDoorPosition} wall="NEAR" unlocked open />
+      )}
     </Canvas>
   );
 }

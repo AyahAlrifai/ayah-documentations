@@ -132,6 +132,7 @@ export default function Profile() {
   const [codeReveal, setCodeReveal] = useState(null);
   const [finaleStage, setFinaleStage] = useState(null);
   const [showIntro, setShowIntro] = useState(true);
+  const [lookLocked, setLookLocked] = useState(false);
   const apiRef = useRef(null);
   const introTimer = useRef(null);
   const codeRevealTimer = useRef(null);
@@ -253,7 +254,7 @@ export default function Profile() {
                           career. Both must be restored before the room's process will let you deploy forward.
                         </p>
                         <button style={btnPrimary} onClick={beginQuest}>🔑 Start Debugging</button>
-                        <span style={{ fontSize: '0.72rem', color: sub }}>WASD / arrows to move · E or tap to interact</span>
+                        <span style={{ fontSize: '0.72rem', color: sub }}>WASD / arrows to move · mouse or drag to look · E or tap to interact</span>
                       </div>
                     </div>
                   );
@@ -269,7 +270,21 @@ export default function Profile() {
                       onCodeRequest={setCodeInfo}
                       onCodeReveal={handleCodeReveal}
                       onFinaleStage={setFinaleStage}
+                      onLookLockChange={setLookLocked}
                     />
+
+                    {gameState && !lookLocked && !finaleStage && (
+                      <div style={{
+                        position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
+                        background: 'rgba(10,8,14,0.78)', color: gold, padding: '0.5rem 1rem', borderRadius: 999,
+                        fontSize: '0.82rem', fontWeight: 700, border: `1px solid ${gold}66`, textAlign: 'center',
+                        pointerEvents: 'none', zIndex: 15, whiteSpace: 'nowrap',
+                      }}>
+                        {typeof window !== 'undefined' && 'ontouchstart' in window
+                          ? '👆 Drag to look around'
+                          : '🖱️ Click to look around'}
+                      </div>
+                    )}
 
                     {gameState && (
                       <div style={{

@@ -12,20 +12,45 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 // maxZ has extra depth beyond PLAYER_START so there's an open vestibule behind
-// the player to walk into and look back from — the chase camera needs that
-// space too, see CameraRig's clamp in SceneShell.js.
+// the player to walk into and look back from — the first-person rig needs
+// that space too (see FirstPersonRig in SceneShell.js).
 export const ROOM_BOUNDS = { minX: -5.5, maxX: 5.5, minZ: -6, maxZ: 8 };
 export const PLAYER_START = [0, 0, 5];
-// The door (the room's actual exit) is at the front — set flush against the
-// far wall you're facing when you spawn, deeper into the room past all the
-// props. Mirrors RoomShell's wall placement (±d/2 with 1.5 padding, 0.4
-// thick) so the door sits against the wall's inner face instead of floating
-// out at ROOM_BOUNDS.minZ, which left a visible gap between door and wall.
-const BACK_WALL_Z = -((ROOM_BOUNDS.maxZ - ROOM_BOUNDS.minZ + 1.5) / 2);
-export const DOOR_POSITION = [0, 0, BACK_WALL_Z + 0.3];
 // The well is a separate landmark near spawn, at the back — solid (you walk
-// around it, not through it) but purely decorative, not the exit.
+// around it, not through it) but purely decorative, not an exit.
 export const WELL_POSITION = [0, 0, ROOM_BOUNDS.maxZ - 1.6];
+
+// ─── Room wall geometry ─────────────────────────────────────────────────────
+// Every room shares the same footprint (ROOM_BOUNDS), so door math is done
+// once here rather than per room. Walls are named by which side of the box
+// they sit on, not by player-facing terms: NEAR is the wall behind spawn
+// (where the Well lives), FAR is the wall you first face, LEFT/RIGHT are the
+// side walls. Each room's forward-progress exit door is assigned to FAR,
+// LEFT, or RIGHT (never NEAR — that wall is reserved for the back door home
+// to the previous room) so doors don't all sit dead-ahead like before.
+const HALF_W = (ROOM_BOUNDS.maxX - ROOM_BOUNDS.minX + 1.5) / 2;
+const HALF_D = (ROOM_BOUNDS.maxZ - ROOM_BOUNDS.minZ + 1.5) / 2;
+const WALL_INSET = 0.3; // how far in front of the wall's inner face a door sits
+
+// Rotation (radians, about Y) that makes a FAR-wall-oriented prop/decal face
+// into the room when placed on each wall instead. Shared by Door (Props.js)
+// and the wall-facing text decals (ScatteredTextField in SceneShell.js) so
+// both agree on which way is "into the room" for a given wall.
+export const WALL_ROTATION_Y = { FAR: 0, NEAR: Math.PI, LEFT: Math.PI / 2, RIGHT: -Math.PI / 2 };
+
+export function wallDoorPosition(wall, along = 0) {
+  switch (wall) {
+    case 'NEAR': return [along, 0, HALF_D - WALL_INSET];
+    case 'LEFT': return [-HALF_W + WALL_INSET, 0, along];
+    case 'RIGHT': return [HALF_W - WALL_INSET, 0, along];
+    case 'FAR':
+    default: return [along, 0, -HALF_D + WALL_INSET];
+  }
+}
+
+// Off-center so the back door never overlaps the Well, which sits at x=0
+// near the NEAR wall (see WELL_POSITION above).
+export const BACK_DOOR_ALONG = -3.5;
 
 export const rooms = [
   // ── Room I ──────────────────────────────────────────────────────────────
@@ -39,6 +64,22 @@ export const rooms = [
     doorLabel: 'the gate tagged commit zero',
     wellText: 'Every system starts as one giant file — A.A.',
     cvSectionId: 'education',
+    // FAR, not a side wall — the shelving in this room (see RoomDecor's
+    // 'archive' case in SceneShell.js) runs almost the full length of both
+    // the LEFT and RIGHT walls, so a door cut into either would sit inside
+    // the bookshelves. FAR is the only wall clear of it.
+    exitWall: 'FAR',
+    exitDoorAlong: 0,
+    loreFragments: [
+      "grep -r TODO . -> 40,000 results, 0 fixed",
+      '// do not touch, nobody remembers why',
+      "last commit message: 'fix'",
+      'deprecated since v1, load-bearing since always',
+      'the stack trace ends here. it always does.',
+      'you are not the first to stand in this hallway',
+      "every function here outlived its author's patience",
+      'this comment is older than the bug it describes',
+    ],
     keyChain: [
       {
         objectId: 'book', type: 'book', position: [-3, 0, -1],
@@ -64,6 +105,21 @@ export const rooms = [
     doorLabel: 'the gate behind the retry policy',
     wellText: 'Idempotent, even in the dark — A.A.',
     cvSectionId: 'second-step',
+    // RIGHT wall, tucked into the far corner (along -6.2) — clear of the
+    // trellis wire (spans z -2.1..2.1), the mushroom cluster (z -4.5), and
+    // the potted plant (z 3.5) that otherwise crowd this wall.
+    exitWall: 'RIGHT',
+    exitDoorAlong: -6.2,
+    loreFragments: [
+      'fired once. consumed never. still warm.',
+      'retry count: infinite',
+      'idempotent, even in the dark',
+      'the queue remembers what you forgot to send',
+      'ack pending since before you got here',
+      'this event bloomed and nobody was listening',
+      'dead letters make the sweetest fertilizer',
+      'backpressure is just the garden pushing back',
+    ],
     keyChain: [
       {
         objectId: 'wateringcan', type: 'wateringcan', position: [-4, 0, 2],
@@ -97,6 +153,22 @@ export const rooms = [
     doorLabel: 'the reinforced access gate',
     wellText: 'Trust, but always verify — A.A.',
     cvSectionId: 'blulogix',
+    // FAR, not a side wall — both LEFT and RIGHT carry a full-depth ceiling
+    // support pole (see RoomDecor's 'vault' case in SceneShell.js) right at
+    // header height, which would run straight through a side-wall door.
+    // Along 4 clears the cabinet racks mounted on the FAR wall itself.
+    exitWall: 'FAR',
+    exitDoorAlong: 4,
+    loreFragments: [
+      'token expired the moment it was issued',
+      "trust nothing that hasn't been verified twice",
+      'the session clock counts down past zero and keeps going',
+      'every door here remembers who knocked',
+      '471 was never the real answer, just the door',
+      'encrypted, but everyone already knows the secret',
+      'access denied is just access delayed',
+      'the vault trusts you exactly as much as your last token',
+    ],
     keyChain: [
       {
         objectId: 'blackboard', type: 'blackboard', position: [-4, 0, -3],
@@ -130,6 +202,18 @@ export const rooms = [
     doorLabel: 'the door with no TTL',
     wellText: 'Nothing here was ever really temporary — A.A.',
     cvSectionId: 'skills',
+    exitWall: 'RIGHT',
+    exitDoorAlong: 2,
+    loreFragments: [
+      'nothing here was ever really temporary',
+      'TTL: never. eviction: refused.',
+      'muscle memory does not expire, it just goes stale',
+      'still resident. still warm. still yours.',
+      'the first thing you learned is still running in the background',
+      'cold start, warm heart',
+      'this cache outlived the reason it was built',
+      'old skills, half-finished habits, all still here',
+    ],
     keyChain: [
       {
         objectId: 'musicbox', type: 'musicbox', position: [-2, 0, -1],
@@ -155,6 +239,18 @@ export const rooms = [
     doorLabel: 'the iris-shutter gate',
     wellText: 'You can’t fix what you don’t measure — A.A.',
     cvSectionId: 'digitinary',
+    exitWall: 'FAR',
+    exitDoorAlong: 0,
+    loreFragments: [
+      "you can't fix what you don't measure",
+      'every metric that ever mattered, still plotted',
+      "a graph is trending in a direction nobody's watching",
+      'the dashboard has no edges, only more panels',
+      'somewhere an alert fired and paged no one',
+      'the anomaly was flagged. the anomaly was ignored.',
+      "scale up. scale out. scale until it's someone else's problem.",
+      'the trace goes all the way down',
+    ],
     keyChain: [
       {
         objectId: 'starchart', type: 'starchart', position: [-4, 0, 0],
@@ -188,6 +284,18 @@ export const rooms = [
     doorLabel: 'the final deploy gate',
     wellText: 'Six services, one system — A.A.',
     cvSectionId: 'contact',
+    exitWall: 'LEFT',
+    exitDoorAlong: -1,
+    loreFragments: [
+      'six services, one system',
+      'every wall here reflects a redundant node',
+      'failover is just hope with a runbook',
+      'the real one was never in the mirror',
+      'root sees everything and fixes nothing by itself',
+      'the last gate only opens for the whole system, not one piece of it',
+      'deploy: green. rollback: ready. hands: shaking.',
+      'checks passing everywhere at once, finally',
+    ],
     keyChain: [
       {
         objectId: 'rugtile', type: 'rugtile', position: [0, 0, -3],
