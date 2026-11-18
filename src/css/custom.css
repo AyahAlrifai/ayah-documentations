@@ -566,7 +566,7 @@ html[data-theme='dark'] {
 .nav-icon-doc::before,
 .nav-icon-tools::before,
 .nav-icon-games::before,
-.nav-icon-profile::before {
+.nav-icon-intro::before {
   content: '';
   display: inline-block;
   width: 1em;
@@ -604,9 +604,9 @@ html[data-theme='dark'] {
 }
 
 .nav-icon-doc::before       { background-image: url('/img/icons/doc.svg'); }
-.nav-icon-profile::before   { background-image: url('/img/icons/profile.svg'); }
 .nav-icon-tools::before     { background-image: url('/img/icons/tools.svg'); }
 .nav-icon-games::before     { background-image: url('/img/icons/games.svg'); }
+.nav-icon-intro::before     { background-image: url('/img/icons/intro.svg'); }
 .nav-icon-markdown::before  { background-image: url('/img/icons/markdown.svg'); }
 .nav-icon-json::before      { background-image: url('/img/icons/json.svg'); }
 .nav-icon-sql::before       { background-image: url('/img/icons/sql.svg'); }

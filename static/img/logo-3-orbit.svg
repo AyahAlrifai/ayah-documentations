@@ -33,5 +33,5 @@
 
   <!-- Center core -->
   <circle cx="80" cy="80" r="18" fill="url(#gc)"/>
-  <circle cx="80" cy="80" r="7"  fill="#0d1117" opacity="0.88"/>
+  <circle cx="80" cy="80" r="7"  fill="white" opacity="0.92"/>
 </svg>

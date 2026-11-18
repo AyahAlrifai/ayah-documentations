@@ -134,12 +134,6 @@ const config = {
             className: 'nav-icon-doc',
           },
           {
-            to: 'profile',
-            position: 'left',
-            label: 'CV',
-            className: 'nav-icon-profile',
-          },
-          {
             label: 'Tools',
             position: 'left',
             className: 'nav-icon-tools',
@@ -166,6 +160,12 @@ const config = {
               { to: 'trains', label: 'Trains', className: 'nav-icon-train' },
               { to: 'number-guessing', label: 'Number Guessing', className: 'nav-icon-number' },
             ],
+          },
+          {
+            to: 'intro',
+            label: 'Intro',
+            position: 'left',
+            className: 'nav-icon-intro',
           },
         ],
       },
