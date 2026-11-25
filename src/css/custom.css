@@ -654,3 +654,19 @@ html {
     padding: 1rem !important;
   }
 }
+
+/* ── "whoami" navbar tab: terminal-style label ── */
+.nav-whoami {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  letter-spacing: 0.02em;
+}
+
+.nav-whoami::before {
+  content: '❯';
+  margin-right: 0.4em;
+  color: #74e03e;
+}
+
+[data-theme='light'] .nav-whoami::before {
+  color: #3c9a0c;
+}

@@ -163,9 +163,9 @@ const config = {
           },
           {
             to: 'intro',
-            label: 'Intro',
+            label: 'whoami',
+            className: 'nav-whoami',
             position: 'left',
-            className: 'nav-icon-intro',
           },
         ],
       },
